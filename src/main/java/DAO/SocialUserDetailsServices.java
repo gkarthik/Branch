@@ -39,7 +39,5 @@ public class SocialUserDetailsServices implements SocialUserDetailsService {
 
         return (SocialUserDetails) userDetails;
     }
-    
-//    @Override 
-//    public SocialUserDetails loadUserByEmailIs 
+
 }

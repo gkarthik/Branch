@@ -1,126 +1,165 @@
 package DAO;
 
 
+import java.util.List;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+
+
 import javax.persistence.*;
+import WekaDataTables.*;
 
 @Entity
 @Table(name = "user_accounts")
 
 public class User extends BaseEntity<Long> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 
-    @Column(name = "email", length = 100, nullable = false, unique = true)
-    private String email;
+	@OneToMany(cascade={CascadeType.ALL}, mappedBy = "userdb")
 
-    @Column(name = "first_name", length = 100,nullable = false)
-    private String firstName;
+	//	@JoinColumn(name="feature_id")
+	private List<TreeDB> trees;
 
-    @Column(name = "last_name", length = 100, nullable = false)
-    private String lastName;
+	@Column(name = "email", length = 100, nullable = false, unique = true)
+	private String email;
 
-    @Column(name = "password", length = 255)
-    private String password;
+	@Column(name = "first_name", length = 100,nullable = false)
+	private String firstName;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", length = 20, nullable = false)
-    private Role role;
+	@Column(name = "last_name", length = 100, nullable = false)
+	private String lastName;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "sign_in_provider", length = 20)
-    private SocialMediaService signInProvider;
+	@Column(name = "password", length = 255)
+	private String password;
 
-    public User() {
+	@Enumerated(EnumType.STRING)
+	@Column(name = "role", length = 20, nullable = false)
+	private Role role;
 
-    }
+	@Enumerated(EnumType.STRING)
+	@Column(name = "sign_in_provider", length = 20)
+	private SocialMediaService signInProvider;
 
-    public static Builder getBuilder() {
-        return new Builder();
-    }
+	@Column
+	private String background;
 
-    @Override
-    public Long getId() {
-        return id;
-    }
+	@Column
+	private String purpose;
 
-    public String getEmail() {
-        return email;
-    }
 
-    public String getFirstName() {
-        return firstName;
-    }
 
-    public String getLastName() {
-        return lastName;
-    }
+	public User() {
 
-    public String getPassword() {
-        return password;
-    }
+	}
 
-    public Role getRole() {
-        return role;
-    }
+	public static Builder getBuilder() {
+		return new Builder();
+	}
 
-    public SocialMediaService getSignInProvider() {
-        return signInProvider;
-    }
+	@Override
+	public Long getId() {
+		return id;
+	}
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("id", id)
-                .append("creationTime", this.getCreationTime())
-                .append("email", email)
-                .append("firstName", firstName)
-                .append("lastName", lastName)
-                .append("modificationTime", this.getModificationTime())
-                .append("signInProvider", this.getSignInProvider())
-                .append("version", this.getVersion())
-                .toString();
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public static class Builder {
+	public String getFirstName() {
+		return firstName;
+	}
 
-        private User user;
+	public String getLastName() {
+		return lastName;
+	}
 
-        public Builder() {
-            user = new User();
-            user.role = Role.ROLE_USER;
-        }
+	public String getPassword() {
+		return password;
+	}
 
-        public Builder email(String email) {
-            user.email = email;
-            return this;
-        }
+	public Role getRole() {
+		return role;
+	}
 
-        public Builder firstName(String firstName) {
-            user.firstName = firstName;
-            return this;
-        }
+	public SocialMediaService getSignInProvider() {
+		return signInProvider;
+	}
+	public String getBackground() {
+		return background;
+	}
 
-        public Builder lastName(String lastName) {
-            user.lastName = lastName;
-            return this;
-        }
+	public String getPurpose() {
+		return purpose;
+	}
 
-        public Builder password(String password) {
-            user.password = password;
-            return this;
-        }
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+		.append("id", id)
+		.append("creationTime", this.getCreationTime())
+		.append("email", email)
+		.append("firstName", firstName)
+		.append("lastName", lastName)
+		.append("modificationTime", this.getModificationTime())
+		.append("signInProvider", this.getSignInProvider())
+		.append("version", this.getVersion())
+		.append("background",this.getBackground())
+		.append("purpose", this.getPurpose())
+		.toString();
+	}
 
-        public Builder signInProvider(SocialMediaService signInProvider) {
-            user.signInProvider = signInProvider;
-            return this;
-        }
+	public static class Builder {
 
-        public User build() {
-            return user;
-        }
-    }
+		private User user;
+
+		public Builder() {
+			user = new User();
+			user.role = Role.ROLE_USER;
+		}
+
+		public Builder email(String email) {
+			user.email = email;
+			return this;
+		}
+
+		public Builder firstName(String firstName) {
+			user.firstName = firstName;
+			return this;
+		}
+
+		public Builder lastName(String lastName) {
+			user.lastName = lastName;
+			return this;
+		}
+
+		public Builder password(String password) {
+			user.password = password;
+			return this;
+		}
+
+		public Builder signInProvider(SocialMediaService signInProvider) {
+			user.signInProvider = signInProvider;
+			return this;
+		}
+
+		public Builder background(String background)
+		{
+			user.background=background;
+			return this;
+		}
+
+		public Builder purpose(String purpose)
+		{
+			user.purpose =purpose;
+			return this;
+		}
+
+		public User build() {
+			return user;
+		}
+	}
 }

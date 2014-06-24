@@ -55,6 +55,27 @@
 							<form:errors id="error-email" path="email" cssClass="help-block" />
 						</div>
 					</div>
+
+					<div class="row">
+						<div id="form-group-firstName " class="form-group col-lg-4">
+							<label class="control-label" for="background">Education
+								Background:</label>
+							<form:input id="background" path="background"
+								cssClass="form-control" />
+
+						</div>
+					</div>
+
+
+					<div class="row">
+						<div id="form-group-firstName " class="form-group col-lg-4">
+							<label class="control-label" for="purpose">Purpose:</label>
+							<form:input id="purpose" path="purpose" cssClass="form-control" />
+
+						</div>
+					</div>
+
+
 					<c:if test="${user.signInProvider == null}">
 						<div class="row">
 							<div id="form-group-password" class="form-group col-lg-4">

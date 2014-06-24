@@ -11,8 +11,13 @@ CREATE TABLE if not exists`user_accounts` (
   `role` varchar(20) NOT NULL,
   `sign_in_provider` varchar(20),
   `version` bigint(20) NOT NULL,
+  `background` varchar(255),
+  `purpose` varchar(255),
   PRIMARY KEY (`id`),
   UNIQUE KEY (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 COMMIT;
+
+
+

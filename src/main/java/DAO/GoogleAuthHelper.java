@@ -2,7 +2,6 @@ package DAO;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
@@ -16,7 +15,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,7 +32,7 @@ public final class GoogleAuthHelper {
 
 	private static final String CLIENT_SECRET = "YLdmgj4KAoEL-1NOnjm_U9p5";
 
-	private static final String CALLBACK_URI = "http://localhost:8080/BranchBio/";
+	private static final String CALLBACK_URI = "http://localhost:8080/BranchBio/auth/google";
 	
 	String jsonIdentity;
 

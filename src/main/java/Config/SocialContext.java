@@ -17,6 +17,7 @@ import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository;
 import org.springframework.social.connect.web.ConnectController;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
+import org.springframework.social.google.connect.GoogleConnectionFactory;
 import org.springframework.social.security.AuthenticationNameUserIdSource;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 
@@ -45,6 +46,11 @@ public class SocialContext implements SocialConfigurer {
         cfConfig.addConnectionFactory(new FacebookConnectionFactory(
                 env.getProperty("facebook.app.id"),
                 env.getProperty("facebook.app.secret")
+        ));
+        cfConfig.addConnectionFactory(new GoogleConnectionFactory(
+                env.getProperty("google.client.id"),
+                env.getProperty("google.client.secret")
+                
         ));
     }
 
