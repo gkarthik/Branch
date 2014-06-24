@@ -22,6 +22,11 @@ public class UsersDetails extends SocialUser {
 	private String lastName;
 	private Role role;
 	private SocialMediaService socialSignInProvider;
+	private String background;
+	private String purpose;
+
+
+
 
 
 	//constructor
@@ -50,6 +55,15 @@ public class UsersDetails extends SocialUser {
 		return socialSignInProvider;
 	}
 
+	public String getBackground() {
+		return background;
+	}
+
+	public String getPurpose(){
+		return purpose;
+	}
+
+
 
 	public static Builder getBuilder() {
 		return new Builder();
@@ -66,6 +80,8 @@ public class UsersDetails extends SocialUser {
 		private Role role;
 		private SocialMediaService socialSignInProvider;
 		private Set<GrantedAuthority> authorities;
+		private String background;
+		private String purpose;
 
 		public Builder() {
 			this.authorities = new HashSet<>();
@@ -83,6 +99,17 @@ public class UsersDetails extends SocialUser {
 
 		public Builder lastName(String lastName) {
 			this.lastName = lastName;
+			return this;
+		}
+
+
+		public Builder background(String background) {
+			this.background = background;
+			return this;
+		}
+
+		public Builder purpose(String purpose){
+			this.purpose=purpose;
 			return this;
 		}
 
@@ -122,6 +149,8 @@ public class UsersDetails extends SocialUser {
 			user.lastName = lastName;
 			user.role = role;
 			user.socialSignInProvider = socialSignInProvider;
+			user.background= background;
+			user.purpose=purpose;
 
 			return user;
 		}
@@ -138,6 +167,8 @@ public class UsersDetails extends SocialUser {
 		.append("lastName", lastName)
 		.append("role", role)
 		.append("socialSignInProvider", socialSignInProvider)
+		.append("background",background)
+		.append("purpose", purpose)
 		.toString();
 	}
 

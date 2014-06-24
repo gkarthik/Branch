@@ -11,72 +11,76 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserRepositoryService implements UserService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserRepositoryService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserRepositoryService.class);
 
-    private PasswordEncoder passwordEncoder;
+	private PasswordEncoder passwordEncoder;
 
-    private UserRepository repository;
+	private UserRepository repository;
 
-    @Autowired
-    public UserRepositoryService(PasswordEncoder passwordEncoder, UserRepository repository) {
-        this.passwordEncoder = passwordEncoder;
-        this.repository = repository;
-    }
+	@Autowired
+	public UserRepositoryService(PasswordEncoder passwordEncoder, UserRepository repository) {
+		this.passwordEncoder = passwordEncoder;
+		this.repository = repository;
+	}
 
-    @Transactional
-    @Override
-    public User registerNewUserAccount(RegistrationForm userAccountData) throws DuplicateEmailException {
-        LOGGER.debug("Registering new user account with information: {}", userAccountData);
+	@Transactional
+	@Override
+	public User registerNewUserAccount(RegistrationForm userAccountData) throws DuplicateEmailException {
+		LOGGER.debug("Registering new user account with information: {}", userAccountData);
+	
 
-        if (emailExist(userAccountData.getEmail())) {
-            LOGGER.debug("Email: {} exists. Throwing exception.", userAccountData.getEmail());
-            throw new DuplicateEmailException("The email address: " + userAccountData.getEmail() + " is already in use.");
-        }
+		if (emailExist(userAccountData.getEmail())) {
+			LOGGER.debug("Email: {} exists. Throwing exception.", userAccountData.getEmail());
+			throw new DuplicateEmailException("The email address: " + userAccountData.getEmail() + " is already in use.");
+		}
 
-        LOGGER.debug("Email: {} does not exist. Continuing registration.", userAccountData.getEmail());
+		LOGGER.debug("Email: {} does not exist. Continuing registration.", userAccountData.getEmail());
 
-        String encodedPassword = encodePassword(userAccountData);
+		String encodedPassword = encodePassword(userAccountData);
 
-        User.Builder user = User.getBuilder()
-                .email(userAccountData.getEmail())
-                .firstName(userAccountData.getFirstName())
-                .lastName(userAccountData.getLastName())
-                .password(encodedPassword);
+		User.Builder user = User.getBuilder()
+				.email(userAccountData.getEmail())
+				.firstName(userAccountData.getFirstName())
+				.lastName(userAccountData.getLastName())
+				.password(encodedPassword)
+				.background(userAccountData.getBackground())
+				.purpose(userAccountData.getPurpose());
 
-        if (userAccountData.isSocialSignIn()) {
-            user.signInProvider(userAccountData.getSignInProvider());
-        }
 
-        User registered = user.build();
+		if (userAccountData.isSocialSignIn()) {
+			user.signInProvider(userAccountData.getSignInProvider());
+		}
 
-        LOGGER.debug("Persisting new user with information: {}", registered);
+		User registered = user.build();
 
-        return repository.save(registered);
-    }
+		LOGGER.debug("Persisting new user with information: {}", registered);
 
-    private boolean emailExist(String email) {
-        LOGGER.debug("Checking if email {} is already found from the database.", email);
+		return repository.save(registered);
+	}
 
-        User user = repository.findByEmail(email);
+	private boolean emailExist(String email) {
+		LOGGER.debug("Checking if email {} is already found from the database.", email);
 
-        if (user != null) {
-            LOGGER.debug("User account: {} found with email: {}. Returning true.", user, email);
-            return true;
-        }
+		User user = repository.findByEmail(email);
 
-        LOGGER.debug("No user account found with email: {}. Returning false.", email);
+		if (user != null) {
+			LOGGER.debug("User account: {} found with email: {}. Returning true.", user, email);
+			return true;
+		}
 
-        return false;
-    }
+		LOGGER.debug("No user account found with email: {}. Returning false.", email);
 
-    private String encodePassword(RegistrationForm dto) {
-        String encodedPassword = null;
+		return false;
+	}
 
-        if (dto.isNormalRegistration()) {
-            LOGGER.debug("Registration is normal registration. Encoding password.");
-            encodedPassword = passwordEncoder.encode(dto.getPassword());
-        }
+	private String encodePassword(RegistrationForm dto) {
+		String encodedPassword = null;
 
-        return encodedPassword;
-    }
+		if (dto.isNormalRegistration()) {
+			LOGGER.debug("Registration is normal registration. Encoding password.");
+			encodedPassword = passwordEncoder.encode(dto.getPassword());
+		}
+
+		return encodedPassword;
+	}
 }

@@ -35,18 +35,19 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<span class="navbar-brand">BranchBio</span>
+				<a href="/BranchBio/"><span class="navbar-brand">BranchBio</span>
+				</a>
 			</div>
 			<div class="collapse navbar-collapse navbar-ex1-collapse">
 				<ul class="nav navbar-nav navbar-left">
 					<sec:authorize access="isAuthenticated()">
-						<li><a href="/"><spring:message
+						<li><a href="/BranchBio/"><spring:message
 									code="label.navigation.home.link" /></a></li>
 					</sec:authorize>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<sec:authorize access="isAnonymous()">
-						<li><a href="/user/register"><spring:message
+						<li><a href="/BranchBio/user/register"><spring:message
 									code="label.navigation.registration.link" /></a></li>
 					</sec:authorize>
 					<sec:authorize access="isAuthenticated()">

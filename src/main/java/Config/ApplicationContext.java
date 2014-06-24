@@ -8,7 +8,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 
 @Configuration
 @ComponentScan(basePackages = {
-        "DAO"
+        "DAO", "Tests"
 })
 @Import({WebApplicationContext.class , PersistenceContext.class, SecurityContext.class, SocialContext.class})
 @PropertySource("classpath:application.properties")

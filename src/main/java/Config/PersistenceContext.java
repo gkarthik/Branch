@@ -18,13 +18,13 @@ import java.util.Properties;
 
 @Configuration
 @EnableJpaRepositories(basePackages = {
-		"DAO"
+		"DAO", "WekaDataTables", "WekaDataBuilder", "Tests"
 })
 @EnableTransactionManagement
 public class PersistenceContext {
 
 	private static final String[] PROPERTY_PACKAGES_TO_SCAN = {
-		"DAO"
+		"DAO","WekaDataTables", "WekaDataBuilder", "Tests"
 	};
 
 	protected static final String PROPERTY_NAME_DATABASE_DRIVER = "db.driver";

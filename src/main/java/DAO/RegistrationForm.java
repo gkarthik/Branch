@@ -6,121 +6,141 @@ import Validation.PasswordsNotEqual;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.validation.constraints.Size;
 
 
 @PasswordsNotEmpty(
-        triggerFieldName = "signInProvider",
-        passwordFieldName = "password",
-        passwordVerificationFieldName = "passwordVerification"
-)
+		triggerFieldName = "signInProvider",
+		passwordFieldName = "password",
+		passwordVerificationFieldName = "passwordVerification"
+		)
 @PasswordsNotEqual(
-        passwordFieldName = "password",
-        passwordVerificationFieldName = "passwordVerification"
-)
+		passwordFieldName = "password",
+		passwordVerificationFieldName = "passwordVerification"
+		)
 public class RegistrationForm {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationForm.class);
-    public static final String FIELD_NAME_EMAIL = "email";
 
-    @Email
-    @NotEmpty
-    @Size(max = 100)
-    private String email;
+	public static final String FIELD_NAME_EMAIL = "email";
 
-    @NotEmpty
-    @Size(max = 100)
-    private String firstName;
+	@Email
+	@NotEmpty
+	@Size(max = 100)
+	private String email;
 
-    @NotEmpty
-    @Size(max = 100)
-    private String lastName;
+	@NotEmpty
+	@Size(max = 100)
+	private String firstName;
 
-    private String password;
+	@NotEmpty
+	@Size(max = 100)
+	private String lastName;
 
-    private String passwordVerification;
+	private String password;
 
-    private SocialMediaService signInProvider;
+	private String passwordVerification;
 
-    public RegistrationForm() {
-    	
-    	LOGGER.debug("%s"+ password);
-    	LOGGER.debug("%s"+ firstName);
-    	
+	private SocialMediaService signInProvider;
 
-    }
+	private String background;
 
-    public boolean isNormalRegistration() {
-        return signInProvider == null;
-    }
+	private String purpose;
 
-    public boolean isSocialSignIn() {
-        return signInProvider != null;
-    }
 
-    public String getEmail() {
-        return email;
-    }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
-    public String getFirstName() {
-        return firstName;
-    }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+	public RegistrationForm() {
 
-    public String getLastName() {
-        return lastName;
-    }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
 
-    public String getPassword() {
-        return password;
-    }
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public boolean isNormalRegistration() {
+		return signInProvider == null;
+	}
 
-    public String getPasswordVerification() {
-        return passwordVerification;
-    }
+	public boolean isSocialSignIn() {
+		return signInProvider != null;
+	}
 
-    public void setPasswordVerification(String passwordVerification) {
-        this.passwordVerification = passwordVerification;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public SocialMediaService getSignInProvider() {
-        return signInProvider;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setSignInProvider(SocialMediaService signInProvider) {
-        this.signInProvider = signInProvider;
-        LOGGER.debug("Password", password);
-    	LOGGER.debug("Username", firstName);
-    }
+	public String getFirstName() {
+		return firstName;
+	}
 
-    
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("email", email)
-                .append("firstName", firstName)
-                .append("lastName", lastName)
-                .append("signInProvider", signInProvider)
-                .toString();
-        
-        
-    }
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getPasswordVerification() {
+		return passwordVerification;
+	}
+
+	public void setPasswordVerification(String passwordVerification) {
+		this.passwordVerification = passwordVerification;
+	}
+
+	public SocialMediaService getSignInProvider() {
+		return signInProvider;
+	}
+
+	public void setSignInProvider(SocialMediaService signInProvider) {
+		this.signInProvider = signInProvider;
+
+	}
+
+	public String getBackground() {
+		return background;
+	}
+
+	public void setBackground(String background) {
+		this.background = background;
+	}
+
+
+	public String getPurpose() {
+		return purpose;
+	}
+
+	public void setPurpose(String purpose) {
+		this.purpose = purpose;
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+		.append("email", email)
+		.append("firstName", firstName)
+		.append("lastName", lastName)
+		.append("signInProvider", signInProvider)
+		.append("background",background)
+		.append("purpose", purpose)
+		.toString();
+
+
+	}
 }
