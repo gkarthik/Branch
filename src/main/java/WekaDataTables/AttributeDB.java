@@ -1,10 +1,20 @@
 package WekaDataTables;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
-
 
 //CREATE TABLE `attribute` (
 //		  `id` int(10) NOT NULL AUTO_INCREMENT,
@@ -21,12 +31,9 @@ import org.joda.time.DateTime;
 
 //name="unique_id", length = 50, nullable = false, unique = true
 
-
 @Entity
-@Table(name="attribute",  uniqueConstraints = {
-		@UniqueConstraint(name = "dataset_index_name", columnNames = { "col_index","name","dataset" } )})
-
-
+@Table(name = "attribute", uniqueConstraints = { @UniqueConstraint(name = "dataset_index_name", columnNames = {
+		"col_index", "name", "dataset" }) })
 public class AttributeDB {
 
 	@Id
@@ -34,11 +41,11 @@ public class AttributeDB {
 	@Column
 	private int id;
 
-	@Column(nullable=false,unique = true)
+	@Column(unique = true)
 	private int col_index;
 
 	@Column
-	private String name=null;
+	private String name;
 
 	@Column
 	private String dataset;
@@ -46,84 +53,68 @@ public class AttributeDB {
 	@Column
 	private float relieff;
 
-
-	@ManyToOne
-	@JoinColumn(name="feature_id",
-	insertable=false, updatable=false,
-	nullable=false)
-	private FeatureDB featuredb;
-
-
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "feature_id", insertable = false, updatable = false, nullable = false)
+//	private FeatureDB feature_id;
 	
-	public int getId() {
-		return id;
+	 @ManyToOne(fetch = FetchType.LAZY)
+	 @JoinColumn(name = "attributes")
+	 private FeatureDB feature;
+
+
+//	private Long feature_id;
+//	
+//	public long getFeature_id() {
+//		return feature_id;
+//	}
+//
+//	public void setFeature_id(long feature_id) {
+//		this.feature_id = featuredb.getId();
+//	}
+
+	public FeatureDB getFeature_id() {
+		return feature;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setFeature(FeatureDB result) {
+		this.feature = result;
 	}
+
+	@Column(name = "created", nullable = false)
+	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	private DateTime created = null;
+
+	@Column(name = "updated", nullable = false)
+	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	private DateTime updated;
 
 	public int getCol_index() {
 		return col_index;
 	}
 
-	public void setCol_index(int col_index) {
-		this.col_index = col_index;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public DateTime getCreated() {
+		return created;
 	}
 
 	public String getDataset() {
 		return dataset;
 	}
 
-	public void setDataset(String dataset) {
-		this.dataset = dataset;
+	public int getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public float getRelieff() {
 		return relieff;
 	}
 
-	public void setReliefF(float relieff) {
-		this.relieff = relieff;
-	}
-
-
-
-	public DateTime getCreated() {
-		return created;
-	}
-
-	public void setCreated(DateTime created) {
-		this.created = created;
-	}
-
 	public DateTime getUpdated() {
 		return updated;
 	}
-
-	public void setUpdated(DateTime updated) {
-		this.updated = updated;
-	}
-
-
-
-
-	@Column(name="created",nullable = false)
-	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-	private DateTime created=null;
-
-	@Column(name="updated", nullable = false)
-	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-	private DateTime updated;
-
 
 	@PrePersist
 	public void prePersist() {
@@ -137,5 +128,32 @@ public class AttributeDB {
 		this.updated = DateTime.now();
 	}
 
+	public void setCol_index(int col_index) {
+		this.col_index = col_index;
+	}
+
+	public void setCreated(DateTime created) {
+		this.created = created;
+	}
+
+	public void setDataset(String dataset) {
+		this.dataset = dataset;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setReliefF(float relieff) {
+		this.relieff = relieff;
+	}
+
+	public void setUpdated(DateTime updated) {
+		this.updated = updated;
+	}
 
 }

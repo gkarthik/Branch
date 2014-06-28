@@ -40,4 +40,10 @@ alpha-1B-glycoprotein											Other_designations
   
   \COPY homosap(tax_id ,GeneID ,Symbol,LocusTag ,Synonym ,dbXrefs,chromosome ,map_location ,description ,type_of_gene,Symbol_from_nomenclature_authority ,Full_name_from_nomenclature_authority ,Nomenclature_status,Other_designations ,Modification_date) from '/home/bob/Homo_sapiens.gene_info' ;
   
-   \COPY homosap(tax_id ,GeneID ,Symbol,LocusTag ,Synonym ,dbXrefs,chromosome ,map_location ,description ,type_of_gene,Symbol_from_nomenclature_authority ,Full_name_from_nomenclature_authority ,Nomenclature_status,Other_designations ,Modification_date) from '/home/bob/Homo_sapiens.gene_info' ;
+   \COPY HGI(tax_id ,GeneID ,Symbol,LocusTag ,Synonym ,dbXrefs,chromosome ,map_location ,description ,type_of_gene,Symbol_from_nomenclature_authority ,Full_name_from_nomenclature_authority ,Nomenclature_status,Other_designations ,Modification_date) from '/home/bob/Homo_sapiens.gene_info' ;
+   
+   
+   
+   
+   
+    insert into attribute(id,col_index,created,dataset,feature_id,name,relieff,updated) values (1,1,now(),'newdataset',12,'Vyshakh',1.0,now());

@@ -1,29 +1,31 @@
 package Validation;
 
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-@Target( { TYPE, ANNOTATION_TYPE })
+import javax.validation.Constraint;
+import javax.validation.Payload;
+
+@Target({ TYPE, ANNOTATION_TYPE })
 @Retention(RUNTIME)
 @Constraint(validatedBy = PasswordsNotEmptyValidator.class)
 @Documented
 public @interface PasswordsNotEmpty {
 
-    String message() default "PasswordsNotEmpty";
+	Class<?>[] groups() default {};
 
-    Class<?>[] groups() default {};
+	String message() default "PasswordsNotEmpty";
 
-    Class<? extends Payload>[] payload() default {};
+	String passwordFieldName() default "";
 
-    String triggerFieldName() default "";
+	String passwordVerificationFieldName() default "";
 
-    String passwordFieldName() default "";
+	Class<? extends Payload>[] payload() default {};
 
-    String passwordVerificationFieldName() default "";
+	String triggerFieldName() default "";
 }

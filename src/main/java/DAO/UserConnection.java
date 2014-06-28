@@ -8,54 +8,48 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
 
-
 /*
 
-BEGIN;
+ BEGIN;
 
-create table UserConnection  (userId varchar(255) not null,
-    providerId varchar(255) not null,
-    providerUserId varchar(255),
-    rank int not null,
-    displayName varchar(255),
-    profileUrl varchar(512),
-    imageUrl varchar(512),
-    accessToken varchar(255) not null,
-    secret varchar(255),
-    refreshToken varchar(255),
-    expireTime bigint,
-    primary key (userId, providerId, providerUserId));
-create unique index UserConnectionRank on UserConnection(userId, providerId, rank);
+ create table UserConnection  (userId varchar(255) not null,
+ providerId varchar(255) not null,
+ providerUserId varchar(255),
+ rank int not null,
+ displayName varchar(255),
+ profileUrl varchar(512),
+ imageUrl varchar(512),
+ accessToken varchar(255) not null,
+ secret varchar(255),
+ refreshToken varchar(255),
+ expireTime bigint,
+ primary key (userId, providerId, providerUserId));
+ create unique index UserConnectionRank on UserConnection(userId, providerId, rank);
 
-COMMIT;
+ COMMIT;
  */
 
 @Entity
-@Table(name = "userconnection",
-indexes = {@Index(name= "userconnectionrank" , columnList = ("userId,providerId,rank"))})
-
-
-
-public class UserConnection implements Serializable{
-
+@Table(name = "userconnection", indexes = { @Index(name = "userconnectionrank", columnList = ("userId,providerId,rank")) })
+public class UserConnection implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Id 
+	@Id
 	@Column(name = "userid", nullable = false)
 	private String userId;
 
-	@Id 
+	@Id
 	@Column(name = "providerid", nullable = false)
 	private String providerId;
 
 	@Column(name = "provideruserid")
 	private String providerUserId;
 
-	@Id 
+	@Id
 	@Column(name = "rank", nullable = false)
 	private int rank;
 
@@ -80,76 +74,92 @@ public class UserConnection implements Serializable{
 	@Column(name = "expiretime")
 	private long expireTime;
 
+	public String getAccessToken() {
+		return accessToken;
+	}
 
-
-	public String getUserId() {
-		return userId;
-	}
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-	public String getProviderId() {
-		return providerId;
-	}
-	public void setProviderId(String providerId) {
-		this.providerId = providerId;
-	}
-	public String getProviderUserId() {
-		return providerUserId;
-	}
-	public void setProviderUserId(String providerUserId) {
-		this.providerUserId = providerUserId;
-	}
-	public int getRank() {
-		return rank;
-	}
-	public void setRank(int rank) {
-		this.rank = rank;
-	}
 	public String getDisplayName() {
 		return displayName;
 	}
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
+
+	public long getExpireTime() {
+		return expireTime;
 	}
-	public String getProfileUrl() {
-		return profileUrl;
-	}
-	public void setProfileUrl(String profileUrl) {
-		this.profileUrl = profileUrl;
-	}
+
 	public String getImageUrl() {
 		return imageUrl;
 	}
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
+
+	public String getProfileUrl() {
+		return profileUrl;
 	}
-	public String getAccessToken() {
-		return accessToken;
+
+	public String getProviderId() {
+		return providerId;
+	}
+
+	public String getProviderUserId() {
+		return providerUserId;
+	}
+
+	public int getRank() {
+		return rank;
+	}
+
+	public String getRefreshToken() {
+		return refreshToken;
+	}
+
+	public String getSecret() {
+		return secret;
+	}
+
+	public String getUserId() {
+		return userId;
 	}
 
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
 	}
-	public String getSecret() {
-		return secret;
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
-	public void setSecret(String secret) {
-		this.secret = secret;
-	}
-	public String getRefreshToken() {
-		return refreshToken;
-	}
-	public void setRefreshToken(String refreshToken) {
-		this.refreshToken = refreshToken;
-	}
-	public long getExpireTime() {
-		return expireTime;
-	}
+
 	public void setExpireTime(long expireTime) {
 		this.expireTime = expireTime;
 	}
 
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
 
+	public void setProfileUrl(String profileUrl) {
+		this.profileUrl = profileUrl;
+	}
+
+	public void setProviderId(String providerId) {
+		this.providerId = providerId;
+	}
+
+	public void setProviderUserId(String providerUserId) {
+		this.providerUserId = providerUserId;
+	}
+
+	public void setRank(int rank) {
+		this.rank = rank;
+	}
+
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
+
+	public void setSecret(String secret) {
+		this.secret = secret;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
 }

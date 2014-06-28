@@ -1,75 +1,19 @@
 package DAO;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.social.security.SocialUser;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 //http://docs.spring.io/spring-social/docs/1.1.x/apidocs/org/springframework/social/security/SocialUser.html
 
 public class UsersDetails extends SocialUser {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4685211753224104969L;
-	private Long id;
-	private String firstName;
-	private String lastName;
-	private Role role;
-	private SocialMediaService socialSignInProvider;
-	private String background;
-	private String purpose;
-
-
-
-
-
-	//constructor
-	public UsersDetails(String username, String password, Collection<? extends GrantedAuthority> authorities) {
-		super(username, password, authorities);
-	}
-
-	//getters
-	public Long getId() {
-		return id;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public Role getRole() {
-		return role;
-	}
-
-	public SocialMediaService getSocialSignInProvider() {
-		return socialSignInProvider;
-	}
-
-	public String getBackground() {
-		return background;
-	}
-
-	public String getPurpose(){
-		return purpose;
-	}
-
-
-
-	public static Builder getBuilder() {
-		return new Builder();
-	}
-
-	//builder to build object EUD
+	// builder to build object EUD
 	public static class Builder {
 
 		private Long id;
@@ -87,6 +31,26 @@ public class UsersDetails extends SocialUser {
 			this.authorities = new HashSet<>();
 		}
 
+		public Builder background(String background) {
+			this.background = background;
+			return this;
+		}
+
+		public UsersDetails build() {
+			UsersDetails user = new UsersDetails(username, password,
+					authorities);
+
+			user.id = id;
+			user.firstName = firstName;
+			user.lastName = lastName;
+			user.role = role;
+			user.socialSignInProvider = socialSignInProvider;
+			user.background = background;
+			user.purpose = purpose;
+
+			return user;
+		}
+
 		public Builder firstName(String firstName) {
 			this.firstName = firstName;
 			return this;
@@ -102,17 +66,6 @@ public class UsersDetails extends SocialUser {
 			return this;
 		}
 
-
-		public Builder background(String background) {
-			this.background = background;
-			return this;
-		}
-
-		public Builder purpose(String purpose){
-			this.purpose=purpose;
-			return this;
-		}
-
 		public Builder password(String password) {
 			if (password == null) {
 				password = "SocialUser";
@@ -122,16 +75,23 @@ public class UsersDetails extends SocialUser {
 			return this;
 		}
 
+		public Builder purpose(String purpose) {
+			this.purpose = purpose;
+			return this;
+		}
+
 		public Builder role(Role role) {
 			this.role = role;
 
-			SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.toString());
+			SimpleGrantedAuthority authority = new SimpleGrantedAuthority(
+					role.toString());
 			this.authorities.add(authority);
 
 			return this;
 		}
 
-		public Builder socialSignInProvider(SocialMediaService socialSignInProvider) {
+		public Builder socialSignInProvider(
+				SocialMediaService socialSignInProvider) {
 			this.socialSignInProvider = socialSignInProvider;
 			return this;
 		}
@@ -140,37 +100,72 @@ public class UsersDetails extends SocialUser {
 			this.username = username;
 			return this;
 		}
-
-		public UsersDetails build() {
-			UsersDetails user = new UsersDetails(username, password, authorities);
-
-			user.id = id;
-			user.firstName = firstName;
-			user.lastName = lastName;
-			user.role = role;
-			user.socialSignInProvider = socialSignInProvider;
-			user.background= background;
-			user.purpose=purpose;
-
-			return user;
-		}
 	}
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4685211753224104969L;
 
-	//returns a string with following values with the object
+	public static Builder getBuilder() {
+		return new Builder();
+	}
+
+	private Long id;
+	private String firstName;
+	private String lastName;
+	private Role role;
+	private SocialMediaService socialSignInProvider;
+
+	private String background;
+
+	private String purpose;
+
+	// constructor
+	public UsersDetails(String username, String password,
+			Collection<? extends GrantedAuthority> authorities) {
+		super(username, password, authorities);
+	}
+
+	public String getBackground() {
+		return background;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	// getters
+	public Long getId() {
+		return id;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public String getPurpose() {
+		return purpose;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public SocialMediaService getSocialSignInProvider() {
+		return socialSignInProvider;
+	}
+
+	// returns a string with following values with the object
 	@Override
-	public String toString() {	
-		return new ToStringBuilder(this)
-		.append("id", id)
-		.append("username", getUsername())
-		.append("firstName", firstName)
-		.append("lastName", lastName)
-		.append("role", role)
-		.append("socialSignInProvider", socialSignInProvider)
-		.append("background",background)
-		.append("purpose", purpose)
-		.toString();
+	public String toString() {
+		return new ToStringBuilder(this).append("id", id)
+				.append("username", getUsername())
+				.append("firstName", firstName).append("lastName", lastName)
+				.append("role", role)
+				.append("socialSignInProvider", socialSignInProvider)
+				.append("background", background).append("purpose", purpose)
+				.toString();
 	}
-
 
 }
