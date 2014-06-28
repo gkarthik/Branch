@@ -1,9 +1,10 @@
 package Config;
 
+import java.util.Properties;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -13,33 +14,27 @@ import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
-import java.util.Properties;
-
-
 @Configuration
 @EnableWebMvc
-
 @ComponentScan(basePackages = {
-		
-		"Controller"
-})
 
-
-public class WebApplicationContext extends WebMvcConfigurerAdapter{
+"Controller" })
+public class WebApplicationContext extends WebMvcConfigurerAdapter {
 
 	private static final String VIEW_RESOLVER_PREFIX = "/WEB-INF/Views/";
 	private static final String VIEW_RESOLVER_SUFFIX = ".jsp";
 
-
-	//changes by vyshakh
-	//@PropertySource("classpath:static/**")
+	// changes by vyshakh
+	// @PropertySource("classpath:static/**")
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("classpath: /static/**").addResourceLocations("/static/");
+		registry.addResourceHandler("classpath: /static/**")
+				.addResourceLocations("/static/");
 	}
 
 	@Override
-	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+	public void configureDefaultServletHandling(
+			DefaultServletHandlerConfigurer configurer) {
 		configurer.enable();
 	}
 
@@ -76,4 +71,3 @@ public class WebApplicationContext extends WebMvcConfigurerAdapter{
 	}
 
 }
-
