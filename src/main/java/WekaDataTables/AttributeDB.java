@@ -1,8 +1,10 @@
 package WekaDataTables;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,25 +13,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
-
-//CREATE TABLE `attribute` (
-//		  `id` int(10) NOT NULL AUTO_INCREMENT,
-//		  `col_index` int(11) NOT NULL,
-//		  `name` varchar(30) DEFAULT NULL,
-//		  `dataset` varchar(50) DEFAULT NULL,
-//		  `reliefF` float DEFAULT NULL,
-//		  `created` date DEFAULT NULL,
-//		  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//		  `feature_id` int(11) DEFAULT NULL,
-//		  PRIMARY KEY (`id`),
-//		  UNIQUE KEY `dataset_index_name` (`col_index`,`name`,`dataset`)
-//		) ENGINE=MyISAM AUTO_INCREMENT=15521 DEFAULT CHARSET=latin1;
-
-//name="unique_id", length = 50, nullable = false, unique = true
 
 @Entity
 @Table(name = "attribute", uniqueConstraints = { @UniqueConstraint(name = "dataset_index_name", columnNames = {
@@ -53,48 +43,28 @@ public class AttributeDB {
 	@Column
 	private float relieff;
 
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "feature_id", insertable = false, updatable = false, nullable = false)
-//	private FeatureDB feature_id;
-	
-	 @ManyToOne(fetch = FetchType.LAZY)
-	 @JoinColumn(name = "attributes")
-	 private FeatureDB feature;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "feature_id",insertable=false,updatable=false)
+	private FeatureDB feature;
 
-//	private Long feature_id;
-//	
-//	public long getFeature_id() {
-//		return feature_id;
-//	}
-//
-//	public void setFeature_id(long feature_id) {
-//		this.feature_id = featuredb.getId();
-//	}
-
-	public FeatureDB getFeature_id() {
+	public FeatureDB getFeature() {
 		return feature;
 	}
 
-	public void setFeature(FeatureDB result) {
-		this.feature = result;
+	public void setFeature(FeatureDB feature) {
+		this.feature = feature;
+		//		if(!feature.getFeature_id().contains(this)){
+		//			feature.getFeature_id().add(this);
+		//		}
 	}
 
-	@Column(name = "created", nullable = false)
-	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-	private DateTime created = null;
 
-	@Column(name = "updated", nullable = false)
-	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-	private DateTime updated;
 
 	public int getCol_index() {
 		return col_index;
 	}
 
-	public DateTime getCreated() {
-		return created;
-	}
 
 	public String getDataset() {
 		return dataset;
@@ -112,7 +82,67 @@ public class AttributeDB {
 		return relieff;
 	}
 
+
+
+
+	public void setCol_index(int col_index) {
+		this.col_index = col_index;
+	}
+
+
+
+	public void setDataset(String dataset) {
+		this.dataset = dataset;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public void setRelieff(float relieff) {
+		this.relieff = relieff;
+	}
+
+	@Basic(optional = false)
+	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	@Temporal(TemporalType.TIMESTAMP)
+	private DateTime created;
+
+	public DateTime getCreated() {
+		return created;
+	}
+
+	public void setCreated(DateTime created) {
+		this.created = created;
+	}
+
 	public DateTime getUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(DateTime updated) {
+		this.updated = updated;
+	}
+
+	@Basic(optional = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "updated", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	private DateTime updated;
+
+	public DateTime getCreationTime() {
+		return created;
+	}
+
+
+
+	public DateTime getModificationTime() {
 		return updated;
 	}
 
@@ -128,32 +158,52 @@ public class AttributeDB {
 		this.updated = DateTime.now();
 	}
 
-	public void setCol_index(int col_index) {
-		this.col_index = col_index;
+
+	public AttributeDB(){
+
 	}
 
-	public void setCreated(DateTime created) {
-		this.created = created;
-	}
-
-	public void setDataset(String dataset) {
-		this.dataset = dataset;
-	}
-
-	public void setId(int id) {
+	public AttributeDB(int id, int col_index, String name, String dataset,
+			float relieff, DateTime created, DateTime updated) {
+		super();
 		this.id = id;
-	}
-
-	public void setName(String name) {
+		this.col_index = col_index;
 		this.name = name;
-	}
-
-	public void setReliefF(float relieff) {
+		this.dataset = dataset;
 		this.relieff = relieff;
-	}
-
-	public void setUpdated(DateTime updated) {
+		this.created = created;
 		this.updated = updated;
 	}
 
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).append("id", id)
+
+				.append("col_Index", this.getCol_index())
+				.append("created", this.getCreated())
+				.append("dataset", this.getDataset())
+				.append("name", this.getName())
+				.append("relieff", this.getRelieff())
+				.append("updated", this.getUpdated())
+				.append("feature_id",this.getFeature().getId()).toString();
+	}
+
+
+
+
 }
+
+//@ManyToOne(fetch = FetchType.LAZY)
+//@JoinColumn(name = "feature_id", insertable = false, updatable = false, nullable = false)
+//private FeatureDB feature_id;
+
+
+//private Long feature_id;
+//
+//public long getFeature_id() {
+//	return feature_id;
+//}
+//
+//public void setFeature_id(long feature_id) {
+//	this.feature_id = featuredb.getId();
+//}
