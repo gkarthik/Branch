@@ -1,0 +1,4 @@
+glob:.classpath
+glob:build/*
+glob:target/*
+glob:bin/*
