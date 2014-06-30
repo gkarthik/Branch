@@ -10,22 +10,22 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-	
+
 
 <div class="page-header">
-		<h1>
-			<spring:message code="label.homepage.title" />
-			<sec:authentication property="principal.firstName" />
-			<sec:authentication property="principal.lastName" />
-		</h1>
-	</div>
-	<div>
-		<p>
-			<spring:message code="text.homepage.greeting" />
-		</p>
-	</div>
-	<div class="oauthDemo">
-		<%
+	<h1>
+		<spring:message code="label.homepage.title" />
+		<sec:authentication property="principal.firstName" />
+		<sec:authentication property="principal.lastName" />
+	</h1>
+</div>
+<div>
+	<p>
+		<spring:message code="text.homepage.greeting" />
+	</p>
+</div>
+<div class="oauthDemo">
+	<%
 			/*
 			 * The GoogleAuthHelper handles all the heavy lifting, and contains all "secrets"
 			 * required for constructing a google login url.
@@ -73,5 +73,5 @@
 
 
 
-	</div>
-	<br />
+</div>
+<br />
