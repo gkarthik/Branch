@@ -1,7 +1,5 @@
 package WekaDataBuilder;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+
 
 
 
@@ -39,12 +38,10 @@ import WekaDataTables.FeatureDB;
 
 public class FeatureBuilder extends FeatureDB {
 
-	public static EntityManagerFactory emf = Persistence
-			.createEntityManagerFactory("DEFAULTJPA");
+	public static EntityManagerFactory emf = Persistence.createEntityManagerFactory("DEFAULTJPA");
 	public static EntityManager em = emf.createEntityManager();
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(FeatureBuilder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FeatureBuilder.class);
 
 	private List<AttributeDB> dataset_attributes;
 
@@ -61,7 +58,7 @@ public class FeatureBuilder extends FeatureDB {
 		int res = 0;
 		em.getTransaction().begin();
 		String hql = "Insert into FeatureDB (unique_id,short_name,long_name,description)"
-				+ "select geneid,symbol,full_name_from_nomenclature_authority,description   from Homosapiens_Gene_Info";
+				+ "select geneid,symbol,full_name_from_nomenclature_authority,description from Homosapiens_Gene_Info";
 		Query q = em.createQuery(hql);
 		res = q.executeUpdate();
 
@@ -82,27 +79,11 @@ public class FeatureBuilder extends FeatureDB {
 
 		FeatureBuilder fb = new FeatureBuilder();
 
-		String query = "select f.id,"
-				+ "f.unique_id,"
-				+ "f.short_name,"
-				+ "f.long_name,"
-				+ "f.description,"
-				+ "f.created,"
-				+ "f.updated,"
-				+ "a.id,"
-				+ "a.col_index,"
-				+ "a.created,"
-				+ "a.dataset,"
-				+ "a.feature,"
-				+ "a.name,"
-				+ "a.relieff,"
-				+ "a.updated"								//a.feature_id,
-				+ " from FeatureDB f, AttributeDB a " + "where a.dataset = '"
-				+ dataset + "' and f.id = a.feature.id";
-		
-		System.out.println(query);
-			
-				
+		AttributeDB adb =new AttributeDB();
+
+		String query = "select f.id,f.unique_id,f.short_name,f.long_name,f.description,f.created,f.updated,"
+				+ "a.id,a.col_index,a.name,a.dataset,a.relieff,a.created,a.updated,a.feature"//a.feature_id,
+				+ " from FeatureDB f, AttributeDB a " + "where a.dataset = '"+ dataset + "'and f.id = feature_id";
 
 		try {
 
@@ -118,29 +99,13 @@ public class FeatureBuilder extends FeatureDB {
 
 				Object[] result = (Object[]) it.next();
 
-				FeatureDB featureObject = features.get(result[1]);// check for
-				// f.uniqueid
+				FeatureDB featureObject = features.get(result[1]);// check for f.uniqueid
 
 				if (featureObject == null) {
 
-					featureObject = new FeatureDB();
-					featureObject.setId((Long) result[0]);
-					featureObject.setUnique_id((String) result[1]);
-					featureObject.setShort_name((String) result[2]);
-					featureObject.setLong_name((String) result[3]);
-					featureObject.setDescription((String) result[4]);
-					featureObject.setCreated((DateTime) result[5]);
-					featureObject.setUpdated((DateTime) result[6]);
-
-					System.out.println("fea" + result[0]);
-					System.out.println("fea" + result[5]);
-					System.out.println("fea" + (String) result[4]);
-					// System.out.println((int)result[3]);
-
-					System.out.println("fea" + (String) result[4]);
-					// System.out.println((float)result[5]);
-					System.out.println("fea" + result[6]);
-					//
+					featureObject = new FeatureDB((Long) result[0],(String) result[1],
+							(String) result[2],(String) result[3],(String) result[4], 
+							(DateTime) result[5], (DateTime) result[6]);
 					featureCounter++;
 
 				}
@@ -150,23 +115,15 @@ public class FeatureBuilder extends FeatureDB {
 
 					atts = new ArrayList<AttributeDB>();
 				}
-				AttributeDB a = new AttributeDB();
-				a.setId((int) result[7]);
-				a.setCol_index((int) result[8]);
-				a.setCreated((DateTime) result[9]);
-				a.setDataset((String) result[10]);
-				FeatureDB fObject =new FeatureDB();
-				fObject = getByUniqueId((String) result[1]);
-			//	a.setFeature_id((Long)result[11]);
-				//a.setFeature_id();(featureObject);
-				a.setFeature(fObject);
-				
-				a.setName((String) result[12]);
-				a.setReliefF((float) result[13]);
-				a.setUpdated((DateTime) result[14]);
+				AttributeDB attributeObject = new AttributeDB((int) result[7],(int) result[8],
+						(String) result[9],(String) result[10],
+						(float) result[11],(DateTime) result[12],(DateTime) result[13]);
+
+				attributeObject.setFeature((FeatureDB)result[14]);
+
 				attributeCounter++;
-				if (!atts.contains(a)) {
-					atts.add(a);
+				if (!atts.contains(attributeObject)) {
+					atts.add(attributeObject);
 					fb.setDataset_attributes(atts);
 				}
 				if (load_annotations_very_slowly) {
@@ -178,21 +135,13 @@ public class FeatureBuilder extends FeatureDB {
 
 				features.put(featureObject.getUnique_id(), featureObject);
 
-				System.out.println("att" + (int) result[8]);
-				System.out.println("att" + result[9]);
-				System.out.println("att" + (String) result[10]);
-				System.out.println("unique" + a.getFeature_id());
-				
-
-				System.out.println("FeatureID" +a.getFeature_id().getId());
-				System.out.println("FeatureID" + result[11]);
-				System.out.println("att" + (String) result[12]);
-				System.out.println("att" + (float) result[13]);
-				System.out.println("att" + result[14]);
+				LOGGER.debug("FeatureObj: " +featureObject.toString());
+				LOGGER.debug("AttributeObj: "+ attributeObject.toString());
 
 			}
 			LOGGER.debug("Feature Counter =" + featureCounter);
 			LOGGER.debug("Attribute Counter =" + attributeCounter);
+
 			em.getTransaction().commit();
 			em.close();
 		} catch (Exception e) {
@@ -209,8 +158,50 @@ public class FeatureBuilder extends FeatureDB {
 
 		String query = "select f.id,f.unique_id,f.short_name,"
 				+ "f.long_name,f.description,f.created,f.updated"
-				+ " from FeatureDB f where f.unique_id ='"
-				+ unique_id+"'";
+				+ " from FeatureDB f where f.unique_id ='"+ unique_id+"'";
+
+		try {
+			em.getTransaction().begin();
+			Query q = em.createQuery(query);
+
+			List<?> list = q.getResultList();
+
+			Iterator<?> it = list.iterator();
+			int featureCounter = 0;
+
+			while (it.hasNext()) {
+
+				Object[] result = (Object[]) it.next();
+
+				featureObject = new FeatureDB((Long) result[0],(String) result[1],
+						(String) result[2],(String) result[3],(String) result[4], 
+						(DateTime) result[5], (DateTime) result[6]);
+				featureCounter++;
+			}
+
+			LOGGER.debug("FeatureCounter for getbyuniqueId:"+featureCounter);
+
+			LOGGER.debug("FeatureObject :"+featureObject.toString());
+
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return featureObject;
+
+	}
+
+	//From FeatureTable: public static Feature getByDbId(int id)
+	public static  FeatureDB getByDbId(long id){
+
+
+		FeatureDB featureObject =null;
+
+		String query = "select f.id,f.unique_id,f.short_name,"
+				+ "f.long_name,f.description,f.created,f.updated"
+				+ " from FeatureDB f where f.id ="
+				+ (long)id;
 
 		try {
 			em.getTransaction().begin();
@@ -237,54 +228,7 @@ public class FeatureBuilder extends FeatureDB {
 			}
 
 			LOGGER.debug("FeatureCounter for getbyuniqueId:"+featureCounter);
-
-
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return featureObject;
-
-	}
-
-	//From FeatureTable: public static Feature getByDbId(int id)
-	public static FeatureDB getByDbId(long id){
-
-
-		FeatureDB featureObject =null;
-
-		String query = "select f.id,f.unique_id,f.short_name,"
-				+ "f.long_name,f.description,f.created,f.updated"
-				+ " from FeatureDB f where f.id ="
-				+ (long)id;
-
-		try {
-			em.getTransaction().begin();
-			Query q = em.createQuery(query);
-
-			List<?> list = q.getResultList();
-
-			Iterator<?> it = list.iterator();
-			int featureCounter = 0;
-
-			while (it.hasNext()) {
-
-				Object[] result = (Object[]) it.next();
-
-				featureObject = new FeatureDB();
-				featureObject.setId((Long) result[0]);
-				//			featureObject.setUnique_id((String) result[1]);
-				featureObject.setShort_name((String) result[2]);
-				featureObject.setLong_name((String) result[3]);
-				featureObject.setDescription((String) result[4]);
-				featureObject.setCreated((DateTime) result[5]);
-				featureObject.setUpdated((DateTime) result[6]);
-				featureCounter++;
-			}
-
-			LOGGER.debug("FeatureCounter for getbyuniqueId:"+featureCounter);
-
+			LOGGER.debug("FeatureObject :"+featureObject.toString());
 
 
 		} catch (Exception e) {
@@ -302,9 +246,20 @@ public class FeatureBuilder extends FeatureDB {
 	public static void main(String args[]) {
 
 		//loadFeatureTable();	
-		//getByDataset("newset", false);
-		FeatureDB a = getByUniqueId("17");
-		System.out.println(a.getAttributes());
-		//getByDbId(1);
+
+		FeatureBuilder a =new FeatureBuilder();
+		FeatureBuilder.getByUniqueId("17");
+		//FeatureBuilder.getByDbId(1);
+
+		//a.getByDataset("dream_breast_cancer", false);
 	}
 }
+
+
+//attributeObject.setId((int) result[7]);
+//attributeObject.setCol_index((int) result[8]);
+//attributeObject.setCreated((DateTime) result[9]);
+//attributeObject.setDataset((String) result[10]);
+//attributeObject.setName((String) result[11]);
+//attributeObject.setRelieff((float) result[12]);
+//attributeObject.setUpdated((DateTime) result[13]);
