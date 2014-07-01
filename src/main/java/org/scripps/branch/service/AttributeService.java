@@ -96,20 +96,14 @@ public class AttributeService extends Attribute {
 		return atts;
 	}
 	
-	public static List<Attribute> getByFeatureUniqueId(String Unique_Id) {
-
+	public static List<Attribute> getByFeatureUniqueId(String Unique_Id, String dataset) {
 		List<Attribute> atts = new ArrayList<Attribute>();
-
 		int counter = 0;
 		Attribute attributeObject = new Attribute();
 		try {
-
-			String query = "select A from Attribute A, Feature F where A.feature=F.id and F.unique_id='" + Unique_Id+"'";
-
+			String query = "select A from Attribute A, Feature F where A.feature=F.id and F.unique_id='" + Unique_Id+"' and A.dataset='"+dataset+"'";
 			em.getTransaction().begin();
-
 			Query q = em.createQuery(query);
-
 			List<?> list = q.getResultList();
 			Iterator<?> it = list.iterator();
 
@@ -246,10 +240,9 @@ public class AttributeService extends Attribute {
 	}
 
 	public static void main(String args[]) throws Exception {
-
 		AttributeService AB = new AttributeService();
-		AttributeService.getByFeatureId("2751");
-		//AttributeService.getByFeatureUniqueId("metabric_with_clinical_10");
+		//AttributeService.getByFeatureId("2751");
+		AttributeService.getByFeatureUniqueId("metabric_with_clinical_10","metabric_with_clinical");
 
 	}
 
