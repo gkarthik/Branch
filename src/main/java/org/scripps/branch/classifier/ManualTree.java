@@ -66,6 +66,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
 import org.scripps.branch.entity.Weka;
+import org.scripps.branch.viz.JsonTree;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
