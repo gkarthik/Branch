@@ -18,6 +18,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import org.postgresql.util.PGobject;
@@ -34,8 +35,8 @@ public class Tree {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", insertable = false, updatable = false)
 	private User user;
-	
-	
+
+
 	// @OneToMany(cascade={CascadeType.ALL}, mappedBy = "treedb")
 	//
 	// private List<Tree_FeatureDB> treefeatures;
@@ -43,8 +44,8 @@ public class Tree {
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "tree_feature", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "feature_id") })
 	//private Collection<Feature> featuredb;
-	 private List<Feature> features;
-	
+	private List<Feature> features;
+
 	@Column
 	private String comment;
 
@@ -146,6 +147,19 @@ public class Tree {
 
 	public void setFeatures(List<Feature> features) {
 		this.features = features;
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).append("id", id)
+
+				.append("user_id", this.getUser())
+				.append("feature_id", this.getFeatures())
+				.append("comment", this.getComment())
+				.append("user_saved", this.isUser_saved())
+				.append("prev_tree_id", this.getPrev_tree_id())
+				.append("isPrivate_tree", this.isPrivate_tree())
+				.append("json_tree", this.getJson_tree()).toString();
 	}
 
 }
