@@ -10,7 +10,9 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
 @Configuration
-@ComponentScan(basePackages = { "org.scripps.branch.entity", "org.scripps.branch.service", "org.scripps.branch.repository", "org.scripps.branch.utilities" })
+@ComponentScan(basePackages = { "org.scripps.branch.entity",
+		"org.scripps.branch.service", "org.scripps.branch.repository",
+		"org.scripps.branch.utilities" })
 @Import({ WebApplicationContext.class, PersistenceContext.class,
 		SecurityContext.class, SocialContext.class })
 @PropertySource("classpath:application.properties")
