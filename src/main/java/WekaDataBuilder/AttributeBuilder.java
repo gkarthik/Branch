@@ -85,7 +85,6 @@ public class AttributeBuilder extends AttributeDB {
 			WekaCutomizer wekaObj = new WekaCutomizer();
 			wekaObj.buildWeka(new FileInputStream(weka_Data), null, dataset_Name);
 			Instances data = wekaObj.getTrain();
-			LOGGER.debug("Instances: "+data.numInstances());
 			FeatureDB featureObj=null;
 			int flag=0;
 
@@ -97,13 +96,14 @@ public class AttributeBuilder extends AttributeDB {
 				if(att.index()!=data.classIndex()){
 					Long feat_id=(long) -1;
 					if(unique_id!=null){
-						FeatureDB feat = FeatureBuilder.getByUniqueId(unique_id);
+						FeatureDB feat =FeatureBuilder.getByUniqueId(unique_id);
 						if(feat==null){
-							AttributeDB attrObj = AttributeBuilder.getByAttNameDataset(name,dataset_Name);
+							AttributeDB attrObj =AttributeBuilder.getByAttNameDataset(name,dataset_Name);
 							if(attrObj!=null){
-								feat=FeatureBuilder.getByDbId(attrObj.getFeature().getId());
+								feat=FeatureBuilder.getByDbId(attrObj.getFeaturedb().getId());
 							}
 						}
+
 						feat_id=feat.getId();
 					}
 					else{
@@ -111,30 +111,28 @@ public class AttributeBuilder extends AttributeDB {
 						em.getTransaction().begin();
 						LOGGER.debug("No feature in mapping table for "+name+" adding generic");
 						featureObj=new FeatureBuilder();
-						featureObj.setUnique_id(dataset_Name+"_"+att.index());
+						featureObj.setUnique_id(dataset_Name+""+att.index());
 						featureObj.setShort_name(att.name());
 						featureObj.setLong_name(att.name());
 						featureObj.setDescription("");
 
-						//						if(em.contains(featureObj)){
-						//
-						//							em.persist(featureObj);
-						//							flag=1;
-						//						}
-						//						else{
-						//							em.merge(featureObj);
-						//							flag=2;
-						//						}
-						em.persist(featureObj);
+						if(em.contains(featureObj)){
+
+							em.persist(featureObj);
+							flag=1;
+						}
+						else{
+							em.merge(featureObj);
+							flag=2;
+						}
 						em.getTransaction().commit();
 						LOGGER.debug("Entity Flag Value = " +flag);
 					}
-					//error chances
-					if(!em.contains(featureObj)){
+					if(flag==0){
 						AttributeDB aObj =  new AttributeDB();
 						aObj.setCol_index(col);
 						aObj.setDataset(dataset_Name);
-						aObj.setFeature(featureObj);
+						aObj.setFeature_id(featureObj);
 					}
 
 				}
@@ -159,8 +157,8 @@ public class AttributeBuilder extends AttributeDB {
 
 		AttributeDB attributeObject=new AttributeDB();
 		try {
-			String query = "select id,col_index,name, dataset, relieff,created,updated ,feature "
-					+ "from AttributeDB where name='"+att_name+"' and dataset = '"+dataset+"'";
+			String query = "select col_index,created, dataset,name,relieff,updated "
+					+ "from AttributeDB a where name='"+att_name+"' and dataset = '"+dataset+"'";
 
 
 			em.getTransaction().begin();
@@ -172,34 +170,25 @@ public class AttributeBuilder extends AttributeDB {
 
 			while (it.hasNext()) {
 
+				attributeObject = new AttributeDB();
+
 				Object[] result = (Object[]) it.next();
+
+				attributeObject.setCol_index((int) result[0]);
+				attributeObject.setCreated((DateTime) result[1]);
+				attributeObject.setDataset((String) result[2]);
+				//attributeObject.setFeaturedb(attributeObject);//((long) result[3]);
 				
-				//LOGGER.debug("RES: " +(String) result[3]);
-				
-				attributeObject = new AttributeDB((int) result[0],(int) result[1],
-						(String) result[2],(String) result[3],
-						(float) result[4],(DateTime) result[5],(DateTime) result[6]);
+				attributeObject.setName((String) result[4]);
+				attributeObject.setReliefF((float) result[5]);
+				attributeObject.setUpdated((DateTime) result[6]);
 
 
-
-				//				attributeObject.setCol_index((int) result[0]);
-				//				attributeObject.setCreated((DateTime) result[1]);
-				//				attributeObject.setDataset((String) result[2]);
-				//				FeatureDB fObj =new FeatureDB();
-				//				fObj.setId((Long)result[7]);
-				attributeObject.setFeature((FeatureDB)result[7]);//((long) result[3]);
-				//				attributeObject.setName((String) result[4]);
-				//				attributeObject.setRelieff((float) result[5]);
-				//				attributeObject.setUpdated((DateTime) result[6]);
-
-
-				//				System.out.println(counter);
+				System.out.println(counter);
 				counter++;
 				LOGGER.debug("Counter =" + counter);
-
-				LOGGER.debug("AttributeObject"+attributeObject.toString());
-
-
+				
+				
 
 			}
 
@@ -207,21 +196,21 @@ public class AttributeBuilder extends AttributeDB {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		
 		return attributeObject;
 	}
 
 
 
 
-	//
+//
 	public static List<AttributeDB> getByFeatureDbId(String db_Id) {
 
 		List<AttributeDB> atts = new ArrayList<AttributeDB>();
 
 		int counter = 0;
 		try {
-			String query = "select id,col_index,name, dataset, relieff,created,updated ,feature from AttributeDB where feature_id="
+			String query = "select col_index,created, dataset,feature_id,name,relieff,updated from AttributeDB where feature_id="
 					+ db_Id;
 
 			em.getTransaction().begin();
@@ -233,28 +222,22 @@ public class AttributeBuilder extends AttributeDB {
 
 			while (it.hasNext()) {
 
-//				/AttributeDB attributeObject = new AttributeDB();
+				AttributeDB attributeObject = new AttributeDB();
 
 				Object[] result = (Object[]) it.next();
-				AttributeDB attributeObject = new AttributeDB((int) result[0],(int) result[1],
-						(String) result[2],(String) result[3],
-						(float) result[4],(DateTime) result[5],(DateTime) result[6]);
 
-//				attributeObject.setCol_index((int) result[0]);
-//				attributeObject.setCreated((DateTime) result[1]);
-//				attributeObject.setDataset((String) result[2]);
-				attributeObject.setFeature((FeatureDB)result[7]);
-
-				//		attributeObject.setFeature_id((int) result[3]);
-//				attributeObject.setName((String) result[4]);
-//				attributeObject.setRelieff((float) result[5]);
-//				attributeObject.setUpdated((DateTime) result[6]);
+				attributeObject.setCol_index((int) result[0]);
+				attributeObject.setCreated((DateTime) result[1]);
+				attributeObject.setDataset((String) result[2]);
+		//		attributeObject.setFeature_id((int) result[3]);
+				attributeObject.setName((String) result[4]);
+				attributeObject.setReliefF((float) result[5]);
+				attributeObject.setUpdated((DateTime) result[6]);
 
 				atts.add(attributeObject);
-//				System.out.println(counter);
+				System.out.println(counter);
 				counter++;
 				LOGGER.debug("Counter =" + counter);
-				LOGGER.debug("Attribute Object"+attributeObject.toString());
 
 			}
 
@@ -266,14 +249,13 @@ public class AttributeBuilder extends AttributeDB {
 		return atts;
 	}
 
-	public static void main(String args[]) throws Exception {
+	public static void main(String args[]) {
 
 		AttributeBuilder AB = new AttributeBuilder();
-		//AB.load("newdataset","/home/bob/workspace/cure/WebContent/WEB-INF/data/Metabric_clinical_expression_DSS_sample_filtered.arff",
-		//		 /"/home/bob/workspace/BranchBio/src/main/resources/WekaFiles/Oslo_mapping.txt");
-		//AttributeBuilder.getByFeatureDbId("2751");
-		//AttributeBuilder.getByAttNameDataset("83482", "dream_breast_cancer");
-
+		// AB.load(null, null,
+		// "/home/bob/workspace/BranchBio/src/main/resources/WekaFiles/Oslo_mapping.txt");
+		//AttributeBuilder.getByFeatureDbId("12");
+		AttributeBuilder.getByAttNameDataset("Vyshakh", "newdataset");
 	}
 
 }
