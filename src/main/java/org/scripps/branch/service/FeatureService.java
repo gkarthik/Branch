@@ -18,7 +18,11 @@ import javax.persistence.Query;
 
 
 
-//import WekaDataBuilder.AttributeBuilder;
+
+
+
+
+//import WekaDataBuilder.AttributeService;
 //
 //import org.hibernate.validator.internal.util.privilegedactions.GetAnnotationParameter;
 import org.joda.time.DateTime;
@@ -36,6 +40,11 @@ import org.scripps.branch.entity.Feature;
 //import org.scripps.combo.model.TextAnnotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class FeatureService extends Feature {
 
@@ -56,53 +65,20 @@ public class FeatureService extends Feature {
 		this.dataset_attributes = dataset_attributes;
 	}
 
-	// load feature table with data from Homosapiens_gene.info
-	public static void loadFeatureTable() {
-		int res = 0;
-		em.getTransaction().begin();
-		String hql = "Insert into FeatureDB (unique_id,short_name,long_name,description)"
-				+ "select geneid,symbol,full_name_from_nomenclature_authority,description   from Homosapiens_Gene_Info";
-		Query q = em.createQuery(hql);
-		res = q.executeUpdate();
-
-		System.out.println("Rows affected: " + res);
-
-		em.getTransaction().commit();
-		em.close();
-
-	}
-
 	// From Feature Table: public static Map<String, Feature>
 	// getByDataset(String dataset, boolean load_annotations_very_slowly){
-	public static Map<String, FeatureService> getByDataset(String dataset,
+	public static Map<String, Feature> getByDataset(String dataset,
 			boolean load_annotations_very_slowly) {
 
-		int counter = 0;
-		Map<String, FeatureService> features = new HashMap<String, FeatureService>();
+		Map<String, Feature> features = new HashMap<String, Feature>();
 
 		FeatureService fb = new FeatureService();
 
-		String query = "select f.id,"
-				+ "f.unique_id,"
-				+ "f.short_name,"
-				+ "f.long_name,"
-				+ "f.description,"
-				+ "f.created,"
-				+ "f.updated,"
-				+ "a.id,"
-				+ "a.col_index,"
-				+ "a.created,"
-				+ "a.dataset,"
-				+ "a.feature,"
-				+ "a.name,"
-				+ "a.relieff,"
-				+ "a.updated"								//a.feature_id,
-				+ " from FeatureDB f, AttributeDB a " + "where a.dataset = '"
-				+ dataset + "' and f.id = a.feature.id";
-		
-		System.out.println(query);
-			
-				
+		String query = "select f.id,f.unique_id,f.short_name,f.long_name,f.description,f.created,f.updated,"
+				+ "a.id,a.col_index,a.name,a.dataset,a.relieff,a.created,a.updated,a.feature"
+				+ " from Feature f, Attribute a "
+				+ "where a.dataset = '"
+				+ dataset + "'and f.id = feature_id";
 
 		try {
 
@@ -110,7 +86,7 @@ public class FeatureService extends Feature {
 			Query q = em.createQuery(query);
 
 			List<?> list = q.getResultList();
-
+			LOGGER.debug("Feature Counter =");
 			Iterator<?> it = list.iterator();
 			int featureCounter = 0, attributeCounter = 0;
 
@@ -118,55 +94,36 @@ public class FeatureService extends Feature {
 
 				Object[] result = (Object[]) it.next();
 
-				FeatureService featureObject = features.get(result[1]);// check for
-				// f.uniqueid
+				Feature featureObject = features.get(result[1]);// check for
+																	// f.uniqueid
 
 				if (featureObject == null) {
 
-					featureObject = new FeatureService();
-					featureObject.setId((Long) result[0]);
-					featureObject.setUnique_id((String) result[1]);
-					featureObject.setShort_name((String) result[2]);
-					featureObject.setLong_name((String) result[3]);
-					featureObject.setDescription((String) result[4]);
-					featureObject.setCreated((DateTime) result[5]);
-					featureObject.setUpdated((DateTime) result[6]);
-
-					System.out.println("fea" + result[0]);
-					System.out.println("fea" + result[5]);
-					System.out.println("fea" + (String) result[4]);
-					// System.out.println((int)result[3]);
-
-					System.out.println("fea" + (String) result[4]);
-					// System.out.println((float)result[5]);
-					System.out.println("fea" + result[6]);
-					//
+					featureObject = new Feature((Long) result[0],
+							(String) result[1], (String) result[2],
+							(String) result[3], (String) result[4],
+							(DateTime) result[5], (DateTime) result[6]);
 					featureCounter++;
 
 				}
+
+				LOGGER.debug("Feature Counter : " + featureCounter);
 
 				List<Attribute> atts = fb.getDataset_attributes();
 				if (atts == null) {
 
 					atts = new ArrayList<Attribute>();
 				}
-				Attribute a = new Attribute();
-				a.setId((int) result[7]);
-				a.setCol_index((int) result[8]);
-				a.setCreated((DateTime) result[9]);
-				a.setDataset((String) result[10]);
-				FeatureService fObject =new FeatureService();
-				fObject = getByUniqueId((String) result[1]);
-			//	a.setFeature_id((Long)result[11]);
-				//a.setFeature_id();(featureObject);
-				a.setFeature(fObject);
-				
-				a.setName((String) result[12]);
-				a.setReliefF((float) result[13]);
-				a.setUpdated((DateTime) result[14]);
+				Attribute attributeObject = new Attribute((int) result[7],
+						(int) result[8], (String) result[9],
+						(String) result[10], (float) result[11],
+						(DateTime) result[12], (DateTime) result[13]);
+
+				attributeObject.setFeature((Feature) result[14]);
+
 				attributeCounter++;
-				if (!atts.contains(a)) {
-					atts.add(a);
+				if (!atts.contains(attributeObject)) {
+					atts.add(attributeObject);
 					fb.setDataset_attributes(atts);
 				}
 				if (load_annotations_very_slowly) {
@@ -178,21 +135,13 @@ public class FeatureService extends Feature {
 
 				features.put(featureObject.getUnique_id(), featureObject);
 
-				System.out.println("att" + (int) result[8]);
-				System.out.println("att" + result[9]);
-				System.out.println("att" + (String) result[10]);
-				System.out.println("unique" + a.getFeature_id());
-				
-
-				System.out.println("FeatureID" +a.getFeature_id().getId());
-				System.out.println("FeatureID" + result[11]);
-				System.out.println("att" + (String) result[12]);
-				System.out.println("att" + (float) result[13]);
-				System.out.println("att" + result[14]);
+				LOGGER.debug("FeatureObj: " + featureObject.toString());
+				LOGGER.debug("AttributeObj: " + attributeObject.toString());
 
 			}
 			LOGGER.debug("Feature Counter =" + featureCounter);
 			LOGGER.debug("Attribute Counter =" + attributeCounter);
+
 			em.getTransaction().commit();
 			em.close();
 		} catch (Exception e) {
@@ -202,15 +151,14 @@ public class FeatureService extends Feature {
 		return features;
 	}
 
-	//From FeatureTable: public static Feature getByUniqueId(String unique_id)
-	public static FeatureService getByUniqueId(String unique_id){
+	// From FeatureTable: public static Feature getByDbId(int id)
+	public static Feature getByDbId(long id) {
 
-		FeatureService featureObject =null;
+		Feature featureObject = null;
 
 		String query = "select f.id,f.unique_id,f.short_name,"
 				+ "f.long_name,f.description,f.created,f.updated"
-				+ " from FeatureDB f where f.unique_id ='"
-				+ unique_id+"'";
+				+ " from Feature f where f.id =" + id;
 
 		try {
 			em.getTransaction().begin();
@@ -225,20 +173,16 @@ public class FeatureService extends Feature {
 
 				Object[] result = (Object[]) it.next();
 
-				featureObject = new FeatureService();
-				featureObject.setId((Long) result[0]);
-				featureObject.setUnique_id((String) result[1]);
-				featureObject.setShort_name((String) result[2]);
-				featureObject.setLong_name((String) result[3]);
-				featureObject.setDescription((String) result[4]);
-				featureObject.setCreated((DateTime) result[5]);
-				featureObject.setUpdated((DateTime) result[6]);
+				featureObject = new Feature();
+				featureObject = new Feature((Long) result[0],
+						(String) result[1], (String) result[2],
+						(String) result[3], (String) result[4],
+						(DateTime) result[5], (DateTime) result[6]);
 				featureCounter++;
 			}
 
-			LOGGER.debug("FeatureCounter for getbyuniqueId:"+featureCounter);
-
-
+			LOGGER.debug("FeatureCounter for getbyuniqueId:" + featureCounter);
+			LOGGER.debug("FeatureObject :" + featureObject.toString());
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -248,16 +192,14 @@ public class FeatureService extends Feature {
 
 	}
 
-	//From FeatureTable: public static Feature getByDbId(int id)
-	public static FeatureService getByDbId(long id){
+	// From FeatureTable: public static Feature getByUniqueId(String unique_id)
+	public static Feature getByUniqueId(String unique_id) {
 
-
-		FeatureService featureObject =null;
+		Feature featureObject = null;
 
 		String query = "select f.id,f.unique_id,f.short_name,"
 				+ "f.long_name,f.description,f.created,f.updated"
-				+ " from FeatureDB f where f.id ="
-				+ (long)id;
+				+ " from Feature f where f.unique_id ='" + unique_id + "'";
 
 		try {
 			em.getTransaction().begin();
@@ -272,21 +214,15 @@ public class FeatureService extends Feature {
 
 				Object[] result = (Object[]) it.next();
 
-				featureObject = new FeatureService();
-				featureObject.setId((Long) result[0]);
-				//			featureObject.setUnique_id((String) result[1]);
-				featureObject.setShort_name((String) result[2]);
-				featureObject.setLong_name((String) result[3]);
-				featureObject.setDescription((String) result[4]);
-				featureObject.setCreated((DateTime) result[5]);
-				featureObject.setUpdated((DateTime) result[6]);
+				featureObject = new Feature((Long) result[0],
+						(String) result[1], (String) result[2],
+						(String) result[3], (String) result[4],
+						(DateTime) result[5], (DateTime) result[6]);
 				featureCounter++;
 			}
 
-			LOGGER.debug("FeatureCounter for getbyuniqueId:"+featureCounter);
-
-
-
+			LOGGER.debug("FeatureCounter for getbyuniqueId:" + featureCounter);
+			LOGGER.debug("FeatureObject :" + featureObject.toString());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -295,16 +231,90 @@ public class FeatureService extends Feature {
 
 	}
 
-	//From FeatureTable:public int insert() throws SQLException
+	public static ObjectNode getMetaBricClinicalFeatures(ObjectMapper mapper) {
 
+		ObjectNode featureObject = mapper.createObjectNode();
+		String query = "select f.id,f.unique_id,f.short_name,"
+				+ "f.long_name,f.description"
+				+ " from Feature f, Attribute a "
+				+ "where a.dataset='metabric_with_clinical' and "
+				+ "f.id = feature_id and " + "f.unique_id like 'metabric%'";
 
+		try {
+
+			em.getTransaction().begin();
+			Query q = em.createQuery(query);
+			List<?> list = q.getResultList();
+			Iterator<?> it = list.iterator();
+			int featureCounter = 0;
+			ArrayNode featureArrayNode = mapper.createArrayNode();
+
+			while (it.hasNext()) {
+
+				Object[] result = (Object[]) it.next();
+
+				ObjectNode fObj = mapper.createObjectNode();
+
+				fObj.put("id", (long) result[0]);
+				fObj.put("unique_id", (String) result[1]);
+				fObj.put("short_name", (String) result[2]);
+				fObj.put("long_name", (String) result[3]);
+				fObj.put("description", (String) result[4]);
+				featureArrayNode.add(fObj);
+
+				featureCounter++;
+			}
+
+			featureObject.put("features", featureArrayNode);
+			em.getTransaction().commit();
+			em.close();
+			LOGGER.debug("FeatureCounter for getMetaBricClinicalFeatures :"
+					+ featureCounter);
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return featureObject;
+	}
+
+	// load feature table with data from Homosapiens_gene.info
+	public static void loadFeatureTable() {
+		int res = 0;
+		em.getTransaction().begin();
+		String hql = "Insert into Feature (unique_id,short_name,long_name,description)"
+				+ "select geneid,symbol,full_name_from_nomenclature_authority,description from Homosapiens_Gene_Info";
+		Query q = em.createQuery(hql);
+		res = q.executeUpdate();
+
+		System.out.println("Rows affected: " + res);
+
+		em.getTransaction().commit();
+		em.close();
+
+	}
 
 	public static void main(String args[]) {
 
-		//loadFeatureTable();	
-		//getByDataset("newset", false);
-		FeatureService a = getByUniqueId("17");
-		System.out.println(a.getAttributes());
-		//getByDbId(1);
+		// loadFeatureTable();
+		// / FeatureService a =new FeatureService();
+		// FeatureService.getByUniqueId("17");
+		// / FeatureService.getByDbId(1);
+		// FeatureService.getByDataset("dream_breast_cancer", false);
+
+		 ObjectMapper mapper = new ObjectMapper();
+		 ObjectNode features =
+		 FeatureService.getMetaBricClinicalFeatures(mapper);
+		 String json_features;
+		 try {
+		 json_features = mapper.writeValueAsString(features);
+		 System.out.println(json_features);
+		 } catch (JsonProcessingException e) {
+		 // TODO Auto-generated catch block
+		 e.printStackTrace();
+		 }
+		
+
 	}
 }

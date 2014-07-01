@@ -1,6 +1,8 @@
-package DAO;
+package org.scripps.branch.service;
 
 import org.scripps.branch.entity.User;
+import org.scripps.branch.entity.UsersDetails;
+import org.scripps.branch.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

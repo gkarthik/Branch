@@ -1,20 +1,25 @@
 package org.scripps.branch.entity;
 
-import java.util.Collection;
 import java.util.List;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 //DROP TABLE IF EXISTS `feature`;
 ///*!40101 SET @saved_cs_client     = @@character_set_client */;
 ///*!40101 SET character_set_client = utf8 */;
@@ -38,12 +43,8 @@ public class Feature {
 	@Column(name = "id")
 	private long id;
 
-//	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "feature_id",fetch = FetchType.LAZY)
-//	//@JoinColumn(name="feature_id")
-//	private Collection<AttributeDB> attributes;
-	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "attribute")
-	private Collection<Attribute> attributes;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "feature")
+	private List<Attribute> feature_id;
 
 	@ManyToMany(mappedBy = "featuredb")
 	private List<Tree> treedb;
@@ -60,20 +61,56 @@ public class Feature {
 	@Column(name = "description")
 	private String description;
 
-	// @PrePersist
-	// public void prePersist() {
-	// Date now = DateTime.now();
-	// this.created = now;
-	// this.updated = now;
-	// }
-	//
-	// @PreUpdate
-	// public void preUpdate() {
-	// this.updated = DateTime.now();
-	// }
+	@Basic(optional = false)
+	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	@Temporal(TemporalType.TIMESTAMP)
+	private DateTime created;
+
+	@Basic(optional = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "updated", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	private DateTime updated;
+
+	public Feature() {
+
+	}
+
+	public Feature(long id, String unique_id, String short_name,
+			String long_name, String description, DateTime created,
+			DateTime updated) {
+		super();
+		this.id = id;
+		this.unique_id = unique_id;
+		this.short_name = short_name;
+		this.long_name = long_name;
+		this.description = description;
+		this.created = created;
+		this.updated = updated;
+	}
+
+	public void addAttribute(Attribute attribute) {
+		this.feature_id.add(attribute);
+		if (attribute.getFeature() != this) {
+			attribute.setFeature(this);
+		}
+	}
+
+	public DateTime getCreated() {
+		return created;
+	}
+
+	public DateTime getCreationTime() {
+		return created;
+	}
 
 	public String getDescription() {
 		return description;
+	}
+
+	public List<Attribute> getFeature_id() {
+		return feature_id;
 	}
 
 	public Long getId() {
@@ -84,6 +121,10 @@ public class Feature {
 		return long_name;
 	}
 
+	public DateTime getModificationTime() {
+		return updated;
+	}
+
 	public String getShort_name() {
 		return short_name;
 	}
@@ -92,8 +133,32 @@ public class Feature {
 		return unique_id;
 	}
 
+	public DateTime getUpdated() {
+		return updated;
+	}
+
+	@PrePersist
+	public void prePersist() {
+		DateTime now = DateTime.now();
+		this.created = now;
+		this.updated = now;
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		this.updated = DateTime.now();
+	}
+
+	public void setCreated(DateTime created) {
+		this.created = created;
+	}
+
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public void setFeature_id(List<Attribute> feature_id) {
+		this.feature_id = feature_id;
 	}
 
 	public void setId(long id) {
@@ -111,26 +176,20 @@ public class Feature {
 	public void setUnique_id(String unique_id) {
 		this.unique_id = unique_id;
 	}
-	
-	public void getByUnique_id(String unique_id) {
-		
+
+	public void setUpdated(DateTime updated) {
+		this.updated = updated;
 	}
 
-
-	public void addAttributes(Attribute attribute) {
-
-		if (!attributes.contains(attribute)) {
-
-			attributes.add(attribute);
-		}
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).append("id", id)
+				.append("created", this.getCreationTime())
+				.append("unique_id", this.getUnique_id())
+				.append("updated", this.getModificationTime())
+				.append("description", this.getDescription())
+				.append("short_name", this.getShort_name())
+				.append("long_name", this.getLong_name()).toString();
 	}
-
-	public Collection<Attribute> getAttributes() {
-
-		return attributes;
-
-	}
-
-
 
 }

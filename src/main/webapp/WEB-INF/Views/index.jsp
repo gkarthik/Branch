@@ -143,7 +143,7 @@
 			<div id="chart"></div>
 			<div id="action">
 
-				<form action="/BranchBio/login" method="GET">
+				<form action="${contextPath}/login" method="GET">
 					<input class="playnow" type="submit" value="Play Now" />
 				</form>
 			</div>

@@ -1,6 +1,7 @@
-package DAO;
+package org.scripps.branch.utilities;
 
 import org.scripps.branch.entity.User;
+import org.scripps.branch.entity.UsersDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

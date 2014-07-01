@@ -1,4 +1,4 @@
-package config;
+package org.scripps.branch.config;
 
 import java.util.EnumSet;
 

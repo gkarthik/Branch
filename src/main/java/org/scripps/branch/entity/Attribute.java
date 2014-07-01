@@ -1,5 +1,6 @@
 package org.scripps.branch.entity;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,8 +12,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
@@ -53,39 +57,37 @@ public class Attribute {
 	@Column
 	private float relieff;
 
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "feature_id", insertable = false, updatable = false, nullable = false)
-//	private FeatureDB feature_id;
-	
-	 @ManyToOne(fetch = FetchType.LAZY)
-	 private Feature feature;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "feature_id", insertable = false, updatable = false)
+	private Feature feature;
 
-
-//	private Long feature_id;
-//	
-//	public long getFeature_id() {
-//		return feature_id;
-//	}
-//
-//	public void setFeature_id(long feature_id) {
-//		this.feature_id = featuredb.getId();
-//	}
-
-	public Feature getFeature_id() {
-		return feature;
-	}
-
-	public void setFeature(Feature result) {
-		this.feature = result;
-	}
-
-	@Column(name = "created", nullable = false)
+	@Basic(optional = false)
+	@Column(name = "created", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-	private DateTime created = null;
+	@Temporal(TemporalType.TIMESTAMP)
+	private DateTime created;
 
-	@Column(name = "updated", nullable = false)
+	@Basic(optional = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "updated", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	private DateTime updated;
+
+	public Attribute() {
+
+	}
+
+	public Attribute(int id, int col_index, String name, String dataset,
+			float relieff, DateTime created, DateTime updated) {
+		super();
+		this.id = id;
+		this.col_index = col_index;
+		this.name = name;
+		this.dataset = dataset;
+		this.relieff = relieff;
+		this.created = created;
+		this.updated = updated;
+	}
 
 	public int getCol_index() {
 		return col_index;
@@ -95,12 +97,24 @@ public class Attribute {
 		return created;
 	}
 
+	public DateTime getCreationTime() {
+		return created;
+	}
+
 	public String getDataset() {
 		return dataset;
 	}
 
+	public Feature getFeature() {
+		return feature;
+	}
+
 	public int getId() {
 		return id;
+	}
+
+	public DateTime getModificationTime() {
+		return updated;
 	}
 
 	public String getName() {
@@ -139,6 +153,10 @@ public class Attribute {
 		this.dataset = dataset;
 	}
 
+	public void setFeature(Feature feature) {
+		this.feature = feature;
+	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -147,7 +165,7 @@ public class Attribute {
 		this.name = name;
 	}
 
-	public void setReliefF(float relieff) {
+	public void setRelieff(float relieff) {
 		this.relieff = relieff;
 	}
 
@@ -155,4 +173,16 @@ public class Attribute {
 		this.updated = updated;
 	}
 
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).append("id", id)
+
+		.append("col_Index", this.getCol_index())
+				.append("created", this.getCreated())
+				.append("dataset", this.getDataset())
+				.append("name", this.getName())
+				.append("relieff", this.getRelieff())
+				.append("updated", this.getUpdated())
+				.append("feature_id", this.getFeature().getId()).toString();
+	}
 }

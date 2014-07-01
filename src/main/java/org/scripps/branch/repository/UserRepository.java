@@ -1,4 +1,4 @@
-package DAO;
+package org.scripps.branch.repository;
 
 import org.scripps.branch.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package DAO;
+package org.scripps.branch.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

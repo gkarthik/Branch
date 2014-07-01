@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Random;
 
+import org.scripps.branch.service.FeatureService;
+
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
@@ -94,7 +96,7 @@ public class Weka {
 		// assumes that feature table has already been loaded
 		// get the features related to this weka dataset
 		if (setFeatures) {
-			setFeatures(Feature.getByDataset(dataset, false));
+			setFeatures(FeatureService.getByDataset(dataset, false));
 		}
 	}
 

@@ -1,4 +1,4 @@
-package config;
+package org.scripps.branch.config;
 
 import java.util.Properties;
 
@@ -20,13 +20,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.jolbox.bonecp.BoneCPDataSource;
 
 @Configuration
-@EnableJpaRepositories(basePackages = { "DAO", "WekaDataTables",
-		"WekaDataBuilder", "Tests" })
+@EnableJpaRepositories(basePackages = { "org.scripps.branch.entity", "org.scripps.branch.service", "org.scripps.branch.repository", "org.scripps.branch.utilities" })
 @EnableTransactionManagement
 public class PersistenceContext {
 
-	private static final String[] PROPERTY_PACKAGES_TO_SCAN = { "DAO",
-			"WekaDataTables", "WekaDataBuilder", "Tests" };
+	private static final String[] PROPERTY_PACKAGES_TO_SCAN = { "org.scripps.branch.entity", "org.scripps.branch.service", "org.scripps.branch.repository", "org.scripps.branch.utilities" };
 
 	protected static final String PROPERTY_NAME_DATABASE_DRIVER = "db.driver";
 	protected static final String PROPERTY_NAME_DATABASE_PASSWORD = "db.password";
