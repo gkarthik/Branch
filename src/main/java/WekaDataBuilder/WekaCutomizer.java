@@ -3,9 +3,10 @@ package WekaDataBuilder;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Random;
-import WekaDataTables.FeatureDB;
+
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
+import WekaDataTables.FeatureDB;
 
 public class WekaCutomizer {
 
@@ -15,54 +16,6 @@ public class WekaCutomizer {
 	String eval_method; // {cross_validation, test_set, training_set}
 	Map<String, FeatureDB> features;
 	String dataset;
-
-	public Instances getTrain() {
-		return train;
-	}
-
-	public void setTrain(Instances train) {
-		this.train = train;
-	}
-
-	public Instances getTest() {
-		return test;
-	}
-
-	public void setTest(Instances test) {
-		this.test = test;
-	}
-
-	public Random getRand() {
-		return rand;
-	}
-
-	public void setRand(Random rand) {
-		this.rand = rand;
-	}
-
-	public String getEval_method() {
-		return eval_method;
-	}
-
-	public void setEval_method(String eval_method) {
-		this.eval_method = eval_method;
-	}
-
-	public Map<String, FeatureDB> getFeatures() {
-		return features;
-	}
-
-	public void setFeatures(Map<String, FeatureDB> features) {
-		this.features = features;
-	}
-
-	public String getDataset() {
-		return dataset;
-	}
-
-	public void setDataset(String dataset) {
-		this.dataset = dataset;
-	}
 
 	public void buildWeka(InputStream train_stream, InputStream test_stream,
 			String dataset) throws Exception {
@@ -96,6 +49,54 @@ public class WekaCutomizer {
 		if (setFeatures) {
 			setFeatures(FeatureBuilder.getByDataset(dataset, false));
 		}
+	}
+
+	public String getDataset() {
+		return dataset;
+	}
+
+	public String getEval_method() {
+		return eval_method;
+	}
+
+	public Map<String, FeatureDB> getFeatures() {
+		return features;
+	}
+
+	public Random getRand() {
+		return rand;
+	}
+
+	public Instances getTest() {
+		return test;
+	}
+
+	public Instances getTrain() {
+		return train;
+	}
+
+	public void setDataset(String dataset) {
+		this.dataset = dataset;
+	}
+
+	public void setEval_method(String eval_method) {
+		this.eval_method = eval_method;
+	}
+
+	public void setFeatures(Map<String, FeatureDB> features) {
+		this.features = features;
+	}
+
+	public void setRand(Random rand) {
+		this.rand = rand;
+	}
+
+	public void setTest(Instances test) {
+		this.test = test;
+	}
+
+	public void setTrain(Instances train) {
+		this.train = train;
 	}
 
 }
