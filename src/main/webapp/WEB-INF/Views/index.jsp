@@ -1,3 +1,4 @@
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html class="no-js">
 <!--<![endif]-->
@@ -36,7 +37,8 @@
 				</div>
 				<h3 class="background">Background</h3>
 				<div id="background" style="display: none;">
-					<p>Using the latest technology we can now assess the activity
+					<p>Using the latest technology we can now assess the activity	<jsp:include page="/WEB-INF/layout/footer.jsp" />
+					
 						level of more than 20,000 known human genes and identify literally
 						millions of variations in every human genome. The challenge now is
 						to make use of all of this data. For example, if a woman has been

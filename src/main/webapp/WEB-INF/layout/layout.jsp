@@ -19,10 +19,10 @@
 	src="${pageContext.request.contextPath}/static/js/vendor/jquery-2.0.3.js"></script>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/static/js/vendor/bootstrap.js"></script>
-<sitemesh:write property="head" />
 
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/static/css/landing-style.css">
+	<sitemesh:write property="head" />
 </head>
 <body>
 	<div class="page">

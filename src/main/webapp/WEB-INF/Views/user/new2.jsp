@@ -11,7 +11,7 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <div class="page-header">
 	<h1>
 		<spring:message code="label.homepage.title" />
