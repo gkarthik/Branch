@@ -15,88 +15,88 @@ import javax.persistence.OrderBy;
 
 @Entity
 public class Bar implements Serializable {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long id;
 
-    @Column(nullable = false)
-    private String name;
+	@Column(nullable = false)
+	private String name;
 
-    @OneToMany(mappedBy = "bar", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @OrderBy("name ASC")
-    List<Foo> fooList;
+	@OneToMany(mappedBy = "bar", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OrderBy("name ASC")
+	List<Foo> fooList;
 
-    public Bar() {
-        super();
-    }
+	public Bar() {
+		super();
+	}
 
-    public Bar(final String name) {
-        super();
+	public Bar(final String name) {
+		super();
 
-        this.name = name;
-    }
+		this.name = name;
+	}
 
-    // API
+	// API
 
-    public long getId() {
-        return id;
-    }
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final Bar other = (Bar) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
 
-    public void setId(final long id) {
+	public List<Foo> getFooList() {
+		return fooList;
+	}
 
-        this.id = id;
-    }
+	public long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(final String name) {
-        this.name = name;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
 
-    public List<Foo> getFooList() {
-        return fooList;
-    }
+	public void setFooList(final List<Foo> fooList) {
+		this.fooList = fooList;
+	}
 
-    public void setFooList(final List<Foo> fooList) {
-        this.fooList = fooList;
-    }
+	//
 
-    //
+	public void setId(final long id) {
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
-    }
+		this.id = id;
+	}
 
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final Bar other = (Bar) obj;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        return true;
-    }
+	public void setName(final String name) {
+		this.name = name;
+	}
 
-    @Override
-    public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("Bar [name=").append(name).append("]");
-        return builder.toString();
-    }
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+		builder.append("Bar [name=").append(name).append("]");
+		return builder.toString();
+	}
 
 }

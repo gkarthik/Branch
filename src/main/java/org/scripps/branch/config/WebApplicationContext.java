@@ -16,7 +16,7 @@ import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {"org.scripps.branch.controller" })
+@ComponentScan(basePackages = { "org.scripps.branch.controller" })
 public class WebApplicationContext extends WebMvcConfigurerAdapter {
 
 	private static final String VIEW_RESOLVER_PREFIX = "/WEB-INF/Views/";

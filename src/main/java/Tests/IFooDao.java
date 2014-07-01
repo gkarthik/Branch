@@ -2,19 +2,18 @@ package Tests;
 
 import java.util.List;
 
-
 public interface IFooDao {
 
-    Foo findOne(long id);
+	void create(Foo entity);
 
-    List<Foo> findAll();
+	void delete(Foo entity);
 
-    void create(Foo entity);
+	void deleteById(long entityId);
 
-    Foo update(Foo entity);
+	List<Foo> findAll();
 
-    void delete(Foo entity);
+	Foo findOne(long id);
 
-    void deleteById(long entityId);
+	Foo update(Foo entity);
 
 }
