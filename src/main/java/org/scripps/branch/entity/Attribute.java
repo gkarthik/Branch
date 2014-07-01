@@ -1,4 +1,4 @@
-package WekaDataTables;
+package org.scripps.branch.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,7 +34,7 @@ import org.joda.time.DateTime;
 @Entity
 @Table(name = "attribute", uniqueConstraints = { @UniqueConstraint(name = "dataset_index_name", columnNames = {
 		"col_index", "name", "dataset" }) })
-public class AttributeDB {
+public class Attribute {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -58,7 +58,7 @@ public class AttributeDB {
 //	private FeatureDB feature_id;
 	
 	 @ManyToOne(fetch = FetchType.LAZY)
-	 private FeatureDB feature;
+	 private Feature feature;
 
 
 //	private Long feature_id;
@@ -71,11 +71,11 @@ public class AttributeDB {
 //		this.feature_id = featuredb.getId();
 //	}
 
-	public FeatureDB getFeature_id() {
+	public Feature getFeature_id() {
 		return feature;
 	}
 
-	public void setFeature(FeatureDB result) {
+	public void setFeature(Feature result) {
 		this.feature = result;
 	}
 

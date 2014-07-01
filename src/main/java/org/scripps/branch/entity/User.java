@@ -1,4 +1,4 @@
-package DAO;
+package org.scripps.branch.entity;
 
 import java.util.List;
 
@@ -15,7 +15,8 @@ import javax.persistence.Table;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import WekaDataTables.TreeDB;
+import DAO.Role;
+import DAO.SocialMediaService;
 
 @Entity
 @Table(name = "user_accounts")
@@ -80,7 +81,7 @@ public class User extends BaseEntity<Long> {
 
 	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "userdb")
 	// @JoinColumn(name="feature_id")
-	private List<TreeDB> trees;
+	private List<Tree> trees;
 
 	@Column(name = "email", length = 100, nullable = false, unique = true)
 	private String email;

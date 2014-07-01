@@ -1,19 +1,19 @@
-package WekaDataBuilder;
+package org.scripps.branch.entity;
 
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Random;
-import WekaDataTables.FeatureDB;
+
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
-public class WekaCutomizer {
+public class Weka {
 
 	private Instances train = null;
 	Instances test = null;
 	Random rand;
 	String eval_method; // {cross_validation, test_set, training_set}
-	Map<String, FeatureDB> features;
+	Map<String, Feature> features;
 	String dataset;
 
 	public Instances getTrain() {
@@ -48,11 +48,11 @@ public class WekaCutomizer {
 		this.eval_method = eval_method;
 	}
 
-	public Map<String, FeatureDB> getFeatures() {
+	public Map<String, Feature> getFeatures() {
 		return features;
 	}
 
-	public void setFeatures(Map<String, FeatureDB> features) {
+	public void setFeatures(Map<String, Feature> features) {
 		this.features = features;
 	}
 
@@ -94,7 +94,7 @@ public class WekaCutomizer {
 		// assumes that feature table has already been loaded
 		// get the features related to this weka dataset
 		if (setFeatures) {
-			setFeatures(FeatureBuilder.getByDataset(dataset, false));
+			setFeatures(Feature.getByDataset(dataset, false));
 		}
 	}
 

@@ -1,4 +1,4 @@
-package WekaDataBuilder;
+package org.scripps.branch.service;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,10 +17,13 @@ import javax.persistence.Query;
 
 
 
+
 //import WekaDataBuilder.AttributeBuilder;
 //
 //import org.hibernate.validator.internal.util.privilegedactions.GetAnnotationParameter;
 import org.joda.time.DateTime;
+import org.scripps.branch.entity.Attribute;
+import org.scripps.branch.entity.Feature;
 ///import org.scripps.combo.model.Feature;
 //import org.scripps.combo.model.Feature;
 //import org.scripps.util.JdbcConnection;
@@ -34,25 +37,22 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import WekaDataTables.AttributeDB;
-import WekaDataTables.FeatureDB;
-
-public class FeatureBuilder extends FeatureDB {
+public class FeatureService extends Feature {
 
 	public static EntityManagerFactory emf = Persistence
 			.createEntityManagerFactory("DEFAULTJPA");
 	public static EntityManager em = emf.createEntityManager();
 
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(FeatureBuilder.class);
+			.getLogger(FeatureService.class);
 
-	private List<AttributeDB> dataset_attributes;
+	private List<Attribute> dataset_attributes;
 
-	public List<AttributeDB> getDataset_attributes() {
+	public List<Attribute> getDataset_attributes() {
 		return dataset_attributes;
 	}
 
-	public void setDataset_attributes(List<AttributeDB> dataset_attributes) {
+	public void setDataset_attributes(List<Attribute> dataset_attributes) {
 		this.dataset_attributes = dataset_attributes;
 	}
 
@@ -74,13 +74,13 @@ public class FeatureBuilder extends FeatureDB {
 
 	// From Feature Table: public static Map<String, Feature>
 	// getByDataset(String dataset, boolean load_annotations_very_slowly){
-	public static Map<String, FeatureDB> getByDataset(String dataset,
+	public static Map<String, FeatureService> getByDataset(String dataset,
 			boolean load_annotations_very_slowly) {
 
 		int counter = 0;
-		Map<String, FeatureDB> features = new HashMap<String, FeatureDB>();
+		Map<String, FeatureService> features = new HashMap<String, FeatureService>();
 
-		FeatureBuilder fb = new FeatureBuilder();
+		FeatureService fb = new FeatureService();
 
 		String query = "select f.id,"
 				+ "f.unique_id,"
@@ -118,12 +118,12 @@ public class FeatureBuilder extends FeatureDB {
 
 				Object[] result = (Object[]) it.next();
 
-				FeatureDB featureObject = features.get(result[1]);// check for
+				FeatureService featureObject = features.get(result[1]);// check for
 				// f.uniqueid
 
 				if (featureObject == null) {
 
-					featureObject = new FeatureDB();
+					featureObject = new FeatureService();
 					featureObject.setId((Long) result[0]);
 					featureObject.setUnique_id((String) result[1]);
 					featureObject.setShort_name((String) result[2]);
@@ -145,17 +145,17 @@ public class FeatureBuilder extends FeatureDB {
 
 				}
 
-				List<AttributeDB> atts = fb.getDataset_attributes();
+				List<Attribute> atts = fb.getDataset_attributes();
 				if (atts == null) {
 
-					atts = new ArrayList<AttributeDB>();
+					atts = new ArrayList<Attribute>();
 				}
-				AttributeDB a = new AttributeDB();
+				Attribute a = new Attribute();
 				a.setId((int) result[7]);
 				a.setCol_index((int) result[8]);
 				a.setCreated((DateTime) result[9]);
 				a.setDataset((String) result[10]);
-				FeatureDB fObject =new FeatureDB();
+				FeatureService fObject =new FeatureService();
 				fObject = getByUniqueId((String) result[1]);
 			//	a.setFeature_id((Long)result[11]);
 				//a.setFeature_id();(featureObject);
@@ -203,9 +203,9 @@ public class FeatureBuilder extends FeatureDB {
 	}
 
 	//From FeatureTable: public static Feature getByUniqueId(String unique_id)
-	public static FeatureDB getByUniqueId(String unique_id){
+	public static FeatureService getByUniqueId(String unique_id){
 
-		FeatureDB featureObject =null;
+		FeatureService featureObject =null;
 
 		String query = "select f.id,f.unique_id,f.short_name,"
 				+ "f.long_name,f.description,f.created,f.updated"
@@ -225,7 +225,7 @@ public class FeatureBuilder extends FeatureDB {
 
 				Object[] result = (Object[]) it.next();
 
-				featureObject = new FeatureDB();
+				featureObject = new FeatureService();
 				featureObject.setId((Long) result[0]);
 				featureObject.setUnique_id((String) result[1]);
 				featureObject.setShort_name((String) result[2]);
@@ -249,10 +249,10 @@ public class FeatureBuilder extends FeatureDB {
 	}
 
 	//From FeatureTable: public static Feature getByDbId(int id)
-	public static FeatureDB getByDbId(long id){
+	public static FeatureService getByDbId(long id){
 
 
-		FeatureDB featureObject =null;
+		FeatureService featureObject =null;
 
 		String query = "select f.id,f.unique_id,f.short_name,"
 				+ "f.long_name,f.description,f.created,f.updated"
@@ -272,7 +272,7 @@ public class FeatureBuilder extends FeatureDB {
 
 				Object[] result = (Object[]) it.next();
 
-				featureObject = new FeatureDB();
+				featureObject = new FeatureService();
 				featureObject.setId((Long) result[0]);
 				//			featureObject.setUnique_id((String) result[1]);
 				featureObject.setShort_name((String) result[2]);
@@ -303,7 +303,7 @@ public class FeatureBuilder extends FeatureDB {
 
 		//loadFeatureTable();	
 		//getByDataset("newset", false);
-		FeatureDB a = getByUniqueId("17");
+		FeatureService a = getByUniqueId("17");
 		System.out.println(a.getAttributes());
 		//getByDbId(1);
 	}

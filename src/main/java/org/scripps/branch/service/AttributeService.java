@@ -1,4 +1,4 @@
-package WekaDataBuilder;
+package org.scripps.branch.service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,25 +17,22 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import org.scripps.branch.entity.Attribute;
+import org.scripps.branch.entity.Feature;
+import org.scripps.branch.entity.Weka;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import WekaDataTables.AttributeDB;
-import WekaDataTables.FeatureDB;
-
 import org.joda.time.DateTime;
-
-import weka.core.Attribute;
 import weka.core.Instances;
 
-public class AttributeBuilder extends AttributeDB {
+public class AttributeService extends Attribute {
 
 	public static EntityManagerFactory emf = Persistence
 			.createEntityManagerFactory("DEFAULTJPA");
 	public static EntityManager em = emf.createEntityManager();
 
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(AttributeBuilder.class);
+			.getLogger(Attribute.class);
 
 	//Function load from Attribute.java : public static void load(String dataset_name, String weka_data, String att_info_file) throws Exception {
 
@@ -82,25 +79,25 @@ public class AttributeBuilder extends AttributeDB {
 
 		try {
 
-			WekaCutomizer wekaObj = new WekaCutomizer();
+			Weka wekaObj = new Weka();
 			wekaObj.buildWeka(new FileInputStream(weka_Data), null, dataset_Name);
 			Instances data = wekaObj.getTrain();
-			FeatureDB featureObj=null;
+			Feature featureObj=null;
 			int flag=0;
 
 			for(int i=0;i<data.numAttributes();i++){
-				Attribute att=data.attribute(i);
+				weka.core.Attribute att=data.attribute(i);
 				String name = att.name();
 				int col =att.index();
 				String unique_id=att_uni.get(name);
 				if(att.index()!=data.classIndex()){
 					Long feat_id=(long) -1;
 					if(unique_id!=null){
-						FeatureDB feat =FeatureBuilder.getByUniqueId(unique_id);
+						Feature feat =FeatureService.getByUniqueId(unique_id);
 						if(feat==null){
-							AttributeDB attrObj =AttributeBuilder.getByAttNameDataset(name,dataset_Name);
+							Attribute attrObj = AttributeService.getByAttNameDataset(name,dataset_Name);
 							if(attrObj!=null){
-								feat=FeatureBuilder.getByDbId(attrObj.getFeaturedb().getId());
+								feat=Feature.getByDbId(attrObj.getFeaturedb().getId());
 							}
 						}
 
@@ -110,7 +107,7 @@ public class AttributeBuilder extends AttributeDB {
 
 						em.getTransaction().begin();
 						LOGGER.debug("No feature in mapping table for "+name+" adding generic");
-						featureObj=new FeatureBuilder();
+						featureObj=new Feature();
 						featureObj.setUnique_id(dataset_Name+""+att.index());
 						featureObj.setShort_name(att.name());
 						featureObj.setLong_name(att.name());
@@ -129,7 +126,7 @@ public class AttributeBuilder extends AttributeDB {
 						LOGGER.debug("Entity Flag Value = " +flag);
 					}
 					if(flag==0){
-						AttributeDB aObj =  new AttributeDB();
+						Attribute aObj =  new Attribute();
 						aObj.setCol_index(col);
 						aObj.setDataset(dataset_Name);
 						aObj.setFeature_id(featureObj);
@@ -151,11 +148,11 @@ public class AttributeBuilder extends AttributeDB {
 	}
 
 	//
-	public static AttributeDB getByAttNameDataset(String att_name, String dataset){
+	public static Attribute getByAttNameDataset(String att_name, String dataset){
 
 		int counter = 0;
 
-		AttributeDB attributeObject=new AttributeDB();
+		Attribute attributeObject=new Attribute();
 		try {
 			String query = "select col_index,created, dataset,name,relieff,updated "
 					+ "from AttributeDB a where name='"+att_name+"' and dataset = '"+dataset+"'";
@@ -170,7 +167,7 @@ public class AttributeBuilder extends AttributeDB {
 
 			while (it.hasNext()) {
 
-				attributeObject = new AttributeDB();
+				attributeObject = new Attribute();
 
 				Object[] result = (Object[]) it.next();
 
@@ -204,9 +201,9 @@ public class AttributeBuilder extends AttributeDB {
 
 
 //
-	public static List<AttributeDB> getByFeatureDbId(String db_Id) {
+	public static List<Attribute> getByFeatureDbId(String db_Id) {
 
-		List<AttributeDB> atts = new ArrayList<AttributeDB>();
+		List<Attribute> atts = new ArrayList<Attribute>();
 
 		int counter = 0;
 		try {
@@ -222,7 +219,7 @@ public class AttributeBuilder extends AttributeDB {
 
 			while (it.hasNext()) {
 
-				AttributeDB attributeObject = new AttributeDB();
+				Attribute attributeObject = new Attribute();
 
 				Object[] result = (Object[]) it.next();
 
@@ -251,11 +248,11 @@ public class AttributeBuilder extends AttributeDB {
 
 	public static void main(String args[]) {
 
-		AttributeBuilder AB = new AttributeBuilder();
+		Attribute AB = new Attribute();
 		// AB.load(null, null,
 		// "/home/bob/workspace/BranchBio/src/main/resources/WekaFiles/Oslo_mapping.txt");
 		//AttributeBuilder.getByFeatureDbId("12");
-		AttributeBuilder.getByAttNameDataset("Vyshakh", "newdataset");
+		Attribute.getByAttNameDataset("Vyshakh", "newdataset");
 	}
 
 }

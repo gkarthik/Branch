@@ -1,4 +1,4 @@
-package WekaDataTables;
+package org.scripps.branch.entity;
 
 import java.util.Collection;
 
@@ -20,11 +20,9 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 import org.postgresql.util.PGobject;
 
-import DAO.User;
-
 @Entity
 @Table(name = "tree")
-public class TreeDB {
+public class Tree {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,7 +39,7 @@ public class TreeDB {
 
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "tree_feature", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "feature_id") })
-	private Collection<FeatureDB> featuredb;
+	private Collection<Feature> featuredb;
 
 	@Column
 	private String comment;

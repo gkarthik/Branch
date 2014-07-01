@@ -1,5 +1,8 @@
-package DAO;
+package org.scripps.branch.service;
 
+import org.scripps.branch.entity.User;
+
+import DAO.RegistrationForm;
 import Validation.DuplicateEmailException;
 
 public interface UserService {

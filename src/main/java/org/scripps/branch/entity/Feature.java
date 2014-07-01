@@ -1,4 +1,4 @@
-package WekaDataTables;
+package org.scripps.branch.entity;
 
 import java.util.Collection;
 import java.util.List;
@@ -31,7 +31,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "feature")
-public class FeatureDB extends TimeStamper<Long> {
+public class Feature {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,10 +43,10 @@ public class FeatureDB extends TimeStamper<Long> {
 //	private Collection<AttributeDB> attributes;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "attribute")
-	private Collection<AttributeDB> attributes;
+	private Collection<Attribute> attributes;
 
 	@ManyToMany(mappedBy = "featuredb")
-	private List<TreeDB> treedb;
+	private List<Tree> treedb;
 
 	@Column(name = "unique_id", length = 50, unique = true)
 	private String unique_id;
@@ -76,7 +76,6 @@ public class FeatureDB extends TimeStamper<Long> {
 		return description;
 	}
 
-	@Override
 	public Long getId() {
 		return id;
 	}
@@ -118,7 +117,7 @@ public class FeatureDB extends TimeStamper<Long> {
 	}
 
 
-	public void addAttributes(AttributeDB attribute) {
+	public void addAttributes(Attribute attribute) {
 
 		if (!attributes.contains(attribute)) {
 
@@ -126,7 +125,7 @@ public class FeatureDB extends TimeStamper<Long> {
 		}
 	}
 
-	public Collection<AttributeDB> getAttributes() {
+	public Collection<Attribute> getAttributes() {
 
 		return attributes;
 
