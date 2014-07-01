@@ -55,12 +55,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Vector;
 
+import javax.persistence.Query;
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -1691,8 +1693,9 @@ WeightedInstancesHandler, Randomizable, Drawable {
 		System.out.println("ID befoire add: "+id);
 		System.out.println("Contains: "+custom_classifiers.containsKey(id));
 		if(!custom_classifiers.containsKey(id)){
+			//Insert Tree query here.
+			String query = "select json_tree from Tree where id="+id.replace("custom_tree_", "");
 			JdbcConnection conn = new JdbcConnection();
-			String query = "select json_tree from tree where id="+id.replace("custom_tree_", "");
 			ResultSet rslt = conn.executeQuery(query);
 			try {
 				while(rslt.next()){
