@@ -121,3 +121,26 @@ public class TestHibernateInsert {
 // return q.getResultList();
 //
 // }
+
+// attributeObject.setId((int) result[7]);
+// attributeObject.setCol_index((int) result[8]);
+// attributeObject.setCreated((DateTime) result[9]);
+// attributeObject.setDataset((String) result[10]);
+// attributeObject.setName((String) result[11]);
+// attributeObject.setRelieff((float) result[12]);
+// attributeObject.setUpdated((DateTime) result[13]);
+
+// @ManyToOne(fetch = FetchType.LAZY)
+// @JoinColumn(name = "feature_id", insertable = false, updatable = false,
+// nullable = false)
+// private FeatureDB feature_id;
+
+// private Long feature_id;
+//
+// public long getFeature_id() {
+// return feature_id;
+// }
+//
+// public void setFeature_id(long feature_id) {
+// this.feature_id = featuredb.getId();
+// }
