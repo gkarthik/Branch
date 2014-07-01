@@ -46,6 +46,7 @@ import weka.filters.unsupervised.attribute.Remove;
 import java.awt.List;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.ResultSet;
@@ -67,9 +68,14 @@ import javax.servlet.GenericServlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
+import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.Weka;
+import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.viz.JsonTree;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -1694,31 +1700,37 @@ WeightedInstancesHandler, Randomizable, Drawable {
 		System.out.println("Contains: "+custom_classifiers.containsKey(id));
 		if(!custom_classifiers.containsKey(id)){
 			//Insert Tree query here.
-			String query = "select json_tree from Tree where id="+id.replace("custom_tree_", "");
-			JdbcConnection conn = new JdbcConnection();
-			ResultSet rslt = conn.executeQuery(query);
-			try {
-				while(rslt.next()){
+			TreeRepository t = null;
+			java.util.List<Tree> trees = t.findById(Integer.parseInt(id.replace("custom_tree_", "")));
+			if(trees.size() == 1){
+				for (Tree treeDb : trees) {
+					ManualTree tree = new ManualTree();
+					ObjectMapper mapper = new ObjectMapper();
+					//Not sure if it works
+					JsonNode rootNode = null;
 					try {
-						ManualTree tree = new ManualTree();
-						ObjectMapper mapper = new ObjectMapper();
-						JsonNode rootNode = mapper.readTree(rslt.getString("json_tree")).get("treestruct");
-						JsonTree t  = new JsonTree();
-						if(!dataset.equals("mammal")){
-							rootNode = t.mapEntrezIdsToAttNames(weka, rootNode, dataset, custom_classifiers);
-						}
-						tree.setTreeStructure(rootNode);
-						tree.setListOfFc(custom_classifiers);
+						rootNode = mapper.readTree((JsonParser) ((TreeNode) treeDb.getJson_tree()).get("treestruct"));
+					} catch (JsonProcessingException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					JsonTree _t  = new JsonTree();
+					if(!dataset.equals("mammal")){
+						rootNode = _t.mapEntrezIdsToAttNames(weka, rootNode, dataset, custom_classifiers);
+					}
+					tree.setTreeStructure(rootNode);
+					tree.setListOfFc(custom_classifiers);
+					try {
 						tree.buildClassifier(weka.getTrain());
-						custom_classifiers.put(id, tree);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					custom_classifiers.put(id, tree);
 				}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
 	}
