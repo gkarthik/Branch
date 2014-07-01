@@ -46,8 +46,8 @@ public class Feature {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "feature")
 	private List<Attribute> feature_id;
 
-	@ManyToMany(mappedBy = "featuredb")
-	private List<Tree> treedb;
+	@ManyToMany(mappedBy = "features")
+	private List<Tree> trees;
 
 	@Column(name = "unique_id", length = 50, unique = true)
 	private String unique_id;
@@ -190,6 +190,14 @@ public class Feature {
 				.append("description", this.getDescription())
 				.append("short_name", this.getShort_name())
 				.append("long_name", this.getLong_name()).toString();
+	}
+
+	public List<Tree> getTrees() {
+		return trees;
+	}
+
+	public void setTrees(List<Tree> trees) {
+		this.trees = trees;
 	}
 
 }

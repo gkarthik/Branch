@@ -1,16 +1,16 @@
 package org.scripps.branch.service;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -22,7 +22,7 @@ import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Weka;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.joda.time.DateTime;
+
 import weka.core.Instances;
 
 public class AttributeService extends Attribute {
@@ -38,12 +38,12 @@ public class AttributeService extends Attribute {
 	// dataset_name, String weka_data, String att_info_file) throws Exception {
 
 	//
-	public static Attribute getByAttNameDataset(String att_name,
-			String dataset) {
+	public static Attribute getByAttNameDataset(String att_name, String dataset) {
 		int counter = 0;
 		Attribute attributeObject = new Attribute();
 		try {
-			String query = "select A from Attribute A where A.name='"+ att_name+ "' and A.dataset = '" + dataset + "'";
+			String query = "select A from Attribute A where A.name='"
+					+ att_name + "' and A.dataset = '" + dataset + "'";
 			em.getTransaction().begin();
 			Query q = em.createQuery(query);
 
@@ -53,7 +53,7 @@ public class AttributeService extends Attribute {
 
 			while (it.hasNext()) {
 
-				attributeObject  = (Attribute) it.next();
+				attributeObject = (Attribute) it.next();
 				counter++;
 				LOGGER.debug("AttributeObject" + attributeObject.toString());
 			}
@@ -73,7 +73,7 @@ public class AttributeService extends Attribute {
 		int counter = 0;
 		try {
 
-			String query = "select A from Attribute A where A.feature="+db_Id;
+			String query = "select A from Attribute A where A.feature=" + db_Id;
 			em.getTransaction().begin();
 			Query q = em.createQuery(query);
 			List<?> list = q.getResultList();
@@ -95,20 +95,22 @@ public class AttributeService extends Attribute {
 
 		return atts;
 	}
-	
-	public static List<Attribute> getByFeatureUniqueId(String Unique_Id, String dataset) {
+
+	public static List<Attribute> getByFeatureUniqueId(String Unique_Id,
+			String dataset) {
 		List<Attribute> atts = new ArrayList<Attribute>();
 		int counter = 0;
 		Attribute attributeObject = new Attribute();
 		try {
-			String query = "select A from Attribute A, Feature F where A.feature=F.id and F.unique_id='" + Unique_Id+"' and A.dataset='"+dataset+"'";
+			String query = "select A from Attribute A, Feature F where A.feature=F.id and F.unique_id='"
+					+ Unique_Id + "' and A.dataset='" + dataset + "'";
 			em.getTransaction().begin();
 			Query q = em.createQuery(query);
 			List<?> list = q.getResultList();
 			Iterator<?> it = list.iterator();
 
 			while (it.hasNext()) {
-				attributeObject  = (Attribute) it.next();
+				attributeObject = (Attribute) it.next();
 				atts.add(attributeObject);
 				counter++;
 				LOGGER.debug("Attribute Object" + attributeObject.toString());
@@ -121,6 +123,13 @@ public class AttributeService extends Attribute {
 		}
 
 		return atts;
+	}
+
+	public static void main(String args[]) throws Exception {
+		AttributeService AB = new AttributeService();
+		AttributeService.getByFeatureId("2751");
+		// /AttributeService.getByFeatureUniqueId("metabric_with_clinical_10","metabric_with_clinical");
+
 	}
 
 	public void load(String dataset_Name, String weka_Data,
@@ -182,8 +191,7 @@ public class AttributeService extends Attribute {
 				if (att.index() != data.classIndex()) {
 					Long feat_id = (long) -1;
 					if (unique_id != null) {
-						Feature feat = FeatureService
-								.getByUniqueId(unique_id);
+						Feature feat = FeatureService.getByUniqueId(unique_id);
 						if (feat == null) {
 							Attribute attrObj = AttributeService
 									.getByAttNameDataset(name, dataset_Name);
@@ -236,13 +244,6 @@ public class AttributeService extends Attribute {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-	}
-
-	public static void main(String args[]) throws Exception {
-		AttributeService AB = new AttributeService();
-		//AttributeService.getByFeatureId("2751");
-		AttributeService.getByFeatureUniqueId("metabric_with_clinical_10","metabric_with_clinical");
 
 	}
 
