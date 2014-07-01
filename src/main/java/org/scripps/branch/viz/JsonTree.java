@@ -2,10 +2,12 @@ package org.scripps.branch.viz;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.scripps.branch.classifier.ManualTree;
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.Weka;
+import org.scripps.branch.service.AttributeService;
 
 import weka.classifiers.Classifier;
 
@@ -46,7 +48,7 @@ public class JsonTree {
 			JsonNode unique_id = options.get("unique_id");
 			if(unique_id!=null && unique_id.asText()!=""){
 				if(!unique_id.asText().contains("custom_")){
-					List<Attribute> atts = Attribute.getByFeatureUniqueId(unique_id.asText(),dataset);
+					List<Attribute> atts = AttributeService.getByFeatureUniqueId(unique_id.asText(),dataset);
 					if(atts!=null&&atts.size()>0){
 						for(Attribute att : atts){
 							String att_name = att.getName();
