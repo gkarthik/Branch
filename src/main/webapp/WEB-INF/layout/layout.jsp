@@ -35,24 +35,24 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a href="/BranchBio/"><span class="navbar-brand">BranchBio</span>
+				<a href="${contextPath}/"><span class="navbar-brand">BranchBio</span>
 				</a>
 			</div>
 			<div class="collapse navbar-collapse navbar-ex1-collapse">
 				<ul class="nav navbar-nav navbar-left">
 					<sec:authorize access="isAuthenticated()">
-						<li><a href="/BranchBio/"><spring:message
+						<li><a href="${contextPath}/"><spring:message
 									code="label.navigation.home.link" /></a></li>
 					</sec:authorize>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<sec:authorize access="isAnonymous()">
-						<li><a href="/BranchBio/user/register"><spring:message
+						<li><a href="${contextPath}/user/register"><spring:message
 									code="label.navigation.registration.link" /></a></li>
 					</sec:authorize>
 					<sec:authorize access="isAuthenticated()">
 						<li>
-							<form action="/BranchBio/logout" method="POST">
+							<form action="${contextPath}/logout" method="POST">
 								<input type="hidden" name="${_csrf.parameterName}"
 									value="${_csrf.token}" />
 								<button type="submit" class="btn btn-default navbar-btn">

@@ -1,4 +1,4 @@
-package DAO;
+package org.scripps.branch.entity;
 
 import java.io.Serializable;
 

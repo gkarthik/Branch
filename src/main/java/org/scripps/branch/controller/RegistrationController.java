@@ -1,9 +1,12 @@
-package controller;
+package org.scripps.branch.controller;
 
 import javax.validation.Valid;
 
 import org.scripps.branch.entity.User;
+import org.scripps.branch.entity.forms.RegistrationForm;
+import org.scripps.branch.service.SocialMediaService;
 import org.scripps.branch.service.UserService;
+import org.scripps.branch.utilities.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.request.WebRequest;
 
-import DAO.RegistrationForm;
-import DAO.SecurityUtil;
-import DAO.SocialMediaService;
 import Validation.DuplicateEmailException;
 
 @Controller

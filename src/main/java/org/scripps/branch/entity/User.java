@@ -14,9 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-
-import DAO.Role;
-import DAO.SocialMediaService;
+import org.scripps.branch.service.SocialMediaService;
 
 @Entity
 @Table(name = "user_accounts")

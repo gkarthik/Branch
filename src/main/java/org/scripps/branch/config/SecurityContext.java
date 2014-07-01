@@ -1,7 +1,10 @@
-package config;
+package org.scripps.branch.config;
 
 import javax.sql.DataSource;
 
+import org.scripps.branch.repository.UserRepository;
+import org.scripps.branch.service.SocialUserDetailsServices;
+import org.scripps.branch.service.UserRepositoryDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,10 +22,6 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.social.security.SpringSocialConfigurer;
-
-import DAO.SocialUserDetailsServices;
-import DAO.UserRepository;
-import DAO.UserRepositoryDetailService;
 
 @Configuration
 @EnableWebSecurity

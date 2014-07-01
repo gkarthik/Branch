@@ -32,16 +32,98 @@ public class AttributeService extends Attribute {
 	public static EntityManager em = emf.createEntityManager();
 
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(Attribute.class);
+			.getLogger(AttributeService.class);
 
-	//Function load from Attribute.java : public static void load(String dataset_name, String weka_data, String att_info_file) throws Exception {
+	// Function load from Attribute.java : public static void load(String
+	// dataset_name, String weka_data, String att_info_file) throws Exception {
+
+	//
+	public static Attribute getByAttNameDataset(String att_name,
+			String dataset) {
+
+		int counter = 0;
+
+		Attribute attributeObject = new Attribute();
+		try {
+			String query = "select id,col_index,name, dataset, relieff,created,updated ,feature "
+					+ "from Attribute where name='"
+					+ att_name
+					+ "' and dataset = '" + dataset + "'";
+
+			em.getTransaction().begin();
+			Query q = em.createQuery(query);
+
+			List<?> list = q.getResultList();
+
+			Iterator<?> it = list.iterator();
+
+			while (it.hasNext()) {
+
+				Object[] result = (Object[]) it.next();
+
+				attributeObject = new Attribute((int) result[0],
+						(int) result[1], (String) result[2],
+						(String) result[3], (float) result[4],
+						(DateTime) result[5], (DateTime) result[6]);
+
+				counter++;
+				LOGGER.debug("AttributeObject" + attributeObject.toString());
+			}
+			LOGGER.debug("Counter =" + counter);
+			em.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return attributeObject;
+	}
+
+	public static List<Attribute> getByFeatureId(String db_Id) {
+
+		List<Attribute> atts = new ArrayList<Attribute>();
+
+		int counter = 0;
+		try {
+
+			String query = "select id,col_index,name, dataset, relieff,created,updated ,feature from Attribute where feature_id="
+					+ db_Id;
+
+			em.getTransaction().begin();
+
+			Query q = em.createQuery(query);
+
+			List<?> list = q.getResultList();
+			Iterator<?> it = list.iterator();
+
+			while (it.hasNext()) {
+
+				Object[] result = (Object[]) it.next();
+				Attribute attributeObject = new Attribute((int) result[0],
+						(int) result[1], (String) result[2],
+						(String) result[3], (float) result[4],
+						(DateTime) result[5], (DateTime) result[6]);
+
+				attributeObject.setFeature((Feature) result[7]);
+				atts.add(attributeObject);
+				counter++;
+
+				LOGGER.debug("Attribute Object" + attributeObject.toString());
+			}
+			LOGGER.debug("Counter =" + counter);
+			em.getTransaction().commit();
+			em.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return atts;
+	}
 
 	public void load(String dataset_Name, String weka_Data,
 			String attribute_Info_File) throws Exception {
 
 		Map<String, String> att_uni = new HashMap<String, String>();
 
-		String header;
 		int counter = 0;
 		FileReader attInfoFile;
 		BufferedReader attInfoBuff;
@@ -52,7 +134,7 @@ public class AttributeService extends Attribute {
 			attInfoFile = new FileReader(attribute_Info_File);
 			attInfoBuff = new BufferedReader(attInfoFile);
 
-			header = attInfoBuff.readLine();
+			String header = attInfoBuff.readLine();
 
 			while ((row = attInfoBuff.readLine()) != null) {
 
@@ -67,7 +149,8 @@ public class AttributeService extends Attribute {
 
 			}
 
-			System.out.println("Number of Rows :" + counter);
+			LOGGER.debug("Number of Rows :" + counter);
+			LOGGER.debug("Header of the file contents" + header);
 
 		} catch (FileNotFoundException e) {
 			LOGGER.debug("File not found: AttributeInfoFile", e);
@@ -80,179 +163,86 @@ public class AttributeService extends Attribute {
 		try {
 
 			Weka wekaObj = new Weka();
-			wekaObj.buildWeka(new FileInputStream(weka_Data), null, dataset_Name);
+			wekaObj.buildWeka(new FileInputStream(weka_Data), null,
+					dataset_Name);
 			Instances data = wekaObj.getTrain();
-			Feature featureObj=null;
-			int flag=0;
+			LOGGER.debug("Instances: " + data.numInstances());
+			Feature featureObj = null;
+			int flag = 0;
 
-			for(int i=0;i<data.numAttributes();i++){
-				weka.core.Attribute att=data.attribute(i);
+			for (int i = 0; i < data.numAttributes(); i++) {
+				weka.core.Attribute att = data.attribute(i);
 				String name = att.name();
-				int col =att.index();
-				String unique_id=att_uni.get(name);
-				if(att.index()!=data.classIndex()){
-					Long feat_id=(long) -1;
-					if(unique_id!=null){
-						Feature feat =FeatureService.getByUniqueId(unique_id);
-						if(feat==null){
-							Attribute attrObj = AttributeService.getByAttNameDataset(name,dataset_Name);
-							if(attrObj!=null){
-								feat=Feature.getByDbId(attrObj.getFeaturedb().getId());
+				int col = att.index();
+				String unique_id = att_uni.get(name);
+				if (att.index() != data.classIndex()) {
+					Long feat_id = (long) -1;
+					if (unique_id != null) {
+						Feature feat = FeatureService
+								.getByUniqueId(unique_id);
+						if (feat == null) {
+							Attribute attrObj = AttributeService
+									.getByAttNameDataset(name, dataset_Name);
+							if (attrObj != null) {
+								feat = FeatureService.getByDbId(attrObj
+										.getFeature().getId());
 							}
 						}
-
-						feat_id=feat.getId();
-					}
-					else{
+						feat_id = feat.getId();
+					} else {
 
 						em.getTransaction().begin();
-						LOGGER.debug("No feature in mapping table for "+name+" adding generic");
-						featureObj=new Feature();
-						featureObj.setUnique_id(dataset_Name+""+att.index());
+						LOGGER.debug("No feature in mapping table for " + name
+								+ " adding generic");
+						featureObj = new FeatureService();
+						featureObj.setUnique_id(dataset_Name + "_"
+								+ att.index());
 						featureObj.setShort_name(att.name());
 						featureObj.setLong_name(att.name());
 						featureObj.setDescription("");
 
-						if(em.contains(featureObj)){
-
-							em.persist(featureObj);
-							flag=1;
-						}
-						else{
-							em.merge(featureObj);
-							flag=2;
-						}
+						// if(em.contains(featureObj)){
+						//
+						// em.persist(featureObj);
+						// flag=1;
+						// }
+						// else{
+						// em.merge(featureObj);
+						// flag=2;
+						// }
+						em.persist(featureObj);
 						em.getTransaction().commit();
-						LOGGER.debug("Entity Flag Value = " +flag);
+						LOGGER.debug("Entity Flag Value = " + flag);
 					}
-					if(flag==0){
-						Attribute aObj =  new Attribute();
+					// error chances
+					if (!em.contains(featureObj)) {
+						Attribute aObj = new Attribute();
 						aObj.setCol_index(col);
 						aObj.setDataset(dataset_Name);
-						aObj.setFeature_id(featureObj);
+						aObj.setFeature(featureObj);
 					}
 
 				}
 			}
 
-		}
-		catch (FileNotFoundException e) {
+		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
-
-
-	}
-
-	//
-	public static Attribute getByAttNameDataset(String att_name, String dataset){
-
-		int counter = 0;
-
-		Attribute attributeObject=new Attribute();
-		try {
-			String query = "select col_index,created, dataset,name,relieff,updated "
-					+ "from AttributeDB a where name='"+att_name+"' and dataset = '"+dataset+"'";
-
-
-			em.getTransaction().begin();
-			Query q = em.createQuery(query);
-
-			List<?> list = q.getResultList();
-
-			Iterator<?> it = list.iterator();
-
-			while (it.hasNext()) {
-
-				attributeObject = new Attribute();
-
-				Object[] result = (Object[]) it.next();
-
-				attributeObject.setCol_index((int) result[0]);
-				attributeObject.setCreated((DateTime) result[1]);
-				attributeObject.setDataset((String) result[2]);
-				//attributeObject.setFeaturedb(attributeObject);//((long) result[3]);
-				
-				attributeObject.setName((String) result[4]);
-				attributeObject.setReliefF((float) result[5]);
-				attributeObject.setUpdated((DateTime) result[6]);
-
-
-				System.out.println(counter);
-				counter++;
-				LOGGER.debug("Counter =" + counter);
-				
-				
-
-			}
-
-			em.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return attributeObject;
-	}
-
-
-
-
-//
-	public static List<Attribute> getByFeatureDbId(String db_Id) {
-
-		List<Attribute> atts = new ArrayList<Attribute>();
-
-		int counter = 0;
-		try {
-			String query = "select col_index,created, dataset,feature_id,name,relieff,updated from AttributeDB where feature_id="
-					+ db_Id;
-
-			em.getTransaction().begin();
-			Query q = em.createQuery(query);
-
-			List<?> list = q.getResultList();
-
-			Iterator<?> it = list.iterator();
-
-			while (it.hasNext()) {
-
-				Attribute attributeObject = new Attribute();
-
-				Object[] result = (Object[]) it.next();
-
-				attributeObject.setCol_index((int) result[0]);
-				attributeObject.setCreated((DateTime) result[1]);
-				attributeObject.setDataset((String) result[2]);
-		//		attributeObject.setFeature_id((int) result[3]);
-				attributeObject.setName((String) result[4]);
-				attributeObject.setReliefF((float) result[5]);
-				attributeObject.setUpdated((DateTime) result[6]);
-
-				atts.add(attributeObject);
-				System.out.println(counter);
-				counter++;
-				LOGGER.debug("Counter =" + counter);
-
-			}
-
-			em.close();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 
-		return atts;
 	}
 
-	public static void main(String args[]) {
+	public static void main(String args[]) throws Exception {
 
-		Attribute AB = new Attribute();
-		// AB.load(null, null,
-		// "/home/bob/workspace/BranchBio/src/main/resources/WekaFiles/Oslo_mapping.txt");
-		//AttributeBuilder.getByFeatureDbId("12");
-		Attribute.getByAttNameDataset("Vyshakh", "newdataset");
+		AttributeService AB = new AttributeService();
+		// AB.load("newdataset","/home/bob/workspace/cure/WebContent/WEB-INF/data/Metabric_clinical_expression_DSS_sample_filtered.arff",
+		// /"/home/bob/workspace/BranchBio/src/main/resources/WekaFiles/Oslo_mapping.txt");
+		// AttributeService.getByFeatureId("2751");
+		AttributeService.getByAttNameDataset("83482", "dream_breast_cancer");
+
 	}
 
 }

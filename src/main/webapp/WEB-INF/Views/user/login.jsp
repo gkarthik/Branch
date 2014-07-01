@@ -4,7 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-<%@page import="DAO.GoogleAuthHelper"%>
+<%@page import="org.scripps.branch.service.GoogleAuthHelper"%>
 
 
 <html>
@@ -32,7 +32,7 @@
 						<spring:message code="text.login.page.login.failed.error" />
 					</div>
 				</c:if>
-				<form action="/BranchBio/login/authenticate" method="POST"
+				<form action="${contextPath}/login/authenticate" method="POST"
 					role="form">
 					<input type="hidden" name="${_csrf.parameterName}"
 						value="${_csrf.token}" /> <input type="hidden" name="scope"
@@ -63,7 +63,7 @@
 				</form>
 				<div class="row">
 					<div class="form-group col-lg-4">
-						<a href="/BranchBio/user/register"><spring:message
+						<a href="${contextPath}/user/register"><spring:message
 								code="label.navigation.registration.link" /></a>
 					</div>
 				</div>
