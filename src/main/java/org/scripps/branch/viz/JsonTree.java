@@ -13,6 +13,7 @@ import weka.classifiers.Classifier;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -39,9 +40,6 @@ public class JsonTree {
 		return tree;
 	}
 	
-
-
-
 	public JsonNode mapEntrezIdsToAttNames(Weka weka, JsonNode node, String dataset, LinkedHashMap<String,Classifier> custom_classifiers){
 		ObjectNode options = (ObjectNode)node.get("options");		
 		if(options!=null){
@@ -72,6 +70,27 @@ public class JsonTree {
 			}
 		}
 		return node;
+	}
+	
+	public static void main(String[] args){
+		ObjectMapper mapper = new ObjectMapper();
+		JsonTree t = new JsonTree();
+		LinkedHashMap<String,Classifier> custom_classifiers = new LinkedHashMap<String,Classifier>();
+		String dataset = "metabric_with_clinical";
+		Weka weka = new Weka();
+		JsonNode node = null;
+		String json = "{\"options\":{\"unique_id\":\"metabric_with_clinical_5\"}}";
+		try {
+			node = mapper.readTree(json);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		node = t.mapEntrezIdsToAttNames(weka, node, dataset, custom_classifiers);
+		System.out.println(node.toString());
 	}
 
 }
