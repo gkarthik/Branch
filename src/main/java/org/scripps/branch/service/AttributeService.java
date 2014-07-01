@@ -40,16 +40,10 @@ public class AttributeService extends Attribute {
 	//
 	public static Attribute getByAttNameDataset(String att_name,
 			String dataset) {
-
 		int counter = 0;
-
 		Attribute attributeObject = new Attribute();
 		try {
-			String query = "select id,col_index,name, dataset, relieff,created,updated ,feature "
-					+ "from Attribute where name='"
-					+ att_name
-					+ "' and dataset = '" + dataset + "'";
-
+			String query = "select A from Attribute A where A.name='"+ att_name+ "' and A.dataset = '" + dataset + "'";
 			em.getTransaction().begin();
 			Query q = em.createQuery(query);
 
@@ -59,13 +53,7 @@ public class AttributeService extends Attribute {
 
 			while (it.hasNext()) {
 
-				Object[] result = (Object[]) it.next();
-
-				attributeObject = new Attribute((int) result[0],
-						(int) result[1], (String) result[2],
-						(String) result[3], (float) result[4],
-						(DateTime) result[5], (DateTime) result[6]);
-
+				attributeObject  = (Attribute) it.next();
 				counter++;
 				LOGGER.debug("AttributeObject" + attributeObject.toString());
 			}
@@ -81,12 +69,42 @@ public class AttributeService extends Attribute {
 	public static List<Attribute> getByFeatureId(String db_Id) {
 
 		List<Attribute> atts = new ArrayList<Attribute>();
-
+		Attribute attributeObject = new Attribute();
 		int counter = 0;
 		try {
 
-			String query = "select id,col_index,name, dataset, relieff,created,updated ,feature from Attribute where feature_id="
-					+ db_Id;
+			String query = "select A from Attribute A where A.feature="+db_Id;
+			em.getTransaction().begin();
+			Query q = em.createQuery(query);
+			List<?> list = q.getResultList();
+			Iterator<?> it = list.iterator();
+			while (it.hasNext()) {
+
+				attributeObject = (Attribute) it.next();
+				atts.add(attributeObject);
+				counter++;
+
+				LOGGER.debug("Attribute Object" + attributeObject.toString());
+			}
+			LOGGER.debug("Counter =" + counter);
+			em.getTransaction().commit();
+			em.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return atts;
+	}
+	
+	public static List<Attribute> getByFeatureUniqueId(String Unique_Id) {
+
+		List<Attribute> atts = new ArrayList<Attribute>();
+
+		int counter = 0;
+		Attribute attributeObject = new Attribute();
+		try {
+
+			String query = "select A from Attribute A, Feature F where A.feature=F.id and F.unique_id='" + Unique_Id+"'";
 
 			em.getTransaction().begin();
 
@@ -96,17 +114,9 @@ public class AttributeService extends Attribute {
 			Iterator<?> it = list.iterator();
 
 			while (it.hasNext()) {
-
-				Object[] result = (Object[]) it.next();
-				Attribute attributeObject = new Attribute((int) result[0],
-						(int) result[1], (String) result[2],
-						(String) result[3], (float) result[4],
-						(DateTime) result[5], (DateTime) result[6]);
-
-				attributeObject.setFeature((Feature) result[7]);
+				attributeObject  = (Attribute) it.next();
 				atts.add(attributeObject);
 				counter++;
-
 				LOGGER.debug("Attribute Object" + attributeObject.toString());
 			}
 			LOGGER.debug("Counter =" + counter);
@@ -238,21 +248,9 @@ public class AttributeService extends Attribute {
 	public static void main(String args[]) throws Exception {
 
 		AttributeService AB = new AttributeService();
-		// AB.load("newdataset","/home/bob/workspace/cure/WebContent/WEB-INF/data/Metabric_clinical_expression_DSS_sample_filtered.arff",
-		// /"/home/bob/workspace/BranchBio/src/main/resources/WekaFiles/Oslo_mapping.txt");
-		// AttributeService.getByFeatureId("2751");
-		AttributeService.getByAttNameDataset("83482", "dream_breast_cancer");
+		AttributeService.getByFeatureId("2751");
+		//AttributeService.getByFeatureUniqueId("metabric_with_clinical_10");
 
 	}
 
 }
-
-// System.out.println((int)result[0]);
-// System.out.println((DateTime) result[1]);
-// System.out.println((String)result[2]);
-// System.out.println((int)result[3]);
-//
-// System.out.println((String)result[4]);
-// System.out.println((float)result[5]);
-// System.out.println((DateTime) result[6]);
-//

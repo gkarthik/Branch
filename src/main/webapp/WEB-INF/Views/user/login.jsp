@@ -14,11 +14,13 @@
 	href="${pageContext.request.contextPath}/static/css/social-buttons-3.css" />
 </head>
 <body>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 	<div class="page-header">
 		<h1>
 			<spring:message code="label.user.login.page.title" />
 		</h1>
 	</div>
+	<h1>${pageContext.request.contextPath}</h1>
 	<sec:authorize access="isAnonymous()">
 		<div class="panel panel-default">
 			<div class="panel-body">

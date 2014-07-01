@@ -12,6 +12,7 @@
 	src="${pageContext.request.contextPath}/static/js/app/user.form.js"></script>
 </head>
 <body>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 	<div class="page-header">
 		<h1>
 			<spring:message code="label.user.registration.page.title" />
