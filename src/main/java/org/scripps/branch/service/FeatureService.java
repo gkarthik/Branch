@@ -1,7 +1,5 @@
 package org.scripps.branch.service;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,16 +29,6 @@ public class FeatureService extends Feature {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(FeatureService.class);
-
-	private List<Attribute> dataset_attributes;
-
-	public List<Attribute> getDataset_attributes() {
-		return dataset_attributes;
-	}
-
-	public void setDataset_attributes(List<Attribute> dataset_attributes) {
-		this.dataset_attributes = dataset_attributes;
-	}
 
 	// From Feature Table: public static Map<String, Feature>
 	// getByDataset(String dataset, boolean load_annotations_very_slowly){
@@ -72,7 +60,7 @@ public class FeatureService extends Feature {
 				Object[] result = (Object[]) it.next();
 
 				Feature featureObject = features.get(result[1]);// check for
-																	// f.uniqueid
+																// f.uniqueid
 
 				if (featureObject == null) {
 
@@ -201,8 +189,7 @@ public class FeatureService extends Feature {
 
 		ObjectNode featureObject = mapper.createObjectNode();
 		String query = "select f.id,f.unique_id,f.short_name,"
-				+ "f.long_name,f.description"
-				+ " from Feature f, Attribute a "
+				+ "f.long_name,f.description" + " from Feature f, Attribute a "
 				+ "where a.dataset='metabric_with_clinical' and "
 				+ "f.id = feature_id and " + "f.unique_id like 'metabric%'";
 
@@ -268,18 +255,27 @@ public class FeatureService extends Feature {
 		// / FeatureService.getByDbId(1);
 		// FeatureService.getByDataset("dream_breast_cancer", false);
 
-		 ObjectMapper mapper = new ObjectMapper();
-		 ObjectNode features =
-		 FeatureService.getMetaBricClinicalFeatures(mapper);
-		 String json_features;
-		 try {
-		 json_features = mapper.writeValueAsString(features);
-		 System.out.println(json_features);
-		 } catch (JsonProcessingException e) {
-		 // TODO Auto-generated catch block
-		 e.printStackTrace();
-		 }
-		
+		ObjectMapper mapper = new ObjectMapper();
+		ObjectNode features = FeatureService
+				.getMetaBricClinicalFeatures(mapper);
+		String json_features;
+		try {
+			json_features = mapper.writeValueAsString(features);
+			System.out.println(json_features);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
+	}
+
+	private List<Attribute> dataset_attributes;
+
+	public List<Attribute> getDataset_attributes() {
+		return dataset_attributes;
+	}
+
+	public void setDataset_attributes(List<Attribute> dataset_attributes) {
+		this.dataset_attributes = dataset_attributes;
 	}
 }
