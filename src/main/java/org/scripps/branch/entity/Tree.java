@@ -1,10 +1,12 @@
 package org.scripps.branch.entity;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,18 +31,20 @@ public class Tree {
 	@Column
 	private String id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", insertable = false, updatable = false)
-	private User userdb;
-
+	private User user;
+	
+	
 	// @OneToMany(cascade={CascadeType.ALL}, mappedBy = "treedb")
 	//
 	// private List<Tree_FeatureDB> treefeatures;
 
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "tree_feature", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "feature_id") })
-	private Collection<Feature> featuredb;
-
+	//private Collection<Feature> featuredb;
+	 private List<Feature> features;
+	
 	@Column
 	private String comment;
 
@@ -126,6 +130,22 @@ public class Tree {
 
 	public void setUser_saved(boolean user_saved) {
 		this.user_saved = user_saved;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public List<Feature> getFeatures() {
+		return features;
+	}
+
+	public void setFeatures(List<Feature> features) {
+		this.features = features;
 	}
 
 }

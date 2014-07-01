@@ -20,11 +20,15 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.jolbox.bonecp.BoneCPDataSource;
 
 @Configuration
-@EnableJpaRepositories(basePackages = { "org.scripps.branch.entity", "org.scripps.branch.service", "org.scripps.branch.repository", "org.scripps.branch.utilities" })
+@EnableJpaRepositories(basePackages = { "org.scripps.branch.entity",
+		"org.scripps.branch.service", "org.scripps.branch.repository",
+		"org.scripps.branch.utilities" })
 @EnableTransactionManagement
 public class PersistenceContext {
 
-	private static final String[] PROPERTY_PACKAGES_TO_SCAN = { "org.scripps.branch.entity", "org.scripps.branch.service", "org.scripps.branch.repository", "org.scripps.branch.utilities" };
+	private static final String[] PROPERTY_PACKAGES_TO_SCAN = {
+			"org.scripps.branch.entity", "org.scripps.branch.service",
+			"org.scripps.branch.repository", "org.scripps.branch.utilities" };
 
 	protected static final String PROPERTY_NAME_DATABASE_DRIVER = "db.driver";
 	protected static final String PROPERTY_NAME_DATABASE_PASSWORD = "db.password";

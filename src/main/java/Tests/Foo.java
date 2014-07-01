@@ -1,6 +1,5 @@
 package Tests;
 
-
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -15,83 +14,84 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Foo implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public Foo() {
-        super();
-    }
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "ID")
+	private long id;
 
-    public Foo(final String name) {
-        super();
+	@Column(name = "NAME")
+	private String name;
 
-        this.name = name;
-    }
+	@ManyToOne(targetEntity = Bar.class, fetch = FetchType.EAGER)
+	@JoinColumn(name = "BAR_ID")
+	private Bar bar;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID")
-    private long id;
-    @Column(name = "NAME")
-    private String name;
+	public Foo() {
+		super();
+	}
 
-    @ManyToOne(targetEntity = Bar.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "BAR_ID")
-    private Bar bar;
+	public Foo(final String name) {
+		super();
 
-    public Bar getBar() {
-        return bar;
-    }
+		this.name = name;
+	}
 
-    public void setBar(final Bar bar) {
-        this.bar = bar;
-    }
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final Foo other = (Foo) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
 
-    public long getId() {
-        return id;
-    }
+	public Bar getBar() {
+		return bar;
+	}
 
-    public void setId(final int id) {
-        this.id = id;
-    }
+	public long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(final String name) {
-        this.name = name;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
-    }
+	public void setBar(final Bar bar) {
+		this.bar = bar;
+	}
 
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final Foo other = (Foo) obj;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        return true;
-    }
+	public void setId(final int id) {
+		this.id = id;
+	}
 
-    @Override
-    public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("Foo [name=").append(name).append("]");
-        return builder.toString();
-    }
+	public void setName(final String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+		builder.append("Foo [name=").append(name).append("]");
+		return builder.toString();
+	}
 
 }
