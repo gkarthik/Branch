@@ -12,32 +12,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-
-
-
-
-
-
-
-
-
-
-//import WekaDataBuilder.AttributeService;
-//
-//import org.hibernate.validator.internal.util.privilegedactions.GetAnnotationParameter;
 import org.joda.time.DateTime;
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.Feature;
-///import org.scripps.combo.model.Feature;
-//import org.scripps.combo.model.Feature;
-//import org.scripps.util.JdbcConnection;
-//import org.scripps.combo.model.Feature;
-//import org.scripps.combo.model.Attribute;
-//import org.scripps.combo.model.Feature;
-//import org.scripps.util.JdbcConnection;
-//import org.scripps.combo.model.Annotation;
-//import org.scripps.combo.model.Attribute;
-//import org.scripps.combo.model.TextAnnotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,12 +131,10 @@ public class FeatureService extends Feature {
 	// From FeatureTable: public static Feature getByDbId(int id)
 	public static Feature getByDbId(long id) {
 
-		Feature featureObject = null;
+		Feature featureObject = new Feature();
 
-		String query = "select f.id,f.unique_id,f.short_name,"
-				+ "f.long_name,f.description,f.created,f.updated"
-				+ " from Feature f where f.id =" + id;
-
+		String query = "select f Feature f where f.id =" + id;
+		
 		try {
 			em.getTransaction().begin();
 			Query q = em.createQuery(query);
@@ -170,15 +145,8 @@ public class FeatureService extends Feature {
 			int featureCounter = 0;
 
 			while (it.hasNext()) {
-
-				Object[] result = (Object[]) it.next();
-
 				featureObject = new Feature();
-				featureObject = new Feature((Long) result[0],
-						(String) result[1], (String) result[2],
-						(String) result[3], (String) result[4],
-						(DateTime) result[5], (DateTime) result[6]);
-				featureCounter++;
+				featureObject =	(Feature) it.next();
 			}
 
 			LOGGER.debug("FeatureCounter for getbyuniqueId:" + featureCounter);
@@ -197,9 +165,7 @@ public class FeatureService extends Feature {
 
 		Feature featureObject = null;
 
-		String query = "select f.id,f.unique_id,f.short_name,"
-				+ "f.long_name,f.description,f.created,f.updated"
-				+ " from Feature f where f.unique_id ='" + unique_id + "'";
+		String query = "select f Feature f where f.unique_id ='" + unique_id + "'";
 
 		try {
 			em.getTransaction().begin();
@@ -261,7 +227,6 @@ public class FeatureService extends Feature {
 				fObj.put("long_name", (String) result[3]);
 				fObj.put("description", (String) result[4]);
 				featureArrayNode.add(fObj);
-
 				featureCounter++;
 			}
 
