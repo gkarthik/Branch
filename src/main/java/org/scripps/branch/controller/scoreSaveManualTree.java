@@ -1,5 +1,6 @@
 package org.scripps.branch.controller;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -7,11 +8,14 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.scripps.branch.classifier.ManualTree;
+import org.scripps.branch.config.ApplicationContext;
+import org.scripps.branch.config.initWekaObjects;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.viz.JsonTree;
 import org.slf4j.Logger;
@@ -35,23 +39,23 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @Controller
 public class scoreSaveManualTree {
 	
+	Weka wekaObj = new Weka();
+	
 	@Autowired
 	ServletContext servletContext;
 	
+	@Autowired
+	private static ApplicationContext appContext;
+	
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = {"Content-type=application/json"})
-    public @ResponseBody String scoreOrSaveTree(@RequestBody JsonNode data){
-		Weka wekaObj = new Weka();
-		InputStream test_file = servletContext.getResourceAsStream(servletContext.getRealPath("/WEB-INF/data/Metabric_clinical_expression_DSS_sample_filtered.arff"));
-		try {
-			wekaObj.buildWeka(test_file, null, "metabric_with_clinical");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    public @ResponseBody String scoreOrSaveTree(@RequestBody JsonNode data, HttpServletRequest request){
+		System.out.println(wekaObj.getTrain().numAttributes());
         JsonTree t = new JsonTree();
         ManualTree readtree = new ManualTree();
         LinkedHashMap<String, Classifier> custom_classifiers = null;
+        System.out.println("raeding tree...");
 		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"), data.get("dataset").asText(), custom_classifiers);
+		System.out.println("finished raeding tree...");
 		ObjectMapper mapper = new ObjectMapper();
 		String json = "";
 		try {
@@ -62,6 +66,11 @@ public class scoreSaveManualTree {
 		}
         return json;
     }
+	
+	public static void main(String[] args){
+		Weka weka = initWekaObjects.getWeka();
+		System.out.println(weka.getTrain().numInstances());
+	}
 	
 //	String command = data.get("command").asText(); //scoretree or savetree
 //	int prev_tree_id = -1;
