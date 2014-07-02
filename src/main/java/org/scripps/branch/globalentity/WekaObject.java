@@ -1,4 +1,4 @@
-package org.scripps.branch.config;
+package org.scripps.branch.globalentity;
 
 import java.io.InputStream;
 
@@ -8,14 +8,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
  
-public class initWekaObjects implements ApplicationContextAware {
+public class WekaObject implements ApplicationContextAware {
  
   private static ApplicationContext ctx;
   private static Weka weka;
+  private static int checktemp;
  
   @Override
   public void setApplicationContext(ApplicationContext appContext) throws BeansException {
 	  ctx = appContext;
+	  checktemp = 5;
 	  Weka wekaObj = new Weka();
 	  if(wekaObj.getTrain()==null){
 			Resource train_file = ctx.getResource("/WEB-INF/data/Metabric_clinical_expression_DSS_sample_filtered.arff");
@@ -37,5 +39,9 @@ public class initWekaObjects implements ApplicationContextAware {
   
   public static Weka getWeka() {
 	    return weka;
+  }
+  
+  public static int getTemp() {
+	    return checktemp;
 	  }
 }

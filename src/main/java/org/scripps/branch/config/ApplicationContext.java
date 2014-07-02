@@ -1,5 +1,6 @@
 package org.scripps.branch.config;
 
+import org.scripps.branch.globalentity.WekaObject;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -12,7 +13,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 @Configuration
 @ComponentScan(basePackages = { "org.scripps.branch.entity",
 		"org.scripps.branch.service", "org.scripps.branch.repository",
-		"org.scripps.branch.utilities" })
+		"org.scripps.branch.utilities", "org.scripps.branch.globalentity" })
 @Import({ WebApplicationContext.class, PersistenceContext.class,
 		SecurityContext.class, SocialContext.class })
 @PropertySource("classpath:application.properties")
@@ -36,7 +37,7 @@ public class ApplicationContext {
 	}
 	
 	@Bean
-	public initWekaObjects initWekaObject() {
-		return new initWekaObjects();
+	public WekaObject initWekaInApplicationContext() {
+		return new WekaObject();
 	}
 }
