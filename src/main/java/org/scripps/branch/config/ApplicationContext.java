@@ -15,7 +15,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 @Configuration
 @ComponentScan(basePackages = { "org.scripps.branch.entity",
 		"org.scripps.branch.service", "org.scripps.branch.repository",
-		"org.scripps.branch.utilities", "org.scripps.branch.globalentity" })
+		"org.scripps.branch.utilities", "org.scripps.branch.globalentity", "org.scripps.branch.viz" })
 @Import({ WebApplicationContext.class, PersistenceJPAConfig.class,
 		SecurityContext.class, SocialContext.class })
 @PropertySource("classpath:application.properties")

@@ -21,16 +21,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+@Service
 public class JsonTree {
 	
-	@Autowired
-	AttributeRepository attr;
-	
-	public ManualTree parseJsonTree(Weka weka, JsonNode rootNode, String dataset, LinkedHashMap<String,Classifier> custom_classifiers){
+	public ManualTree parseJsonTree(Weka weka, JsonNode rootNode, String dataset, LinkedHashMap<String,Classifier> custom_classifiers, AttributeRepository attr){
 		ManualTree tree = new ManualTree();
 		try {
 			if(!dataset.equals("mammal")){
-				rootNode = mapEntrezIdsToAttNames(weka, rootNode, dataset, custom_classifiers);
+				rootNode = mapEntrezIdsToAttNames(weka, rootNode, dataset, custom_classifiers, attr);
 			}
 			tree.setTreeStructure(rootNode);
 			tree.setListOfFc(custom_classifiers);
@@ -48,7 +46,7 @@ public class JsonTree {
 		return tree;
 	}
 	
-	public JsonNode mapEntrezIdsToAttNames(Weka weka, JsonNode node, String dataset, LinkedHashMap<String,Classifier> custom_classifiers){
+	public JsonNode mapEntrezIdsToAttNames(Weka weka, JsonNode node, String dataset, LinkedHashMap<String,Classifier> custom_classifiers, AttributeRepository attr){
 		ObjectNode options = (ObjectNode)node.get("options");	
 		if(options!=null){
 			JsonNode unique_id = options.get("unique_id");
@@ -65,7 +63,7 @@ public class JsonTree {
 					}
 				} else {
 					if(unique_id.asText().contains("custom_tree_")){
-						ManualTree.addCustomTree(unique_id.asText(), weka, custom_classifiers, dataset);
+						ManualTree.addCustomTree(unique_id.asText(), weka, custom_classifiers, dataset, attr);
 					}
 					options.put("attribute_name", unique_id.asText());
 				}
@@ -74,31 +72,31 @@ public class JsonTree {
 		ArrayNode children = (ArrayNode)node.get("children");
 		if(children!=null){
 			for(JsonNode child : children){
-				mapEntrezIdsToAttNames(weka, child, dataset, custom_classifiers);
+				mapEntrezIdsToAttNames(weka, child, dataset, custom_classifiers, attr);
 			}
 		}
 		return node;
 	}
 	
 	public static void main(String[] args){
-		ObjectMapper mapper = new ObjectMapper();
-		JsonTree t = new JsonTree();
-		LinkedHashMap<String,Classifier> custom_classifiers = new LinkedHashMap<String,Classifier>();
-		String dataset = "metabric_with_clinical";
-		Weka weka = new Weka();
-		JsonNode node = null;
-		String json = "{\"options\":{\"unique_id\":\"metabric_with_clinical_5\"}}";
-		try {
-			node = mapper.readTree(json);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		node = t.mapEntrezIdsToAttNames(weka, node, dataset, custom_classifiers);
-		System.out.println(node.toString());
+//		ObjectMapper mapper = new ObjectMapper();
+//		JsonTree t = new JsonTree();
+//		LinkedHashMap<String,Classifier> custom_classifiers = new LinkedHashMap<String,Classifier>();
+//		String dataset = "metabric_with_clinical";
+//		Weka weka = new Weka();
+//		JsonNode node = null;
+//		String json = "{\"options\":{\"unique_id\":\"metabric_with_clinical_5\"}}";
+//		try {
+//			node = mapper.readTree(json);
+//		} catch (JsonProcessingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		node = t.mapEntrezIdsToAttNames(weka, node, dataset, custom_classifiers);
+//		System.out.println(node.toString());
 	}
 
 }
