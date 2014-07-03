@@ -12,19 +12,24 @@ import org.scripps.branch.repository.AttributeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Query;
 
 @Repository
-public class AttributeServiceImpl implements AttributeRepository {
+public class AttributeRepositoryImpl implements AttributeRepository {
 	
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(AttributeService.class);
 	
-	@PersistenceContext
-	protected EntityManager em;
+	private EntityManager em;
 	
-	@Override
+	@PersistenceContext
+    public void setEntityManager(EntityManager entityManager) {
+        this.em = entityManager;
+    }
+	
+	@Transactional
 	public List<Attribute> findByFeatureUniqueId(String unique_id, String dataset) {
 		List<Attribute> atts = new ArrayList<Attribute>();
 		int counter = 0;
@@ -33,7 +38,7 @@ public class AttributeServiceImpl implements AttributeRepository {
 			String query = "select A from Attribute A, Feature F where A.feature=F.id and F.unique_id='"
 					+ unique_id + "' and A.dataset='" + dataset + "'";
 			LOGGER.debug(query);
-			//em.getTransaction().begin();
+			System.out.println(em==null);
 			Query q = em.createQuery(query);
 			List<?> list = q.getResultList();
 			Iterator<?> it = list.iterator();
@@ -48,13 +53,6 @@ public class AttributeServiceImpl implements AttributeRepository {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		return atts;
 	}
-	
-	public static void main(String[] args){
-		AttributeServiceImpl a = new AttributeServiceImpl();
-		a.findByFeatureUniqueId("1960", "metabric_with_clinical");
-	}
-
 }

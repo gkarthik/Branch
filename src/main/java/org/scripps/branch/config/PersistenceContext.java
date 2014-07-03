@@ -6,7 +6,7 @@ import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
-import org.scripps.branch.service.AttributeServiceImpl;
+import org.scripps.branch.service.AttributeRepositoryImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -93,10 +93,8 @@ public class PersistenceContext {
 				.getRequiredProperty(PROPERTY_NAME_HIBERNATE_NAMING_STRATEGY));
 		jpaProperties.put(PROPERTY_NAME_HIBERNATE_SHOW_SQL,
 				env.getRequiredProperty(PROPERTY_NAME_HIBERNATE_SHOW_SQL));
-
-		entityManagerFactoryBean.setPersistenceUnitName("NEW");
+		
 		entityManagerFactoryBean.setJpaProperties(jpaProperties);
-
 		return entityManagerFactoryBean;
 	}
 
@@ -123,9 +121,4 @@ public class PersistenceContext {
 		return transactionManager;
 	}
 	
-	@Bean
-	public AttributeServiceImpl initAttributeService() {
-		return new AttributeServiceImpl();
-	}
-
 }
