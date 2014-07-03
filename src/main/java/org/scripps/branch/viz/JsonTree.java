@@ -44,9 +44,10 @@ public class JsonTree {
 		ObjectNode options = (ObjectNode)node.get("options");		
 		if(options!=null){
 			JsonNode unique_id = options.get("unique_id");
+			AttributeService _t = new AttributeService();
 			if(unique_id!=null && unique_id.asText()!=""){
 				if(!unique_id.asText().contains("custom_")){
-					List<Attribute> atts = AttributeService.getByFeatureUniqueId(unique_id.asText(),dataset);
+					List<Attribute> atts = _t.getByFeatureUniqueId(unique_id.asText(),dataset);
 					if(atts!=null&&atts.size()>0){
 						for(Attribute att : atts){
 							String att_name = att.getName();

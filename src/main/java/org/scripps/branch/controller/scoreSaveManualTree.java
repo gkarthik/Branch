@@ -48,16 +48,20 @@ public class scoreSaveManualTree {
 		Weka wekaObj = weka.getWeka();
         JsonTree t = new JsonTree();
         ManualTree readtree = new ManualTree();
-        LinkedHashMap<String, Classifier> custom_classifiers = null;
+        LinkedHashMap<String, Classifier> custom_classifiers = new LinkedHashMap<String, Classifier>();
 		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"), data.get("dataset").asText(), custom_classifiers);
 		ObjectMapper mapper = new ObjectMapper();
-		String json = "";
+		ObjectNode result = mapper.createObjectNode();
+		//serialize and return the result		
+		JsonNode treenode = readtree.getJsontree();
+		result.put("treestruct", treenode);
+		String result_json = "";
 		try {
-			json = mapper.writeValueAsString(readtree);
+			result_json = mapper.writeValueAsString(result);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        return json;
+        return result_json;
     }
 }

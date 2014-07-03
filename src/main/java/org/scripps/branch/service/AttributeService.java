@@ -14,7 +14,10 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NamedQueries;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
 
 import org.scripps.branch.entity.Attribute;
@@ -22,23 +25,34 @@ import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Weka;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.repository.core.support.RepositoryFactorySupport;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import weka.core.Instances;
 
-public class AttributeService extends Attribute {
+@Repository
+public class AttributeService implements JpaRepository<Attribute, Long>{
 
 	public static EntityManagerFactory emf = Persistence
 			.createEntityManagerFactory("DEFAULTJPA");
-	public static EntityManager em = emf.createEntityManager();
+	
+//	@PersistenceContext
+//    private EntityManager em;
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(AttributeService.class);
 
-	// Function load from Attribute.java : public static void load(String
-	// dataset_name, String weka_data, String att_info_file) throws Exception {
-
-	//
-	public static Attribute getByAttNameDataset(String att_name, String dataset) {
+    
+	public Attribute getByAttNameDataset(String att_name, String dataset) {
+		EntityManager em = emf.createEntityManager();
 		int counter = 0;
 		Attribute attributeObject = new Attribute();
 		try {
@@ -66,8 +80,8 @@ public class AttributeService extends Attribute {
 		return attributeObject;
 	}
 
-	public static List<Attribute> getByFeatureId(String db_Id) {
-
+	public List<Attribute> getByFeatureId(String db_Id) {
+		EntityManager em = emf.createEntityManager();
 		List<Attribute> atts = new ArrayList<Attribute>();
 		Attribute attributeObject = new Attribute();
 		int counter = 0;
@@ -95,15 +109,18 @@ public class AttributeService extends Attribute {
 
 		return atts;
 	}
-
-	public static List<Attribute> getByFeatureUniqueId(String Unique_Id,
+	
+	@Transactional
+	public List<Attribute> getByFeatureUniqueId(String Unique_Id,
 			String dataset) {
+		EntityManager em = emf.createEntityManager();
 		List<Attribute> atts = new ArrayList<Attribute>();
 		int counter = 0;
 		Attribute attributeObject = new Attribute();
 		try {
 			String query = "select A from Attribute A, Feature F where A.feature=F.id and F.unique_id='"
 					+ Unique_Id + "' and A.dataset='" + dataset + "'";
+			LOGGER.debug(query);
 			em.getTransaction().begin();
 			Query q = em.createQuery(query);
 			List<?> list = q.getResultList();
@@ -126,15 +143,16 @@ public class AttributeService extends Attribute {
 	}
 
 	public static void main(String args[]) throws Exception {
-		AttributeService AB = new AttributeService();
-		AttributeService.getByFeatureId("2751");
-		// /AttributeService.getByFeatureUniqueId("metabric_with_clinical_10","metabric_with_clinical");
-
+		//List<Attribute> ListOfAb = AttributeRepository.getByFeatureUniqueId("1960", "metabric_with_clinical");
+		
+		//AttributeService.getByFeatureId("2751");
+		
+		
 	}
 
 	public void load(String dataset_Name, String weka_Data,
 			String attribute_Info_File) throws Exception {
-
+		EntityManager em = emf.createEntityManager();
 		Map<String, String> att_uni = new HashMap<String, String>();
 
 		int counter = 0;
@@ -193,8 +211,7 @@ public class AttributeService extends Attribute {
 					if (unique_id != null) {
 						Feature feat = FeatureService.getByUniqueId(unique_id);
 						if (feat == null) {
-							Attribute attrObj = AttributeService
-									.getByAttNameDataset(name, dataset_Name);
+							Attribute attrObj = getByAttNameDataset(name, dataset_Name);
 							if (attrObj != null) {
 								feat = FeatureService.getByDbId(attrObj
 										.getFeature().getId());
@@ -245,6 +262,108 @@ public class AttributeService extends Attribute {
 			e.printStackTrace();
 		}
 
+	}
+
+	@Override
+	public Page<Attribute> findAll(Pageable arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public long count() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void delete(Long arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(Attribute arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(Iterable<? extends Attribute> arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteAll() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean exists(Long arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Iterable<Attribute> findAll(Iterable<Long> arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Attribute findOne(Long arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <S extends Attribute> S save(S arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deleteAllInBatch() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteInBatch(Iterable<Attribute> arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Attribute> findAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Attribute> findAll(Sort arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void flush() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public <S extends Attribute> List<S> save(Iterable<S> arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Attribute saveAndFlush(Attribute arg0) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

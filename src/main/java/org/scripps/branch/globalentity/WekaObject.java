@@ -29,7 +29,7 @@ public class WekaObject implements ApplicationContextAware {
 			}
 		}
 	  weka = wekaObj;
-	  System.out.println("Instances: "+weka.getTrain().numInstances());
+	  //System.out.println("Instances: "+weka.getTrain().numInstances());
   }
  
  
