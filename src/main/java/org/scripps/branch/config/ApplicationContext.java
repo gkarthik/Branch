@@ -1,8 +1,8 @@
 package org.scripps.branch.config;
 
 import org.scripps.branch.globalentity.WekaObject;
-import org.scripps.branch.service.AttributeService;
-import org.scripps.branch.service.AttributeRepositoryImpl;
+import org.scripps.branch.repository.AttributeRepository;
+import org.scripps.branch.repository.AttributeRepositoryImpl;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,7 +16,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 @ComponentScan(basePackages = { "org.scripps.branch.entity",
 		"org.scripps.branch.service", "org.scripps.branch.repository",
 		"org.scripps.branch.utilities", "org.scripps.branch.globalentity" })
-@Import({ WebApplicationContext.class, PersistenceContext.class,
+@Import({ WebApplicationContext.class, PersistenceJPAConfig.class,
 		SecurityContext.class, SocialContext.class })
 @PropertySource("classpath:application.properties")
 public class ApplicationContext {
@@ -38,7 +38,7 @@ public class ApplicationContext {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
 	
-	@Bean
+	@Bean(name="globalWeka")
 	public WekaObject initWekaInApplicationContext() {
 		return new WekaObject();
 	}

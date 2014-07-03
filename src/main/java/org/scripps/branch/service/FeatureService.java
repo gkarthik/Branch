@@ -23,9 +23,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class FeatureService extends Feature {
 
-	public static EntityManagerFactory emf = Persistence
-			.createEntityManagerFactory("DEFAULTJPA");
-	public static EntityManager em = emf.createEntityManager();
+	public static EntityManagerFactory emf;
+	public static EntityManager em;
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(FeatureService.class);

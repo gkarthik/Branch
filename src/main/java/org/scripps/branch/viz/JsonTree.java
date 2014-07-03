@@ -7,7 +7,11 @@ import java.util.List;
 import org.scripps.branch.classifier.ManualTree;
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.Weka;
-import org.scripps.branch.service.AttributeService;
+import org.scripps.branch.repository.AttributeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import weka.classifiers.Classifier;
 
@@ -18,6 +22,10 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class JsonTree {
+	
+	@Autowired
+	AttributeRepository attr;
+	
 	public ManualTree parseJsonTree(Weka weka, JsonNode rootNode, String dataset, LinkedHashMap<String,Classifier> custom_classifiers){
 		ManualTree tree = new ManualTree();
 		try {
@@ -41,13 +49,12 @@ public class JsonTree {
 	}
 	
 	public JsonNode mapEntrezIdsToAttNames(Weka weka, JsonNode node, String dataset, LinkedHashMap<String,Classifier> custom_classifiers){
-		ObjectNode options = (ObjectNode)node.get("options");		
+		ObjectNode options = (ObjectNode)node.get("options");	
 		if(options!=null){
 			JsonNode unique_id = options.get("unique_id");
-			AttributeService _t = new AttributeService();
 			if(unique_id!=null && unique_id.asText()!=""){
 				if(!unique_id.asText().contains("custom_")){
-					List<Attribute> atts = _t.getByFeatureUniqueId(unique_id.asText(),dataset);
+					List<Attribute> atts = attr.findByFeatureUniqueId(unique_id.asText(),dataset);
 					if(atts!=null&&atts.size()>0){
 						for(Attribute att : atts){
 							String att_name = att.getName();
