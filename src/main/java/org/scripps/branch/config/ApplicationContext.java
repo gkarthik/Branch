@@ -22,6 +22,11 @@ public class ApplicationContext {
 	private static final String MESSAGE_SOURCE_BASE_NAME = "i18n/messages";
 
 	@Bean
+	public WekaObject initWekaInApplicationContext() {
+		return new WekaObject();
+	}
+
+	@Bean
 	public MessageSource messageSource() {
 		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
 
@@ -34,10 +39,5 @@ public class ApplicationContext {
 	@Bean
 	public PropertySourcesPlaceholderConfigurer propertyPlaceHolderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
-	}
-	
-	@Bean
-	public WekaObject initWekaInApplicationContext() {
-		return new WekaObject();
 	}
 }

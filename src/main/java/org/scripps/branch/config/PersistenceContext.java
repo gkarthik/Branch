@@ -27,8 +27,9 @@ import com.jolbox.bonecp.BoneCPDataSource;
 public class PersistenceContext {
 
 	private static final String[] PROPERTY_PACKAGES_TO_SCAN = {
-			"org.scripps.branch.entity", "org.scripps.branch.service",
-			"org.scripps.branch.repository", "org.scripps.branch.utilities" };
+		"org.scripps.branch.entity",
+		"org.scripps.branch.service", "org.scripps.branch.repository",
+		"org.scripps.branch.utilities", "org.scripps.branch.globalentity"  };
 
 	protected static final String PROPERTY_NAME_DATABASE_DRIVER = "db.driver";
 	protected static final String PROPERTY_NAME_DATABASE_PASSWORD = "db.password";
@@ -92,7 +93,7 @@ public class PersistenceContext {
 		jpaProperties.put(PROPERTY_NAME_HIBERNATE_SHOW_SQL,
 				env.getRequiredProperty(PROPERTY_NAME_HIBERNATE_SHOW_SQL));
 
-		entityManagerFactoryBean.setPersistenceUnitName("NEW");
+		
 		entityManagerFactoryBean.setJpaProperties(jpaProperties);
 
 		return entityManagerFactoryBean;

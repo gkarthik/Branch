@@ -6,22 +6,34 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
+
+import org.hibernate.jpa.internal.EntityManagerFactoryRegistry;
 import org.joda.time.DateTime;
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.Feature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+
+@Stateful
 public class FeatureService extends Feature {
+
+	
+	  @PersistenceContext(unitName = "DEFAULTJPA", type = PersistenceContextType.EXTENDED)
 
 	public static EntityManagerFactory emf = Persistence
 			.createEntityManagerFactory("DEFAULTJPA");
@@ -32,7 +44,7 @@ public class FeatureService extends Feature {
 
 	// From Feature Table: public static Map<String, Feature>
 	// getByDataset(String dataset, boolean load_annotations_very_slowly){
-	public static Map<String, Feature> getByDataset(String dataset,
+	public  static Map<String, Feature> getByDataset(String dataset,
 			boolean load_annotations_very_slowly) {
 
 		Map<String, Feature> features = new HashMap<String, Feature>();
@@ -122,7 +134,7 @@ public class FeatureService extends Feature {
 		Feature featureObject = new Feature();
 
 		String query = "select f Feature f where f.id =" + id;
-		
+
 		try {
 			em.getTransaction().begin();
 			Query q = em.createQuery(query);
@@ -134,7 +146,7 @@ public class FeatureService extends Feature {
 
 			while (it.hasNext()) {
 				featureObject = new Feature();
-				featureObject =	(Feature) it.next();
+				featureObject = (Feature) it.next();
 			}
 
 			LOGGER.debug("FeatureCounter for getbyuniqueId:" + featureCounter);
@@ -153,7 +165,8 @@ public class FeatureService extends Feature {
 
 		Feature featureObject = null;
 
-		String query = "select f Feature f where f.unique_id ='" + unique_id + "'";
+		String query = "select f Feature f where f.unique_id ='" + unique_id
+				+ "'";
 
 		try {
 			em.getTransaction().begin();
@@ -185,8 +198,9 @@ public class FeatureService extends Feature {
 
 	}
 
-	public static ObjectNode getMetaBricClinicalFeatures(ObjectMapper mapper) {
+	public static  ObjectNode getMetaBricClinicalFeatures(ObjectMapper mapper) {
 
+		
 		ObjectNode featureObject = mapper.createObjectNode();
 		String query = "select f.id,f.unique_id,f.short_name,"
 				+ "f.long_name,f.description" + " from Feature f, Attribute a "
@@ -231,6 +245,8 @@ public class FeatureService extends Feature {
 		return featureObject;
 	}
 
+	
+
 	// load feature table with data from Homosapiens_gene.info
 	public static void loadFeatureTable() {
 		int res = 0;
@@ -250,14 +266,13 @@ public class FeatureService extends Feature {
 	public static void main(String args[]) {
 
 		// loadFeatureTable();
-		// / FeatureService a =new FeatureService();
+		 FeatureService a =new FeatureService();
 		// FeatureService.getByUniqueId("17");
 		// / FeatureService.getByDbId(1);
 		// FeatureService.getByDataset("dream_breast_cancer", false);
 
 		ObjectMapper mapper = new ObjectMapper();
-		ObjectNode features = FeatureService
-				.getMetaBricClinicalFeatures(mapper);
+		ObjectNode features = a.getMetaBricClinicalFeatures(mapper);
 		String json_features;
 		try {
 			json_features = mapper.writeValueAsString(features);
@@ -266,6 +281,7 @@ public class FeatureService extends Feature {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 
 	}
 

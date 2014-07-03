@@ -66,6 +66,43 @@ public class AttributeService extends Attribute {
 		return attributeObject;
 	}
 
+	
+	public static List<Attribute> getByFeatureDbId(String db_id){
+		
+		List<Attribute> atts =new ArrayList<Attribute>();
+		
+		int counter = 0;
+		
+		Attribute attributeObject = new Attribute();
+		try {
+			
+			String query = "select A from Attribute A feature_id="+db_id;
+			em.getTransaction().begin();
+			Query q = em.createQuery(query);
+
+			List<?> list = q.getResultList();
+
+			Iterator<?> it = list.iterator();
+
+			while (it.hasNext()) {
+
+				attributeObject = (Attribute) it.next();
+				counter++;
+				LOGGER.debug("AttributeObject" + attributeObject.toString());
+				atts.add(attributeObject);
+			}
+			LOGGER.debug("Counter =" + counter);
+			
+			em.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return atts;
+		
+	}
+	
+	
 	public static List<Attribute> getByFeatureId(String db_Id) {
 
 		List<Attribute> atts = new ArrayList<Attribute>();

@@ -6,6 +6,7 @@
 
     <persistence-unit name="DEFAULTJPA">
         <!-- Add all of your model classes here -->
+ 			 <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <class>Tests.Test</class>
         <class>org.scripps.branch.entity.Feature</class>
         <class>org.scripps.branch.entity.Attribute</class>
@@ -20,7 +21,7 @@
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/branch"/>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
             <property name="javax.persistence.jdbc.user" value="postgres"/>
-            <property name="javax.persistence.jdbc.password" value="prime"/>
+            <property name="javax.persistence.jdbc.password" value="Ksrmk12345"/>
 
         </properties>
     </persistence-unit>
