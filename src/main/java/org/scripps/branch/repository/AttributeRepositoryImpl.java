@@ -35,7 +35,6 @@ public class AttributeRepositoryImpl implements AttributeRepository {
 	
 	public void getEntityManager(EntityManager em) {
 		this.em = em;
-		LOGGER.debug("get!");
 	}
 	
 	@Override
@@ -47,7 +46,6 @@ public class AttributeRepositoryImpl implements AttributeRepository {
 			String query = "select A from Attribute A, Feature F where A.feature=F.id and F.unique_id='"
 					+ unique_id + "' and A.dataset='" + dataset + "'";
 			LOGGER.debug(query);
-			//em.getTransaction().begin();
 			Query q = em.createQuery(query);
 			List<?> list = q.getResultList();
 			Iterator<?> it = list.iterator();
