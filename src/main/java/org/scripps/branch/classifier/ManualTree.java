@@ -70,6 +70,7 @@ import javax.servlet.ServletContext;
 
 import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.Weka;
+import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.viz.JsonTree;
 
@@ -1695,7 +1696,7 @@ WeightedInstancesHandler, Randomizable, Drawable {
 	 *            
 	 */
 	
-	public static void addCustomTree(String id, Weka weka, LinkedHashMap<String,Classifier> custom_classifiers, String dataset){
+	public static void addCustomTree(String id, Weka weka, LinkedHashMap<String,Classifier> custom_classifiers, String dataset, AttributeRepository attr){
 		System.out.println("ID befoire add: "+id);
 		System.out.println("Contains: "+custom_classifiers.containsKey(id));
 		if(!custom_classifiers.containsKey(id)){
@@ -1719,7 +1720,7 @@ WeightedInstancesHandler, Randomizable, Drawable {
 					}
 					JsonTree _t  = new JsonTree();
 					if(!dataset.equals("mammal")){
-						rootNode = _t.mapEntrezIdsToAttNames(weka, rootNode, dataset, custom_classifiers);
+						rootNode = _t.mapEntrezIdsToAttNames(weka, rootNode, dataset, custom_classifiers, attr);
 					}
 					tree.setTreeStructure(rootNode);
 					tree.setListOfFc(custom_classifiers);

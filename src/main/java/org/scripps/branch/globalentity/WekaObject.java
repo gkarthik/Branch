@@ -3,7 +3,10 @@ package org.scripps.branch.globalentity;
 import java.io.InputStream;
 
 import org.scripps.branch.entity.Weka;
+import org.scripps.branch.repository.FeatureRepository;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
@@ -13,6 +16,10 @@ public class WekaObject implements ApplicationContextAware {
   private static ApplicationContext ctx;
   private static Weka weka;
   private static int checktemp;
+  
+  @Autowired
+  @Qualifier("featureRepository")
+  FeatureRepository featurerepo;
  
   @Override
   public void setApplicationContext(ApplicationContext appContext) throws BeansException {
@@ -22,7 +29,7 @@ public class WekaObject implements ApplicationContextAware {
 	  if(wekaObj.getTrain()==null){
 			Resource train_file = ctx.getResource("/WEB-INF/data/Metabric_clinical_expression_DSS_sample_filtered.arff");
 			try {
-				wekaObj.buildWeka(train_file.getInputStream(), null, "metabric_with_clinical");
+				wekaObj.buildWeka(train_file.getInputStream(), null, "metabric_with_clinical", featurerepo);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
