@@ -1,6 +1,8 @@
 package org.scripps.branch.config;
 
 import org.scripps.branch.globalentity.WekaObject;
+import org.scripps.branch.service.AttributeService;
+import org.scripps.branch.service.AttributeServiceImpl;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
