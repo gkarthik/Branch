@@ -47,9 +47,6 @@
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/org.springframework/spring-web/4.0.5.RELEASE/1819f6d4ab65fb33e19c492d5c5aa21396e42b3f/spring-web-4.0.5.RELEASE.jar">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
-		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/org.springframework/spring-test/3.1.1.RELEASE/de2889e5d2d6f22e1590dcab846e938827e1a936/spring-test-3.1.1.RELEASE.jar">
-			<dependency-type>uses</dependency-type>
-		</dependent-module>
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-log4j12/1.7.7/58f588119ffd1702c77ccab6acb54bfb41bed8bd/slf4j-log4j12-1.7.7.jar">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
@@ -113,6 +110,9 @@
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/com.google.api-client/google-api-client/1.18.0-rc/45b0d00b78197d8a3047751443c09538117d188b/google-api-client-1.18.0-rc.jar">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/org.glassfish.main.extras/glassfish-embedded-all/4.0/29c8f0e448949ff5720ffb4ddea113848c78b205/glassfish-embedded-all-4.0.jar">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/org.springframework.social/spring-social-web/1.1.0.RELEASE/393d7fd2e0d87dbc9c96ae2d6c432ea704c94a6d/spring-social-web-1.1.0.RELEASE.jar">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
@@ -152,9 +152,6 @@
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/org.springframework.social/spring-social-security/1.1.0.RELEASE/a022d36e469c9266cce1c16ece8246b513cf3099/spring-social-security-1.1.0.RELEASE.jar">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
-		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/org.mockito/mockito-all/1.8.4/5c97d8b6e715ed941aeb93d6fc401ab3eb18a566/mockito-all-1.8.4.jar">
-			<dependency-type>uses</dependency-type>
-		</dependent-module>
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/org.springframework/spring-core/4.0.5.RELEASE/cce94116431b5a1384d58316a4090bbe7718fd5a/spring-core-4.0.5.RELEASE.jar">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
@@ -165,6 +162,9 @@
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.18.0-rc/880ad30d2b249a7591c195c2392646f1b146c139/google-http-client-1.18.0-rc.jar">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/org.springframework/spring-test/4.0.5.RELEASE/caa3ead3ab38ecaa979ec7054fdfc1b73d36f916/spring-test-4.0.5.RELEASE.jar">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client-jackson/1.18.0-rc/41709e65945d199103630eea319225cc12b40044/google-http-client-jackson-1.18.0-rc.jar">
@@ -201,6 +201,9 @@
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/org.springframework.data/spring-data-commons/1.5.0.RELEASE/ef28d3ad8b1eadab15ddfc4b7a0eacfe3cc0206c/spring-data-commons-1.5.0.RELEASE.jar">
+			<dependency-type>uses</dependency-type>
+		</dependent-module>
+		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/junit/junit/4.11/4e031bb61df09069aeb2bffb4019e7a5034a4ee0/junit-4.11.jar">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/org.springframework.security/spring-security-config/3.2.4.RELEASE/952da051fc959b215c8e5882a7ab1ca5137af036/spring-security-config-3.2.4.RELEASE.jar">
@@ -270,9 +273,6 @@
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/org.springframework.security/spring-security-crypto/3.2.3.RELEASE/c1758dc01928ca70a59afc9c2033e29ced275baa/spring-security-crypto-3.2.3.RELEASE.jar">
-			<dependency-type>uses</dependency-type>
-		</dependent-module>
-		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/junit/junit/4.4/8f35ee1f35d2dadbb5029991449ee90c1bab4d4a/junit-4.4.jar">
 			<dependency-type>uses</dependency-type>
 		</dependent-module>
 		<dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/karthik/.gradle/caches/modules-2/files-2.1/org.hibernate.common/hibernate-commons-annotations/4.0.4.Final/f1af75eca4e13ac0578750a497159695feceebfc/hibernate-commons-annotations-4.0.4.Final.jar">

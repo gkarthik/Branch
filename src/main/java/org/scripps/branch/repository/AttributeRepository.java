@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.junit.Test;
 import org.scripps.branch.entity.Attribute;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.data.jpa.repository.JpaRepository;
