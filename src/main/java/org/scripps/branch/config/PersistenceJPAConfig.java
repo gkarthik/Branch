@@ -26,7 +26,7 @@ public class PersistenceJPAConfig{
    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
       LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
       em.setDataSource(dataSource());
-      em.setPackagesToScan(new String[] { "org.scripps.branch.entity"  });
+      em.setPackagesToScan(new String[] { "org.scripps.branch.entity" });
  
       JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
       em.setJpaVendorAdapter(vendorAdapter);
