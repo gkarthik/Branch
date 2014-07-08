@@ -76,10 +76,6 @@ public class Custom_Feature {
 		return user;
 	}
 
-	public void setCreated(DateTime created) {
-		this.created = created;
-	}
-
 	@PrePersist
 	public void prePersist() {
 		DateTime now = DateTime.now();
@@ -87,6 +83,9 @@ public class Custom_Feature {
 
 	}
 
+	public void setCreated(DateTime created) {
+		this.created = created;
+	}
 
 	public void setDataset(String dataset) {
 		this.dataset = dataset;

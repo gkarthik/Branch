@@ -41,7 +41,7 @@ public class scoreSaveManualTree {
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = { "Content-type=application/json" })
 	public @ResponseBody String scoreOrSaveTree(@RequestBody JsonNode data,
 			HttpServletRequest request) throws Exception {
-		Weka wekaObj = weka.getWeka();
+		Weka wekaObj = WekaObject.getWeka();
 		JsonTree t = new JsonTree();
 		ManualTree readtree = new ManualTree();
 		LinkedHashMap<String, Classifier> custom_classifiers = new LinkedHashMap<String, Classifier>();

@@ -25,45 +25,20 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.unsupervised.attribute.AddExpression;
 
-
 @Repository
 @Transactional
-public class Custom_Feature_CustomRepositoryImpl implements Custom_Feature_CustomRepository {
-	
+public class Custom_Feature_CustomRepositoryImpl implements
+		Custom_Feature_CustomRepository {
+
 	@Autowired
 	AttributeRepository attr;
 	@Autowired
 	FeatureRepository feat;
-	
+
 	protected EntityManager em;
-	
+
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(FeatureCustomRepositoryImpl.class);
-	
-	
-	public void getEntityManager(EntityManager em) {
-		this.em = em;
-	}
-
-
-	@PersistenceContext
-	public void setEntityManager(EntityManager em) {
-		this.em = em;
-		LOGGER.debug("Entity Manager set from Custom_Feature!");
-	}
-
-
-	@SuppressWarnings("rawtypes")
-	@Override
-	public HashMap<?, ?> getTestCase(String id, Weka weka) {
-		
-		// to work on custom_feature_feature
-		
-				HashMap<?, ?> hashMapObj = new HashMap();
-		
-				return hashMapObj;
-	}
-
 
 	@Override
 	public void addInstances(Weka weka) {
@@ -91,9 +66,8 @@ public class Custom_Feature_CustomRepositoryImpl implements Custom_Feature_Custo
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-	}
 
+	}
 
 	@Override
 	public int evalAndAddNewFeatureValues(String feature_name,
@@ -128,7 +102,6 @@ public class Custom_Feature_CustomRepositoryImpl implements Custom_Feature_Custo
 		return attIndex;
 	}
 
-
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public HashMap<?, ?> findOrCreateCustomFeature(String feature_name,
@@ -148,13 +121,11 @@ public class Custom_Feature_CustomRepositoryImpl implements Custom_Feature_Custo
 		String entrezid = "";
 		String att_name = "";
 
-		
-		
 		int index = 0;
 		while (match.find()) {
 			entrezid = match.group().replace("@", "");
-			List<Attribute> atts = attr.findByFeatureUniqueId(
-					entrezid, dataset);
+			List<Attribute> atts = attr
+					.findByFeatureUniqueId(entrezid, dataset);
 			if (atts != null && atts.size() > 0) {
 				for (Attribute att : atts) {
 					att_name = att.getName();
@@ -173,8 +144,9 @@ public class Custom_Feature_CustomRepositoryImpl implements Custom_Feature_Custo
 
 		}
 		try {
-			HashMap<?, ?> hashMapObjTemp = findOrCreateCustomFeatureId(feature_name,
-					exp, description, user_id, allFeature, weka, dataset);
+			HashMap<?, ?> hashMapObjTemp = findOrCreateCustomFeatureId(
+					feature_name, exp, description, user_id, allFeature, weka,
+					dataset);
 
 			if (hashMapObjTemp.containsKey("feature_id")) {
 				int cFeatureId = (int) hashMapObjTemp.get("feature_id");
@@ -222,6 +194,28 @@ public class Custom_Feature_CustomRepositoryImpl implements Custom_Feature_Custo
 		return hashMapObj;
 	}
 
+	@Override
+	public HashMap<?, ?> findOrCreateCustomFeatureId(String name,
+			String feature_exp, String description, int userid,
+			List<Feature> features, Weka weka, String dataset) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void getEntityManager(EntityManager em) {
+		this.em = em;
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public HashMap<?, ?> getTestCase(String id, Weka weka) {
+
+		// to work on custom_feature_feature
+
+		HashMap<?, ?> hashMapObj = new HashMap();
+
+		return hashMapObj;
+	}
 
 	@Override
 	public int insert(String name, String feature_exp, String description,
@@ -230,16 +224,10 @@ public class Custom_Feature_CustomRepositoryImpl implements Custom_Feature_Custo
 		return 0;
 	}
 
-
-	@Override
-	public HashMap<?, ?> findOrCreateCustomFeatureId(String name,
-			String feature_exp, String description, int userid,
-			List<Feature> features, Weka weka, String dataset) {
-		// TODO Auto-generated method stub
-		return null;
+	@PersistenceContext
+	public void setEntityManager(EntityManager em) {
+		this.em = em;
+		LOGGER.debug("Entity Manager set from Custom_Feature!");
 	}
-	
-	
-
 
 }

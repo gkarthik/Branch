@@ -22,9 +22,6 @@
 
 package org.scripps.branch.classifier;
 
-import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -32,12 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
-
-import org.scripps.branch.entity.Tree;
-import org.scripps.branch.entity.Weka;
-import org.scripps.branch.repository.AttributeRepository;
-import org.scripps.branch.repository.TreeRepository;
-import org.scripps.branch.viz.JsonTree;
 
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
@@ -54,9 +45,6 @@ import weka.core.RevisionUtils;
 import weka.core.Utils;
 import weka.core.WeightedInstancesHandler;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -94,8 +82,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 	 *            object
 	 * 
 	 */
-
-	
 
 	/** The subtrees appended to this tree. */
 	protected ManualTree[] m_Successors;
@@ -996,48 +982,53 @@ public class ManualTree extends Classifier implements OptionHandler,
 		mp.put("orig_split_point", origSplitPoint);
 		return mp;
 	}
-	
+
 	/**
 	 * Adds Tree Classifiers to classifier hashmap.
 	 * 
 	 * @param id
 	 * @param weka
-	 * @param global object
-	 *            
+	 * @param global
+	 *            object
+	 * 
 	 */
-	
-//	public static void addCustomTree(String id, Weka weka, LinkedHashMap<String,Classifier> custom_classifiers, String dataset){
-//		System.out.println("ID befoire add: "+id);
-//		System.out.println("Contains: "+custom_classifiers.containsKey(id));
-//		if(!custom_classifiers.containsKey(id)){
-//			JdbcConnection conn = new JdbcConnection();
-//			String query = "select json_tree from tree where id="+id.replace("custom_tree_", "");
-//			ResultSet rslt = conn.executeQuery(query);
-//			try {
-//				while(rslt.next()){
-//					try {
-//						ManualTree tree = new ManualTree();
-//						ObjectMapper mapper = new ObjectMapper();
-//						JsonNode rootNode = mapper.readTree(rslt.getString("json_tree")).get("treestruct");
-//						JsonTree t  = new JsonTree();
-//						if(!dataset.equals("mammal")){
-//							rootNode = t.mapEntrezIdsToAttNames(weka, rootNode, dataset, custom_classifiers);
-//						}
-//						tree.setTreeStructure(rootNode);
-//						tree.setListOfFc(custom_classifiers);
-//						tree.buildClassifier(weka.getTrain());
-//						custom_classifiers.put(id, tree);
-//					} catch (Exception e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//				}
-//			} catch (SQLException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//	}
+
+	// public static void addCustomTree(String id, Weka weka,
+	// LinkedHashMap<String,Classifier> custom_classifiers, String dataset){
+	// System.out.println("ID befoire add: "+id);
+	// System.out.println("Contains: "+custom_classifiers.containsKey(id));
+	// if(!custom_classifiers.containsKey(id)){
+	// JdbcConnection conn = new JdbcConnection();
+	// String query =
+	// "select json_tree from tree where id="+id.replace("custom_tree_", "");
+	// ResultSet rslt = conn.executeQuery(query);
+	// try {
+	// while(rslt.next()){
+	// try {
+	// ManualTree tree = new ManualTree();
+	// ObjectMapper mapper = new ObjectMapper();
+	// JsonNode rootNode =
+	// mapper.readTree(rslt.getString("json_tree")).get("treestruct");
+	// JsonTree t = new JsonTree();
+	// if(!dataset.equals("mammal")){
+	// rootNode = t.mapEntrezIdsToAttNames(weka, rootNode, dataset,
+	// custom_classifiers);
+	// }
+	// tree.setTreeStructure(rootNode);
+	// tree.setListOfFc(custom_classifiers);
+	// tree.buildClassifier(weka.getTrain());
+	// custom_classifiers.put(id, tree);
+	// } catch (Exception e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// }
+	// }
+	// } catch (SQLException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// }
+	// }
+	// }
 
 	/**
 	 * Computes class distribution of an instance using the decision tree.

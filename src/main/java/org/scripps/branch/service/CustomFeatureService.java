@@ -24,7 +24,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.unsupervised.attribute.AddExpression;
 
-public class CustomFeatureService extends Custom_Feature{
+public class CustomFeatureService extends Custom_Feature {
 
 	private String name;
 	private String expression;
@@ -261,10 +261,12 @@ public class CustomFeatureService extends Custom_Feature{
 
 	}
 
+	@Override
 	public String getExpression() {
 		return expression;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -289,7 +291,7 @@ public class CustomFeatureService extends Custom_Feature{
 		cfObj.setName(name);
 		cfObj.setExpression(feature_exp);
 		cfObj.setDescription(description);
-		cfObj.setPlayer_id(userid);
+		cfObj.setUser(userid);
 		cfObj.setDataset(dataset);
 
 		em.persist(cfObj);
@@ -350,12 +352,14 @@ public class CustomFeatureService extends Custom_Feature{
 
 	}
 
+	@Override
 	public void setExpression(String expression) {
 		this.expression = expression;
 	}
 
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
 
- }
+}
