@@ -1,4 +1,4 @@
-package Tests;
+package org.scripps.branch.tests;
 
 import java.util.Iterator;
 import java.util.List;

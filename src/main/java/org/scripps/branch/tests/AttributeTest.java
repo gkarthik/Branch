@@ -1,4 +1,4 @@
-package Tests;
+package org.scripps.branch.tests;
 
 import static org.junit.Assert.assertEquals;
 
