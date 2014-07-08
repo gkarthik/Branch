@@ -15,6 +15,7 @@ import javax.persistence.Query;
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.Custom_Feature;
 import org.scripps.branch.entity.Feature;
+import org.scripps.branch.entity.User;
 import org.scripps.branch.entity.Weka;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -188,7 +189,7 @@ public class CustomFeatureService extends Custom_Feature {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public HashMap findOrCreateCustomFeatureId(String name, String feature_exp,
-			String description, int userid, List<Feature> features, Weka weka,
+			String description, User user, List<Feature> features, Weka weka,
 			String dataset) {
 
 		HashMap hashMapObj = new HashMap();
@@ -234,7 +235,7 @@ public class CustomFeatureService extends Custom_Feature {
 			LOGGER.debug("Counter " + counter);
 			if (!exists) {
 
-				cFeatureId = insert(name, feature_exp, description, userid,
+				cFeatureId = insert(name, feature_exp, description, user,
 						features, dataset);
 				evalAndAddNewFeatureValues("custom_feature_" + cFeatureId,
 						feature_exp, weka.getTrain());
@@ -282,7 +283,7 @@ public class CustomFeatureService extends Custom_Feature {
 	}
 
 	public int insert(String name, String feature_exp, String description,
-			int userid, List<Feature> features, String dataset)
+			User userid, List<Feature> features, String dataset)
 			throws Exception {
 
 		int id = 0;

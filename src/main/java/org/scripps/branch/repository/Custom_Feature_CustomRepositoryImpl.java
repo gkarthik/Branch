@@ -35,6 +35,8 @@ Custom_Feature_CustomRepository {
 	AttributeRepository attr;
 	@Autowired
 	FeatureRepository feat;
+	@Autowired
+	Custom_Feature_Repository custF;
 
 	protected EntityManager em;
 
@@ -286,11 +288,34 @@ Custom_Feature_CustomRepository {
 		return hashMapObj;
 	}
 
+	
+	//check how to insert user id of type userobject
 	@Override
 	public int insert(String name, String feature_exp, String description,
 			int userid, List<Feature> features, String dataset) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		int id = 0;
+		em.getTransaction().begin();
+		Custom_Feature cfObj = new Custom_Feature();
+		cfObj.setName(name);
+		cfObj.setExpression(feature_exp);
+		cfObj.setDescription(description);
+		//cfObj.setUser(userid);
+		cfObj.setDataset(dataset);
+
+		em.persist(cfObj);
+		em.getTransaction().commit();
+
+		while (!em.contains(cfObj)) {
+
+			id = cfObj.getId();
+		}
+
+		em.close();
+
+		// work needed for custom_Featurwe_feature
+
+		return id;
 	}
 
 	@PersistenceContext
