@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import weka.core.AttributeExpression;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.unsupervised.attribute.AddExpression;
@@ -28,7 +29,7 @@ import weka.filters.unsupervised.attribute.AddExpression;
 @Repository
 @Transactional
 public class Custom_Feature_CustomRepositoryImpl implements
-		Custom_Feature_CustomRepository {
+Custom_Feature_CustomRepository {
 
 	@Autowired
 	AttributeRepository attr;
@@ -45,7 +46,7 @@ public class Custom_Feature_CustomRepositoryImpl implements
 		Custom_Feature cfObj = new Custom_Feature();
 		String query = "selecrt cf from Custom_Feature cf";
 		try {
-			em.getTransaction().begin();
+			
 			Query q = em.createQuery(query);
 			List<?> list = q.getResultList();
 			Iterator<?> it = list.iterator();
@@ -61,7 +62,7 @@ public class Custom_Feature_CustomRepositoryImpl implements
 				LOGGER.debug("Custom_Feat add Instance cfObj" + cfObj);
 			}
 			LOGGER.debug("Counter =" + counter);
-			em.close();
+
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -87,7 +88,7 @@ public class Custom_Feature_CustomRepositoryImpl implements
 			e.printStackTrace();
 		}
 		for (int i = 0; i < data.numInstances(); i++) {// Index here starts from
-														// 0.
+			// 0.
 			try {
 				newFeature.input(data.instance(i));
 				int numAttr = newFeature.outputPeek().numAttributes();
@@ -158,7 +159,7 @@ public class Custom_Feature_CustomRepositoryImpl implements
 
 				//
 				try {
-					em.getTransaction().begin();
+				
 					Query q = em.createQuery(query);
 					List<?> list = q.getResultList();
 					Iterator<?> it = list.iterator();
@@ -175,7 +176,7 @@ public class Custom_Feature_CustomRepositoryImpl implements
 						LOGGER.debug("HashMapObj" + hashMapObj.toString());
 					}
 					LOGGER.debug("Counter =" + counter);
-					em.close();
+
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -194,12 +195,80 @@ public class Custom_Feature_CustomRepositoryImpl implements
 		return hashMapObj;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public HashMap<?, ?> findOrCreateCustomFeatureId(String name,
 			String feature_exp, String description, int userid,
 			List<Feature> features, Weka weka, String dataset) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		HashMap hashMapObj = new HashMap();
+
+		int cFeatureId = 0;
+
+		String query = "select cf from Custom_Feature cf";
+		AttributeExpression _attrExp = new AttributeExpression();
+		Custom_Feature cfObj = new Custom_Feature();
+
+		try {
+
+			_attrExp.convertInfixToPostfix(feature_exp);
+
+		
+			Query q = em.createQuery(query);
+			List<?> list = q.getResultList();
+			Iterator<?> it = list.iterator();
+			int counter = 0;
+
+			String exp = "";
+			Boolean exists = false;
+			String message = "";
+
+			while (it.hasNext()) {
+
+				cfObj = (Custom_Feature) it.next();
+				exp = cfObj.getExpression();
+				_attrExp.convertInfixToPostfix(exp);
+
+				if (exp.equals(feature_exp)) {
+					exists = true;
+					cFeatureId = cfObj.getId();
+					message = "Feature already Exists";
+				} else if (cfObj.getName().equals(name)) {
+					exists = true;
+					cFeatureId = cfObj.getId();
+					message = "Feature name has already been taken.";
+
+				}
+				counter++;
+			}
+			LOGGER.debug("Counter " + counter);
+			if (!exists) {
+
+				cFeatureId = insert(name, feature_exp, description, userid,
+						features, dataset);
+				evalAndAddNewFeatureValues("custom_feature_" + cFeatureId,
+						feature_exp, weka.getTrain());
+				message = "Feature has been successfully created.";
+
+			}
+
+			em.getTransaction().commit();
+
+
+			hashMapObj.put("feature_id", cFeatureId);
+			hashMapObj.put("exists", exists);
+			hashMapObj.put("messgages", message);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			hashMapObj
+			.put("message",
+					"Expression could not be parsed.<br>Please check if all the attributes have been tagged. Refer to Help Section.");
+
+		}
+
+		return hashMapObj;
+
 	}
 
 	public void getEntityManager(EntityManager em) {
