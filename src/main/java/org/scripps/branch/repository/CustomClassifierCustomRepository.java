@@ -10,12 +10,12 @@ import weka.classifiers.meta.FilteredClassifier;
 
 public interface CustomClassifierCustomRepository {
 
-	public FilteredClassifier buildCustomClassifier(Weka weka,
-			Long[] featureDbIds, int classifierType);
+	FilteredClassifier buildCustomClassifier(Weka weka, Long[] featureDbIds,
+			int classifierType);
 
 	HashMap<?, ?> getClassifierDetailsByDbId(int id, String dataset,
 			LinkedHashMap<String, Classifier> custom_classifiers);
 
-	public LinkedHashMap<String, Classifier> getClassifiersfromDb();
+	LinkedHashMap<String, Classifier> getClassifiersfromDb();
 
 }
