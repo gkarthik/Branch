@@ -13,7 +13,7 @@ import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.scripps.branch.entity.Attribute;
-import org.scripps.branch.entity.Custom_Feature;
+import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Weka;
 import org.slf4j.Logger;
@@ -43,8 +43,8 @@ public class CustomFeatureCustomRepositoryImpl implements
 
 	@Override
 	public void addInstances(Weka weka) {
-		Custom_Feature cfObj = new Custom_Feature();
-		String query = "selecrt cf from Custom_Feature cf";
+		CustomFeature cfObj = new CustomFeature();
+		String query = "select cf from Custom_Feature cf";
 		try {
 
 			Query q = em.createQuery(query);
@@ -54,7 +54,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 
 			while (it.hasNext()) {
 
-				cfObj = (Custom_Feature) it.next();
+				cfObj = (CustomFeature) it.next();
 				evalAndAddNewFeatureValues("custom_feature_" + cfObj.getId(),
 						cfObj.getExpression(), weka.getTrain());
 
@@ -110,7 +110,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 
 		HashMap hashMapObj = new HashMap();
 		hashMapObj.put("success", true);
-		Custom_Feature cfObj = new Custom_Feature();
+		CustomFeature cfObj = new CustomFeature();
 		Instances data = weka.getTrain();
 
 		List<Feature> allFeature = new ArrayList<Feature>();
@@ -166,7 +166,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 
 					while (it.hasNext()) {
 
-						cfObj = (Custom_Feature) it.next();
+						cfObj = (CustomFeature) it.next();
 						hashMapObj.put("id", "custom_feature_" + cfObj.getId());
 						hashMapObj.put("description", cfObj.getDescription());
 						hashMapObj.put("name", cfObj.getName());
@@ -201,11 +201,11 @@ public class CustomFeatureCustomRepositoryImpl implements
 
 		HashMap hashMapObj = new HashMap();
 
-		int cFeatureId = 0;
+		long cFeatureId = 0;
 
 		String query = "select cf from Custom_Feature cf";
 		AttributeExpression _attrExp = new AttributeExpression();
-		Custom_Feature cfObj = new Custom_Feature();
+		CustomFeature cfObj = new CustomFeature();
 
 		try {
 
@@ -222,7 +222,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 
 			while (it.hasNext()) {
 
-				cfObj = (Custom_Feature) it.next();
+				cfObj = (CustomFeature) it.next();
 				exp = cfObj.getExpression();
 				_attrExp.convertInfixToPostfix(exp);
 
@@ -271,6 +271,7 @@ public class CustomFeatureCustomRepositoryImpl implements
 		this.em = em;
 	}
 
+	// to be done
 	@SuppressWarnings("rawtypes")
 	@Override
 	public HashMap<?, ?> getTestCase(String id, Weka weka) {
@@ -282,31 +283,32 @@ public class CustomFeatureCustomRepositoryImpl implements
 		return hashMapObj;
 	}
 
-	// check how to insert user id of type userobject
+	// check how to insert user id of type userobject ---- insert to be done in
+	// service?
 	@Override
 	public int insert(String name, String feature_exp, String description,
 			int userid, List<Feature> features, String dataset) {
 
 		int id = 0;
-		em.getTransaction().begin();
-		Custom_Feature cfObj = new Custom_Feature();
-		cfObj.setName(name);
-		cfObj.setExpression(feature_exp);
-		cfObj.setDescription(description);
-		// cfObj.setUser(userid);
-		cfObj.setDataset(dataset);
-
-		em.persist(cfObj);
-		em.getTransaction().commit();
-
-		while (!em.contains(cfObj)) {
-
-			id = cfObj.getId();
-		}
-
-		em.close();
-
-		// work needed for custom_Featurwe_feature
+		// em.getTransaction().begin();
+		// Custom_Feature cfObj = new Custom_Feature();
+		// cfObj.setName(name);
+		// cfObj.setExpression(feature_exp);
+		// cfObj.setDescription(description);
+		// // cfObj.setUser(userid);
+		// cfObj.setDataset(dataset);
+		//
+		// em.persist(cfObj);
+		// em.getTransaction().commit();
+		//
+		// while (!em.contains(cfObj)) {
+		//
+		// id = cfObj.getId();
+		// }
+		//
+		// em.close();
+		//
+		// // work needed for custom_Featurwe_feature
 
 		return id;
 	}

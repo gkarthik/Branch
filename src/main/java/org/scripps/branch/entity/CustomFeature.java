@@ -1,5 +1,7 @@
 package org.scripps.branch.entity;
 
+import java.util.List;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
@@ -19,12 +22,12 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table(name = "custom_feature")
-public class Custom_Feature {
+public class CustomFeature {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
-	private int id;
+	private long id;
 
 	@Column
 	private String name;
@@ -48,6 +51,9 @@ public class Custom_Feature {
 	@JoinColumn(name = "user_id", insertable = false, updatable = false)
 	private User user;
 
+	@ManyToMany(mappedBy = "custom_feature")
+	private List<Feature> feature;
+
 	public DateTime getCreated() {
 		return created;
 	}
@@ -64,7 +70,7 @@ public class Custom_Feature {
 		return expression;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
