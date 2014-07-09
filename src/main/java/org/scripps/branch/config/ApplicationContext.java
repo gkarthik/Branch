@@ -50,6 +50,6 @@ public class ApplicationContext {
 	
 	@Bean
 	public HibernateAwareObjectMapper initHibernateAwareObjectMapper(){
-		return  new HibernateAwareObjectMapper();
+		return new HibernateAwareObjectMapper();
 	}
 }
