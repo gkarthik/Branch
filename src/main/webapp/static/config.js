@@ -1,5 +1,5 @@
 require.config({
-      baseUrl : base_url+"/",
+      baseUrl : base_url+"/static/",
       waitSeconds: 40,
       paths : {
         underscore : 'lib/underscore',
