@@ -40,7 +40,7 @@
 			<div class="collapse navbar-collapse navbar-ex1-collapse">
 				<ul class="nav navbar-nav navbar-left">
 					<sec:authorize access="isAuthenticated()">
-						<li><a href="/"><spring:message
+						<li><a href="/branch/"><spring:message
 									code="label.navigation.home.link" /></a></li>
 					</sec:authorize>
 				</ul>
@@ -73,10 +73,34 @@
 						</c:if>
 						<c:if test="${empty signInProvider}">
 							<spring:message code="label.navigation.signed.in.as.text" />
+							
 						</c:if>
 						<sec:authentication property="principal.username" />
+						<p>
+						
+						userId:
+						<sec:authentication property="principal.id" />
+						
+						
+					
+						token:${_csrf.token} 
+						
+						</p>
+						
 					</p>
 				</sec:authorize>
+				
+				<sec:authorize access="isAnonymous()">
+				
+									
+						token:private
+						
+						</p>
+					</p>
+				</sec:authorize>
+				
+				
+				
 			</div>
 			<!-- /.navbar-collapse -->
 		</div>
