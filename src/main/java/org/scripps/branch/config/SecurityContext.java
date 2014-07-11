@@ -84,8 +84,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 						.and().apply(new SpringSocialConfigurer());
 //						.and()
 //						.antMatcher("/MetaServer").csrf().disable();
-		http
-		.authorizeRequests().antMatchers("/MetaServer","/").permitAll().and().csrf().disable();
+		
 	}
 
 	@Override
