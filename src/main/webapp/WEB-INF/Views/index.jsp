@@ -112,6 +112,6 @@
 	<script>_csb=[['token','R6TzQ7']];</script>
 	<% }
 		}%>
-	<script type="text/javascript" data-main="config" src="lib/require.js" charset="utf-8"></script>
+	<script type="text/javascript" data-main="static/config" src="static/lib/require.js" charset="utf-8"></script>
 </body>
 </html>

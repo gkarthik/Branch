@@ -50,19 +50,19 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		// Configures form login
 		.formLogin()
 
-				.loginPage("/welcome")
-				.loginPage("/login")
-				.loginProcessingUrl("/login/authenticate")
-				.failureUrl("/login?error=bad_credentials")
-				.defaultSuccessUrl("/new", true)
-				// Configures the logout function
-				.and()
-				.logout()
-				.deleteCookies("JSESSIONID",
-						"SPRING_SECURITY_REMEMBER_ME_COOKIE")
+		//.loginPage("/welcome")
+		.loginPage("/")
+		.loginProcessingUrl("/login/authenticate")
+		.failureUrl("/login?error=bad_credentials")
+		.defaultSuccessUrl("/", true)
+		// Configures the logout function
+		.and()
+		.logout()
+		.deleteCookies("JSESSIONID",
+				"SPRING_SECURITY_REMEMBER_ME_COOKIE")
 				.logoutUrl("/logout")
 				.invalidateHttpSession(true)
-				.logoutSuccessUrl("/")
+				.logoutSuccessUrl("/login")
 				.and()
 				.rememberMe()
 				.key("uniqueSecret")
@@ -73,17 +73,19 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 				.authorizeRequests()
 				// Anyone can access the urls
 				.antMatchers("/auth/**", "/login", "/signin/**", "/signup/**",
-						"/user/register/**", "/", "/MetaServer")
-				.permitAll()
-				// The rest of the our application is protected.
-				.antMatchers("/**").hasRole("USER")
-				.antMatchers("/new")
-				.hasRole("USER")
-				// Adds the SocialAuthenticationFilter to Spring Security's
-				// filter chain.
-				.and().apply(new SpringSocialConfigurer());
-//				.and()
-//				.antMatcher("/MetaServer").csrf().disable();
+						"/user/register/**", "/","/MetaServer")
+						.permitAll()
+						// The rest of the our application is protected.
+						.antMatchers("/**").hasRole("USER")
+						.antMatchers("/new")
+						.hasRole("USER")
+						// Adds the SocialAuthenticationFilter to Spring Security's
+						// filter chain.
+						.and().apply(new SpringSocialConfigurer());
+//						.and()
+//						.antMatcher("/MetaServer").csrf().disable();
+		http
+		.authorizeRequests().antMatchers("/MetaServer","/").permitAll().and().csrf().disable();
 	}
 
 	@Override
@@ -92,6 +94,7 @@ public class SecurityContext extends WebSecurityConfigurerAdapter {
 		// Spring Security ignores request to static resources such as CSS or JS
 		// files.
 		.ignoring().antMatchers("/static/**");
+		//web.ignoring().antMatchers("/app/**");
 	}
 
 	/**

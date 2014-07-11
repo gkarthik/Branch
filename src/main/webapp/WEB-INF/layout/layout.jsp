@@ -8,21 +8,21 @@
 <head>
 <title><spring:message code="spring.social.mvc.normal.title" /></title>
 <link rel="stylesheet" type="text/css"
-	href="./css/bootstrap.css" />
+	href="/branch/static/oldStyles/css/bootstrap.css" />
 <link rel="stylesheet" type="text/css"
-	href="./css/bootstrap-theme.css" />
+	href="/branch/static/oldStyles/bootstrap-theme.css" />
 <link rel="stylesheet" type="text/css"
-	href="./css/font-awesome.css" />
+	href="/branch/static/oldStyles/font-awesome.css" />
 <link rel="stylesheet" type="text/css"
-	href="./css/style.css" />
+	href="/branch/static/oldStyles/style.css" />
 <script type="text/javascript"
-	src="./js/vendor/jquery-2.0.3.js"></script>
+	src="/branch/static/oldStyles/js/vendor/jquery-2.0.3.js"></script>
 <script type="text/javascript"
-	src="./js/vendor/bootstrap.js"></script>
+	src="/branch/static/oldStyles/js/vendor/bootstrap.js"></script>
+<sitemesh:write property="head" />
 
 <link rel="stylesheet" type="text/css"
-	href="./css/landing-style.css">
-	<sitemesh:write property="head" />
+	href="/branch/static/oldStyles/css/landing-style.css">
 </head>
 <body>
 	<div class="page">
@@ -35,24 +35,23 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a href="${contextPath}/"><span class="navbar-brand">BranchBio</span>
-				</a>
+				<a href= "/branch/"><span class="navbar-brand">BranchBio</span> </a>
 			</div>
 			<div class="collapse navbar-collapse navbar-ex1-collapse">
 				<ul class="nav navbar-nav navbar-left">
 					<sec:authorize access="isAuthenticated()">
-						<li><a href="${contextPath}/"><spring:message
+						<li><a href="/"><spring:message
 									code="label.navigation.home.link" /></a></li>
 					</sec:authorize>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<sec:authorize access="isAnonymous()">
-						<li><a href="${contextPath}/user/register"><spring:message
+						<li><a href="/branch/user/register"><spring:message
 									code="label.navigation.registration.link" /></a></li>
 					</sec:authorize>
 					<sec:authorize access="isAuthenticated()">
 						<li>
-							<form action="${contextPath}/logout" method="POST">
+							<form action="/branch/logout" method="POST">
 								<input type="hidden" name="${_csrf.parameterName}"
 									value="${_csrf.token}" />
 								<button type="submit" class="btn btn-default navbar-btn">

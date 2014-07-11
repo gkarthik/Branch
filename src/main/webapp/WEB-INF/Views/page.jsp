@@ -20,7 +20,7 @@
 
 
 <link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/static/css/landing-style.css" />
+	href="/branch/static/oldStyles/css/landing-style.css" />
 
 </head>
 <body>

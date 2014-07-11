@@ -11,16 +11,14 @@
 <head>
 <title></title>
 <link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/static/css/social-buttons-3.css" />
+	href="/branch/static/oldStyles/css/social-buttons-3.css" />
 </head>
 <body>
-<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 	<div class="page-header">
 		<h1>
 			<spring:message code="label.user.login.page.title" />
 		</h1>
 	</div>
-	<h1>${pageContext.request.contextPath}</h1>
 	<sec:authorize access="isAnonymous()">
 		<div class="panel panel-default">
 			<div class="panel-body">
@@ -34,7 +32,7 @@
 						<spring:message code="text.login.page.login.failed.error" />
 					</div>
 				</c:if>
-				<form action="${contextPath}/login/authenticate" method="POST"
+				<form action="/branch/login/authenticate" method="POST"
 					role="form">
 					<input type="hidden" name="${_csrf.parameterName}"
 						value="${_csrf.token}" /> <input type="hidden" name="scope"
@@ -65,7 +63,7 @@
 				</form>
 				<div class="row">
 					<div class="form-group col-lg-4">
-						<a href="${contextPath}/user/register"><spring:message
+						<a href="/branch/user/register"><spring:message
 								code="label.navigation.registration.link" /></a>
 					</div>
 				</div>
@@ -153,7 +151,7 @@
 
 
 
-
+						
 					</div>
 				</div>
 			</div>

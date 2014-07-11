@@ -30,7 +30,7 @@ public final class GoogleAuthHelper {
 
 	private static final String CLIENT_SECRET = "YLdmgj4KAoEL-1NOnjm_U9p5";
 
-	private static final String CALLBACK_URI = "http://localhost:8080/BranchBio/auth/google";
+	private static final String CALLBACK_URI = "http://localhost:8080/branch/auth/google";
 
 	String jsonIdentity;
 
