@@ -60,6 +60,18 @@ public class Feature {
 	@JoinTable(name = "custom_classifier_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_classifier_id") })
 	private List<CustomFeature> custom_classifier;
 
+	
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
+	private List<Pathway> pathway;
+	
+	public List<Pathway> getPathway() {
+		return pathway;
+	}
+
+	public void setPathway(List<Pathway> pathway) {
+		this.pathway = pathway;
+	}
+
 	@Column(name = "unique_id", length = 50, unique = true)
 	private String unique_id;
 

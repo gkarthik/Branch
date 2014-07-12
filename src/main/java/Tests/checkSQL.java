@@ -1,0 +1,103 @@
+package Tests;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
+
+public class checkSQL {
+
+	public static void main(String args[]) throws Exception{
+		System.out.println("-------- PostgreSQL "
+				+ "JDBC Connection Testing ------------");
+		try {
+			Class.forName("org.postgresql.Driver");
+		} catch (ClassNotFoundException e) {
+			System.out.println("PostGreSql Driver not in Path!");
+			e.printStackTrace();
+			return;
+		}
+		System.out.println("PostgreSQL JDBC Driver Registered!");
+		Connection conn = null;
+		try {
+			String url = "jdbc:postgresql://127.0.0.1:5432/branch";
+			Properties props = new Properties();
+			props.setProperty("user","postgres");
+			props.setProperty("password","Ksrmk12345");
+			conn = DriverManager.getConnection(url, props);
+		} catch (SQLException e) {
+			System.out.println("Connection Failed! Check output console");
+			e.printStackTrace();
+			return;
+		}
+		if (conn != null) {
+			System.out.println("Connected! Postgres");
+		} else {
+			System.out.println("Failed to make connection!");
+		}
+		Connection connmysql = null;
+		try {
+			String url = "jdbc:mysql://127.0.0.1:3306/cure";
+			Properties props = new Properties();
+			props.setProperty("user","root");
+			props.setProperty("password","12345");
+			connmysql = DriverManager.getConnection(url, props);
+		} catch (SQLException e) {
+			System.out.println("Connection Failed! Check output console");
+			e.printStackTrace();
+			return;
+		}
+		if (connmysql != null) {
+			System.out.println("Connected!MYSQL");
+		} else {
+			System.out.println("Failed to make connection!");
+		}
+		PreparedStatement statement;
+//		String queryMysql = "select id,name,source_db from cpdb_pathway";
+//		PreparedStatement preparedStatement = connmysql.prepareStatement(queryMysql);
+//		ResultSet rs = preparedStatement.executeQuery(queryMysql);
+//		int ctr = 0;
+//		while(rs.next()){
+//			statement = (PreparedStatement) conn.prepareStatement("insert into pathway values(?,?)", Statement.RETURN_GENERATED_KEYS);
+//			statement.setInt(1, rs.getInt(1));
+//			statement.setString(2, rs.getString(2));
+//			statement.setString(3, rs.getString(3));
+//		
+//			
+//			
+//			int affectedRows = statement.executeUpdate();
+//			if (affectedRows == 0) {
+//				throw new SQLException("db failed");
+//			}
+//			System.out.println("Inserted "+ctr);
+//			ctr++;
+//		}
+		String queryMysql = "select c.id, f.id from cpdb_pathway c, feature f where c.entrez_id=f.unique_id";
+		PreparedStatement preparedStatement = connmysql.prepareStatement(queryMysql);
+		ResultSet rs = preparedStatement.executeQuery(queryMysql);
+		int ctr = 0;
+		while(rs.next()){
+			statement = (PreparedStatement) conn.prepareStatement("insert into pathway_feature values(?,?)", Statement.RETURN_GENERATED_KEYS);
+			statement.setInt(1, rs.getInt(1));
+			statement.setInt(2, rs.getInt(2));
+//			statement.setString(3, rs.getString(3));
+		
+			
+			
+			int affectedRows = statement.executeUpdate();
+			if (affectedRows == 0) {
+				throw new SQLException("db failed");
+			}
+			System.out.println("Inserted "+ctr);
+			ctr++;
+		}
+		conn.close();
+	}
+//	private static java.sql.Timestamp getCurrentTimeStamp() {
+//		java.util.Date today = new java.util.Date();
+//		return new java.sql.Timestamp(today.getTime());
+//	}
+
+}
