@@ -1,37 +1,44 @@
 package org.scripps.branch.entity;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
-@Table(name = "cpdb_pathway")
-public class CPDB_Pathway {
+@Table(name = "pathway")
+public class Pathway {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column
-	private int id;
+	private long id;
 
 	@Column
 	private String name;
 
 	@Column
 	private String source_db;
+	
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "pathway_feature", joinColumns = { @JoinColumn(name = "pathway_id") }, inverseJoinColumns = { @JoinColumn(name = "feature_id") })
+	private List<Feature> features;
 
-	@Column
-	private String entrez_id;
-
-	public String getEntrez_id() {
-		return entrez_id;
+	public List<Feature> getFeatures() {
+		return features;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -43,11 +50,11 @@ public class CPDB_Pathway {
 		return source_db;
 	}
 
-	public void setEntrez_id(String entrez_id) {
-		this.entrez_id = entrez_id;
+	public void setFeatures(List<Feature> features) {
+		this.features = features;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -59,13 +66,5 @@ public class CPDB_Pathway {
 		this.source_db = source_db;
 	}
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this).append("id", id)
-
-		.append("name", this.getName()).append("name", this.getName())
-				.append("sourcedb", this.getSource_db())
-				.append("entrez_id", this.getEntrez_id()).toString();
-	}
-
+	
 }
