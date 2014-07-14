@@ -1,4 +1,4 @@
-package Tests;
+package org.scripps.branch.utilities;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-public class checkSQL {
+public class ImportPathwayfromMySQlToPostgres {
 
 	public static void main(String args[]) throws Exception{
 		System.out.println("-------- PostgreSQL "
