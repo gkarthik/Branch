@@ -22,7 +22,7 @@ public class HomeController {
 			.getLogger(HomeController.class);
 
 	protected static final String VIEW_NAME_HOMEPAGE = "index";
-	
+
 	@Autowired
 	UserRepository userRepo;
 
@@ -30,22 +30,23 @@ public class HomeController {
 	public String showHomePage(WebRequest request, Model model) {
 		LOGGER.debug("Rendering homepage.");
 		UserDetails userDetails = null;
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		model.addAttribute("userId",-1);
-		model.addAttribute("firstName","Guest");
+		Authentication auth = SecurityContextHolder.getContext()
+				.getAuthentication();
+		model.addAttribute("userId", -1);
+		model.addAttribute("firstName", "Guest");
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
-		        userDetails = (UserDetails) auth.getPrincipal();
-		        User user = userRepo.findByEmail(userDetails.getUsername());
-		        model.addAttribute("userId",user.getId());
-				model.addAttribute("firstName",user.getFirstName());
+			userDetails = (UserDetails) auth.getPrincipal();
+			User user = userRepo.findByEmail(userDetails.getUsername());
+			model.addAttribute("userId", user.getId());
+			model.addAttribute("firstName", user.getFirstName());
 		}
 		return VIEW_NAME_HOMEPAGE;
 	}
 
-//	@RequestMapping(value = "/", method = RequestMethod.POST)
-//	public String showNextPage() {
-//		LOGGER.debug("Rendering homepage.");
-//		return "user/new";
-//	}
+	// @RequestMapping(value = "/", method = RequestMethod.POST)
+	// public String showNextPage() {
+	// LOGGER.debug("Rendering homepage.");
+	// return "user/new";
+	// }
 
 }
