@@ -55,18 +55,16 @@ public class checkSQL {
 			System.out.println("Failed to make connection!");
 		}
 		PreparedStatement statement;
-//		String queryMysql = "select id,name,source_db from cpdb_pathway";
+//		String queryMysql = "select @rownum := @rownum + 1 as rownum, b.name,b.source_db from (select * from cpdb_pathway group by name order by id) b, (select @rownum:=0) v order by rownum";
 //		PreparedStatement preparedStatement = connmysql.prepareStatement(queryMysql);
 //		ResultSet rs = preparedStatement.executeQuery(queryMysql);
 //		int ctr = 0;
 //		while(rs.next()){
-//			statement = (PreparedStatement) conn.prepareStatement("insert into pathway values(?,?)", Statement.RETURN_GENERATED_KEYS);
+//			statement = (PreparedStatement) conn.prepareStatement("insert into pathway values(?,?,?)", Statement.RETURN_GENERATED_KEYS);
 //			statement.setInt(1, rs.getInt(1));
 //			statement.setString(2, rs.getString(2));
 //			statement.setString(3, rs.getString(3));
-//		
-//			
-//			
+//			System.out.println(rs.getInt(1)+": "+rs.getString(2));
 //			int affectedRows = statement.executeUpdate();
 //			if (affectedRows == 0) {
 //				throw new SQLException("db failed");
@@ -74,7 +72,7 @@ public class checkSQL {
 //			System.out.println("Inserted "+ctr);
 //			ctr++;
 //		}
-		String queryMysql = "select c.id, f.id from cpdb_pathway c, feature f where c.entrez_id=f.unique_id";
+		String queryMysql = "select orig.rownum, feature.id, cpdb_pathway.name from (select @rownum := @rownum + 1 as rownum, b.name,b.source_db from (select * from cpdb_pathway group by name order by id) b, (select @rownum:=0) v) orig, cpdb_pathway, feature where orig.name=cpdb_pathway.name and cpdb_pathway.entrez_id = feature.unique_id";
 		PreparedStatement preparedStatement = connmysql.prepareStatement(queryMysql);
 		ResultSet rs = preparedStatement.executeQuery(queryMysql);
 		int ctr = 0;
@@ -82,10 +80,7 @@ public class checkSQL {
 			statement = (PreparedStatement) conn.prepareStatement("insert into pathway_feature values(?,?)", Statement.RETURN_GENERATED_KEYS);
 			statement.setInt(1, rs.getInt(1));
 			statement.setInt(2, rs.getInt(2));
-//			statement.setString(3, rs.getString(3));
-		
-			
-			
+			System.out.println(rs.getInt(1)+": "+rs.getString(3)+" -> "+rs.getInt(2));
 			int affectedRows = statement.executeUpdate();
 			if (affectedRows == 0) {
 				throw new SQLException("db failed");
