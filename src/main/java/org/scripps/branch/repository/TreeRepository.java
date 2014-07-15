@@ -14,6 +14,7 @@ public interface TreeRepository extends JpaRepository<Tree, Long> {
 	Tree findById(long id);
 
 	// Includes private trees
+	@Query("select t from Tree t where t.user=?1 and t.user_saved=true ")
 	List<Tree> findByUser(User user);
 
 	// Community Collection
@@ -21,7 +22,7 @@ public interface TreeRepository extends JpaRepository<Tree, Long> {
 	List<Tree> getAllTrees();
 
 	// Does not include private trees
-	@Query("select t from Tree t where t.user=?1 and t.private_tree=false")
+	@Query("select t from Tree t where t.user=?1 and t.private_tree=false and t.user_saved=true")
 	List<Tree> getByOtherUser(User user);
 
 	// COmmunity view
