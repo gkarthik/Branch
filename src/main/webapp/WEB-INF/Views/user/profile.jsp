@@ -110,7 +110,7 @@
 		<h4><center>You are awarded <span class="badge player-badge">BADGES</span> for building trees and completing milestones.<br><br>Start collecting badges by clicking on "Get Badge!" in the "Badges to be Earned" section.</center></h4>
 	</script>
 	<script type="text/javascript">
-    var cure_user_experience =${user_experience},
+    var cure_user_experience =null,
         cure_user_id = ${userId},
         cure_user_name = "${firstName}";
 	</script>
