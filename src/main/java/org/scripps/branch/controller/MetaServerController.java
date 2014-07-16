@@ -172,7 +172,7 @@ public class MetaServerController {
 				List<Pathway> pList = pathwayRepo.searchPathways(data.get("query").asText());
 				result_json = mapper.writeValueAsString(pList);
 			} else if(command.equals("get_genes_of_pathway")) {
-				Pathway p = pathwayRepo.findByName(data.get("pathway_name").asText());
+				Pathway p = pathwayRepo.findByNameAndSourcedb(data.get("pathway_name").asText(),data.get("source_db").asText());
 				List<Feature> fList = p.getFeatures();
 				result_json = mapper.writeValueAsString(fList);
 			}
