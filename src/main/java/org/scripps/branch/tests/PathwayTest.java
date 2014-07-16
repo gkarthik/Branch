@@ -28,8 +28,7 @@ public class PathwayTest {
 
 	@Test
 	public void testgetGenesOfPathways() {
-		Pathway p = path
-				.findByName("Alanine, aspartate and glutamate metabolism - Homo sapiens (human)");
+		Pathway p = path.findByNameAndSourcedb("Alanine, aspartate and glutamate metabolism - Homo sapiens (human)","KEGG");
 		List<Feature> fList = p.getFeatures();
 		System.out.println(fList.size());
 

@@ -29,6 +29,7 @@ import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.repository.UserRepository;
 import org.scripps.branch.service.CustomClassifierService;
 import org.scripps.branch.service.CustomFeatureService;
+import org.scripps.branch.service.TreeService;
 import org.scripps.branch.utilities.HibernateAwareObjectMapper;
 import org.scripps.branch.viz.JsonTree;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +93,9 @@ public class MetaServerController {
 	
 	@Autowired
 	private ScoreRepository scoreRepo;
+	
+	@Autowired
+	private TreeService treeService;
 	
 	@RequestMapping(value = "/MetaServer", method = RequestMethod.POST, headers = { "Content-type=application/json" })
 	public @ResponseBody String scoreOrSaveTree(@RequestBody JsonNode data) throws Exception {
@@ -192,9 +196,18 @@ public class MetaServerController {
 		JsonNode treenode = readtree.getJsontree();
 		HashMap distributionData = readtree.getDistributionData();
 		int numnodes = readtree.numNodes();
+		List<Feature> fList = new ArrayList();
+		t.getFeatures(treenode, fList, featureRepo);
+		User user = userRepo.findById(data.get("player_id").asLong());
+		Score newScore = new Score();
+		double nov = 0;
+		if(fList.size()>0){
+			nov = treeService.getUniqueIdNovelty(fList, user);
+		}
 		ObjectNode result = mapper.createObjectNode();
 		result.put("pct_correct", eval.pctCorrect());
 		result.put("size", numnodes);
+		result.put("novelty", nov);
 		result.put("text_tree", readtree.toString());
 		result.put("treestruct", treenode);
 		result.put("distribution_data", mapper.valueToTree(distributionData));
@@ -206,8 +219,6 @@ public class MetaServerController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Score newScore = new Score();
-		double nov = 0;
 		newScore.setNovelty(nov);
 		newScore.setDataset(data.get("dataset").asText());
 		newScore.setPct_correct(eval.pctCorrect());
@@ -215,8 +226,6 @@ public class MetaServerController {
 		double score = ((750 * (1 / numnodes)) + (500 * nov) + (1000 * eval.pctCorrect()));
 		newScore.setScore(score);
 		newScore = scoreRepo.saveAndFlush(newScore);
-		List<Feature> fList = new ArrayList();
-		t.getFeatures(treenode, fList, featureRepo);
 		Tree newTree = new Tree();
 		newTree.setComment(data.get("comment").asText());
 		Date date = new Date();
@@ -224,7 +233,6 @@ public class MetaServerController {
 		newTree.setFeatures(fList);
 		newTree.setJson_tree(result_json);
 		newTree.setPrivate_tree(false);
-		User user = userRepo.findById(data.get("player_id").asLong());
 		newTree.setUser(user);
 		newTree.setUser_saved(false);
 		newTree.setPrivate_tree(false);
