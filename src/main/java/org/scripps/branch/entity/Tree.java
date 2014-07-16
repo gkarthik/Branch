@@ -17,6 +17,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Type;
@@ -41,6 +42,18 @@ public class Tree {
 	@ManyToMany(cascade = { CascadeType.ALL })
 	@JoinTable(name = "tree_feature", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "feature_id") })
 	private List<Feature> features;
+	
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "tree_customfeature", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_feature_id") })
+	private List<CustomFeature> customFeatures;
+	
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "tree_customclassifier", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_classifier_id") })
+	private List<CustomClassifier> customClassifiers;
+
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "tree_customtreeclassifier", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_tree_id") })
+	private List<Tree> customTreeClassifiers;
 
 	@Column
 	private String comment;
@@ -61,6 +74,8 @@ public class Tree {
 	@JoinColumn(name = "score", insertable = true, updatable = true)
 	private Score score;
 
+	@Transient int rank = 0;
+	
 	@Column
 	private boolean private_tree = false;
 
@@ -69,6 +84,11 @@ public class Tree {
 
 	public String getComment() {
 		return comment;
+	}
+	
+	@Transient
+	public int getRank() {
+		return rank;
 	}
 
 	public DateTime getCreated() {
@@ -157,6 +177,35 @@ public class Tree {
 
 	public void setUser_saved(boolean user_saved) {
 		this.user_saved = user_saved;
+	}
+	
+	public List<CustomFeature> getCustomFeatures() {
+		return customFeatures;
+	}
+
+	public void setCustomFeatures(List<CustomFeature> customFeatures) {
+		this.customFeatures = customFeatures;
+	}
+
+	public List<CustomClassifier> getCustomClassifiers() {
+		return customClassifiers;
+	}
+
+	public void setCustomClassifiers(List<CustomClassifier> customClassifiers) {
+		this.customClassifiers = customClassifiers;
+	}
+
+	public List<Tree> getCustomTreeClassifiers() {
+		return customTreeClassifiers;
+	}
+
+	public void setCustomTreeClassifiers(List<Tree> customTreeClassifiers) {
+		this.customTreeClassifiers = customTreeClassifiers;
+	}
+	
+	@Transient
+	public void setRank(int rank){
+		this.rank = rank;
 	}
 
 	@Override
