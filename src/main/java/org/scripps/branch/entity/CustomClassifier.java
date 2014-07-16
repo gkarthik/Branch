@@ -53,6 +53,9 @@ public class CustomClassifier {
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	@Temporal(TemporalType.TIMESTAMP)
 	private DateTime created;
+	
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "customClassifiers")
+	private List<Tree> tree;
 
 	public DateTime getCreated() {
 		return created;

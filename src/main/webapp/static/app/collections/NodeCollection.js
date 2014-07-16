@@ -229,7 +229,7 @@ NodeCollection = Backbone.Collection.extend({
             	Cure.utils.showAlert("Tree Saved!<br />Your tree has been saved.", 1);
             	Cure.PlayerNodeCollection.tree_id = data.tree_id;
             	var badges = data.badges;
-            	if(Cure.PlayerNodeCollection.length>0 && Cure.PlayerNodeCollection.tree_id != 0 && Cure.Comment.get('flagPrivate')==0){
+            	if(Cure.PlayerNodeCollection.length>0 && Cure.PlayerNodeCollection.tree_id != 0 && Cure.Comment.get('flagPrivate')==0 && false){
           			var args = {
           	        command : "get_rank",
           	        dataset : "metabric_with_clinical",

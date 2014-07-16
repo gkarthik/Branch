@@ -133,9 +133,19 @@ public class MetaServerController {
 				} else {
 					tList = treeRepo.getByOtherUser(user);
 				}
+				int ctr = 1;
+				for(Tree t : tList){
+					t.setRank(ctr);
+					ctr++;
+				}
 				result_json = mapper.writeValueAsString(tList);
 			} else if(command.equals("get_trees_with_range")) {
 				List<Tree> tList = treeRepo.getAllTrees();
+				int ctr = 1;
+				for(Tree t : tList){
+					t.setRank(ctr);
+					ctr++;
+				}
 				result_json = mapper.writeValueAsString(tList);
 			}
 		} else if (command.equals("get_clinical_features")) {
@@ -196,11 +206,16 @@ public class MetaServerController {
 		JsonNode treenode = readtree.getJsontree();
 		HashMap distributionData = readtree.getDistributionData();
 		int numnodes = readtree.numNodes();
-		List<Feature> fList = new ArrayList();
-		t.getFeatures(treenode, fList, featureRepo);
+		HashMap mp = new HashMap();
+		t.getFeatures(treenode, mp, featureRepo, cfeatureRepo, cClassifierRepo, treeRepo);
 		User user = userRepo.findById(data.get("player_id").asLong());
 		Score newScore = new Score();
 		double nov = 0;
+		Boolean flag = true;
+		List<Feature> fList = (List<Feature>) mp.get("fList");
+		List<CustomFeature> cfList = (List<CustomFeature>) mp.get("cfList");
+		List<CustomClassifier> ccList = (List<CustomClassifier>) mp.get("ccList");
+		List<Tree> tList = (List<Tree>) mp.get("tList");
 		if(fList.size()>0){
 			nov = treeService.getUniqueIdNovelty(fList, user);
 		}
@@ -231,6 +246,9 @@ public class MetaServerController {
 		Date date = new Date();
 		newTree.setCreated(new DateTime(date.getTime()));
 		newTree.setFeatures(fList);
+		newTree.setCustomFeatures(cfList);
+		newTree.setCustomClassifiers(ccList);
+		newTree.setCustomTreeClassifiers(tList);
 		newTree.setJson_tree(result_json);
 		newTree.setPrivate_tree(false);
 		newTree.setUser(user);

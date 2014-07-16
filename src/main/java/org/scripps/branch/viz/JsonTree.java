@@ -1,15 +1,23 @@
 package org.scripps.branch.viz;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.scripps.branch.classifier.ManualTree;
 import org.scripps.branch.entity.Attribute;
+import org.scripps.branch.entity.CustomClassifier;
+import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Feature;
+import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.repository.AttributeRepository;
+import org.scripps.branch.repository.CustomClassifierRepository;
+import org.scripps.branch.repository.CustomFeatureRepository;
 import org.scripps.branch.repository.FeatureRepository;
+import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.service.CustomClassifierService;
 
 import weka.classifiers.Classifier;
@@ -45,22 +53,62 @@ public class JsonTree {
 		// System.out.println(node.toString());
 	}
 
-	public List<Feature> getFeatures(JsonNode node, List<Feature> fList,
-			FeatureRepository f) {
+	public void getFeatures(JsonNode node, HashMap mp, FeatureRepository f, CustomFeatureRepository cf, CustomClassifierRepository cc, TreeRepository t) {
+		List<Feature> fList = (List<Feature>) mp.get("fList");
+		List<CustomFeature> cfList = (List<CustomFeature>) mp.get("cfList");
+		List<CustomClassifier> ccList = (List<CustomClassifier>) mp.get("ccList");
+		List<Tree> tList = (List<Tree>) mp.get("tList");
+		if(fList == null){
+			fList = new ArrayList<Feature>();
+		}
+		if(cfList == null){
+			cfList = new ArrayList<CustomFeature>();
+		}
+		if(ccList == null){
+			ccList = new ArrayList<CustomClassifier>();
+		}
+		if(tList == null){
+			tList = new ArrayList<Tree>();
+		}
 		ObjectNode options = (ObjectNode) node.get("options");
+		String uid = "";
 		if (options != null) {
 			JsonNode unique_id = options.get("unique_id");
 			if (unique_id != null) {
-				fList.add(f.findByUniqueId(unique_id.asText()));
+				uid = unique_id.asText();
+				if(uid.contains("custom_tree")){
+					Tree temp = t.findById(Long.valueOf(uid.replace("custom_tree_","")));
+					if(temp!=null){
+						tList.add(temp);
+					}
+				} else if(uid.contains("custom_feature")) {
+					CustomFeature temp = cf.findById(Long.valueOf(uid.replace("custom_feature_","")));
+					if(temp!=null){
+						cfList.add(temp);
+					}
+				} else if(uid.contains("custom_classifier")){
+					CustomClassifier temp = cc.findById(Long.valueOf(uid.replace("custom_classifier_","")));
+					if(temp!=null){
+						ccList.add(temp);
+					}
+				} else {
+					Feature temp = f.findByUniqueId(unique_id.asText());
+					if(temp!=null){
+						fList.add(temp);
+					}
+				}
 			}
 		}
+		mp.put("fList", fList);
+		mp.put("cfList", cfList);
+		mp.put("ccList", ccList);
+		mp.put("tList", tList);
 		ArrayNode children = (ArrayNode) node.get("children");
 		if (children != null) {
 			for (JsonNode child : children) {
-				getFeatures(child, fList, f);
+				getFeatures(child, mp, f, cf, cc, t);
 			}
 		}
-		return fList;
 	}
 
 	public JsonNode mapEntrezIdsToAttNames(Weka weka, JsonNode node,
