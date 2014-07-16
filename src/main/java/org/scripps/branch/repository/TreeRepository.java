@@ -2,6 +2,8 @@ package org.scripps.branch.repository;
 
 import java.util.List;
 
+import org.scripps.branch.entity.CustomClassifier;
+import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.User;
@@ -32,6 +34,15 @@ public interface TreeRepository extends JpaRepository<Tree, Long> {
 	
 	@Query("select count(f) from Tree t inner join t.features f where f in (?1) and t.user != ?2")
 	long getCountOfFeature(List<Feature> fList,User user);
+	
+	@Query("select count(f) from Tree t inner join t.customFeatures f where f in (?1) and t.user != ?2")
+	long getCountOfCustomFeature(List<CustomFeature> fList,User user);
+	
+	@Query("select count(f) from Tree t inner join t.customClassifiers f where f in (?1) and t.user != ?2")
+	long getCountOfCustomClassifier(List<CustomClassifier> fList,User user);
+	
+	@Query("select count(f) from Tree t inner join t.customTreeClassifiers f where f in (?1) and t.user != ?2")
+	long getCountOfCustomTree(List<Tree> fList,User user);
 	
 	@Query("select count(f) from Tree t inner join t.features f")
 	long getTotalCount();
