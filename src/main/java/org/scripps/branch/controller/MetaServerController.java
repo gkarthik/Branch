@@ -216,9 +216,7 @@ public class MetaServerController {
 		List<CustomFeature> cfList = (List<CustomFeature>) mp.get("cfList");
 		List<CustomClassifier> ccList = (List<CustomClassifier>) mp.get("ccList");
 		List<Tree> tList = (List<Tree>) mp.get("tList");
-		if(fList.size()>0){
-			nov = treeService.getUniqueIdNovelty(fList, user);
-		}
+		nov = treeService.getUniqueIdNovelty(fList, cfList, ccList, tList, user);
 		ObjectNode result = mapper.createObjectNode();
 		result.put("pct_correct", eval.pctCorrect());
 		result.put("size", numnodes);
