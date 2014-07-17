@@ -17,5 +17,5 @@
 * To create database schema for the first time, set hibernate.hbm2ddl.auto=create in applciation.properties. To revert back to update set hibernate.hbm2ddl.auto=update.
 * Run on Tomcat 7.0. 
 
-Tests:
+### Tests: ###
 Run using JUnit.
