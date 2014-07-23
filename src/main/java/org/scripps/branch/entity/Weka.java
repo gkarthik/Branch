@@ -4,8 +4,6 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Random;
 
-import org.scripps.branch.repository.FeatureCustomRepository;
-
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 

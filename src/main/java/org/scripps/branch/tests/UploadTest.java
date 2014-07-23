@@ -1,8 +1,5 @@
 package org.scripps.branch.tests;
 
-import static org.junit.Assert.*;
-
-import org.apache.commons.fileupload.FileUpload;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.scripps.branch.config.ApplicationContext;
@@ -18,17 +15,14 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @ContextConfiguration(classes = { PersistenceJPAConfig.class,
 		ApplicationContext.class }, loader = AnnotationConfigContextLoader.class)
 @WebAppConfiguration
-
 public class UploadTest {
 
-	
-	@Autowired 
+	@Autowired
 	FileUploadController fu;
-	
+
 	@Test
 	public void testUpload() {
-		
-		
+
 	}
 
 }

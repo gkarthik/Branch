@@ -27,7 +27,7 @@ public class WebApplicationContext extends WebMvcConfigurerAdapter {
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("classpath:/static/**")
-		.addResourceLocations("/static/**");
+				.addResourceLocations("/static/**");
 	}
 
 	@Override
@@ -58,6 +58,11 @@ public class WebApplicationContext extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
+	public StandardServletMultipartResolver multipartResolver() {
+		return new StandardServletMultipartResolver();
+	}
+
+	@Bean
 	public ViewResolver viewResolver() {
 		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
 
@@ -66,11 +71,6 @@ public class WebApplicationContext extends WebMvcConfigurerAdapter {
 		viewResolver.setSuffix(VIEW_RESOLVER_SUFFIX);
 
 		return viewResolver;
-	}
-
-	@Bean
-	public StandardServletMultipartResolver multipartResolver(){
-		return new StandardServletMultipartResolver();
 	}
 
 }

@@ -2,28 +2,23 @@ package org.scripps.branch.entity.forms;
 
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-public class UploadForm
-{
+public class UploadForm {
 	private String filename;
 	private CommonsMultipartFile fileData;
 
-	public String getFilename()
-	{
-		return filename;
-	}
-
-	public void setFilename(String filename)
-	{
-		this.filename = filename;
-	}
-
-	public CommonsMultipartFile getFileData()
-	{
+	public CommonsMultipartFile getFileData() {
 		return fileData;
 	}
 
-	public void setFileData(CommonsMultipartFile fileData)
-	{
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFileData(CommonsMultipartFile fileData) {
 		this.fileData = fileData;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 }
