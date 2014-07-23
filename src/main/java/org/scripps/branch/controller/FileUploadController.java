@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.repository.DatasetRepository;
@@ -110,9 +111,8 @@ public class FileUploadController {
 		return "user/upload";
 	}
 
-	@RequestMapping(value = "/uploadMultipleFile", method = RequestMethod.POST)
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public @ResponseBody String uploadMultipleFileHandler(
-			@RequestParam("name") String[] names,
 			@RequestParam("file") MultipartFile[] files,
 			@RequestParam("description") String description,
 			@RequestParam("datasetName") String datasetName) {
@@ -120,19 +120,19 @@ public class FileUploadController {
 		// LOGGER.debug("description :  "+datasetName);
 		LOGGER.debug("description :  " + description);
 
-		if (files.length != names.length)
-			return "Mandatory information missing";
-
 		String message = "";
+
 		UserDetails userDetails = null;
 		Authentication auth = SecurityContextHolder.getContext()
 				.getAuthentication();
 		Dataset dsObj = new Dataset();
 		User user = null;
+
 		String[] fileType = new String[3];
 		fileType[0] = "dataset";
 		fileType[1] = "mapping";
 		fileType[2] = "feature";
+		String[] names = new String[3];
 
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
 
@@ -140,33 +140,40 @@ public class FileUploadController {
 			user = userRepo.findByEmail(userDetails.getUsername());
 			LOGGER.debug("Login Checker " + user);
 		}
+
 		String[] md5FileName = new String[3];
 
 		for (int i = 0; i < files.length; i++) {
+
 			MultipartFile file = files[i];
-			String name = names[i];
-			// String ext = FilenameUtils.getExtension(file.toString());
-			// LOGGER.debug("check extention: "+ext);
+			
+			String name = file.getOriginalFilename();
+			names[i] = file.getOriginalFilename();//names[i];
+			String ext = FilenameUtils.getExtension(file.toString());
+			LOGGER.debug("File Extention: "+ext);
+			LOGGER.debug("File Name: "+ name);
+			
 			try {
+				
 				byte[] bytes = file.getBytes();
 
 				// Creating the directory to store file
 				String rootPath = System.getProperty("catalina.home");
 				File dir = new File(
 						"/home/bob/workspace/branch/src/main/resources/uploads");
+				
 				if (!dir.exists())
 					dir.mkdirs();
 
-				md5FileName[i] = hashFileName(name + user.getId()
-						+ System.currentTimeMillis() + fileType[i]);
+				md5FileName[i] = hashFileName(name + user.getId()+System.currentTimeMillis()+fileType[i]);
 
-				LOGGER.debug(md5FileName[i]);
+				LOGGER.debug("MD5 File Name: "+md5FileName[i]);
 				// Create the file on server
 				File serverFile = new File(dir.getAbsolutePath()
 						+ File.separator + md5FileName[i]);// name
 
 				// md5FileName[i]= hashFileName(name);
-				// LOGGER.debug("MD5FileName"+md5FileName[i]);
+				LOGGER.debug("MD5 FileName with path"+serverFile);
 
 				BufferedOutputStream stream = new BufferedOutputStream(
 						new FileOutputStream(serverFile));
@@ -174,7 +181,7 @@ public class FileUploadController {
 				stream.write(bytes);
 				stream.close();
 
-				LOGGER.info("Server File Location="
+				LOGGER.info("Server File Location= "
 						+ serverFile.getAbsolutePath());
 
 				message = message + "You successfully uploaded file=" + name
@@ -196,8 +203,8 @@ public class FileUploadController {
 			dsObj.setMappingname(names[1]);
 			dsObj.setFeaturename(names[2]);
 			dsObj.setDatasetfile(md5FileName[0]);
-			dsObj.setFeaturefile(md5FileName[1]);
-			dsObj.setMappingfile(md5FileName[2]);
+			dsObj.setMappingfile(md5FileName[1]);
+			dsObj.setFeaturefile(md5FileName[2]);
 			dsObj.setDescription(description);
 			dsObj.setName(datasetName);
 			dsObj.setUser(user);
@@ -212,7 +219,7 @@ public class FileUploadController {
 	 * Upload multiple file using Spring Controller
 	 */
 
-	@RequestMapping(value = "/uploadMultipleFile", method = RequestMethod.GET)
+	@RequestMapping(value = "/upload", method = RequestMethod.GET)
 	public String uploadMultipleFileHandler(WebRequest request, Model model) {
 		LOGGER.debug("Rendering Multiple upload page");
 		return "user/uploadMultiple";

@@ -1,8 +1,7 @@
 <div class="row">
-	<div class="container-fluid" id="profile-container">
-		
-	</div>
-	<link href='../static/profile/css/profileStyle.css' rel='stylesheet' type='text/css'>
+	<div class="container-fluid" id="profile-container"></div>
+	<link href='../static/profile/css/profileStyle.css' rel='stylesheet'
+		type='text/css'>
 	<script type="text/template" id="main-layout-template">
 		<div class="col-md-4">
 		<div id="sidebar-fixed">
