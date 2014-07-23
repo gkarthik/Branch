@@ -23,12 +23,12 @@
 	href="/branch/static/css/odometer-theme-train-station.css" />
 <link rel="stylesheet"
 	href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
-	<style>
-	.header-right-menu li{
-		border-left: 1px solid #EEE;
-		padding: 0px 5px;
-	}
-	</style>
+<style>
+.header-right-menu li {
+	border-left: 1px solid #EEE;
+	padding: 0px 5px;
+}
+</style>
 <sitemesh:write property="head" />
 </head>
 <body>
@@ -59,11 +59,14 @@
 									<spring:message code="label.navigation.signed.in.as.text" />
 								</c:if>
 								<!-- <sec:authentication property="principal.username" /> -->
-								<strong><a href="./profile/">${firstName}</a></strong>
+								<strong><a href="/branch/profile/">${firstName}</a></strong>
+							<span>
+								<strong><a href="/branch/upload"> Upload Dataset</a></strong>
+							</span>
 							</p>
 						</li>
 						<li>
-						<p>
+							<p>
 							<form action="/branch/logout" method="POST">
 								<input type="hidden" name="${_csrf.parameterName}"
 									value="${_csrf.token}" />
@@ -79,7 +82,7 @@
 			<!-- /.navbar-collapse -->
 	</div>
 	<!-- /.container-fluid -->
-	
+
 
 	</nav>
 	</div>

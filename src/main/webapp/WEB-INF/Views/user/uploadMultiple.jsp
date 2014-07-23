@@ -1,37 +1,54 @@
 
-<div class="panel panel-default">
-	<div class="panel-body">
+<div class="container">
 
-		<form method="POST" action="uploadMultipleFile"
-			enctype="multipart/form-data">
+	<div class="col-md-6" style="float: none; margin: 0 auto;">
+
+		<form method="POST" action="upload" enctype="multipart/form-data">
 			<input type="hidden" name="${_csrf.parameterName}"
-				value="${_csrf.token}" /> <label>File1 to upload:</label> <input
-				type="file" name="file"><br /> <label>Name1:</label> <input
-				type="text" name="name"><br /> <br /> 
-				File2 to upload: <input type="file" name="file"><br /> <label>Name2</label>
+				value="${_csrf.token}" />
 
-			<input type="text" name="name"><br /> <br /> <label>
-				File3 to upload:</label> <input type="file" name="file"><br /> <label>Name3</label>
-			<input type="text" name="name"><br /> <br />
+			<h3>
+				<span class="label label-default">Dataset File</span>
+			</h3>
+			<span class="btn btn-default btn-file"> <input type="file"
+				name="file">
+			</span>
 
-			<section>
-				<label>Description</label> <input type="text" name="description"
-					height="100" width="100">
-			</section>
+			<h3>
+				<span class="label label-default">Mapping File</span>
+			</h3>
+			<span class="btn btn-default btn-file"> <input type="file"
+				name="file">
+			</span>
 
-			<section>
-				<label>Dataset Name </label> <input type="text" name="datasetName"
-					height="100" width="100">
-			</section>
+			<h3>
+				<span class="label label-default">Feature File</span>
+			</h3>
+			<span class="btn btn-default btn-file"> <input type="file"
+				name="file">
+			</span>
 
+			<h3>
+				<span class="label label-default">Description</span>
+			</h3>
+			<span class="btn btn-default btn-file"> <input type="textarea"
+				name="description">
+			</span>
+
+			<h3>
+				<span class="label label-default">Dataset Name</span>
+			</h3>
+			<span class="btn btn-default btn-file"> <input type="text"
+				name="datasetName">
+			</span>
 
 			<button type="submit" class="btn btn-default">
 				<span class="glyphicon glyphicon-cloud-upload"></span> Press here to
 				upload the file!
 			</button>
 		</form>
-
 	</div>
 </div>
+
 
 
