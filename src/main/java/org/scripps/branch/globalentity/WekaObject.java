@@ -52,7 +52,7 @@ public class WekaObject implements ApplicationContextAware {
 					.getResource("/WEB-INF/data/Metabric_clinical_expression_DSS_sample_filtered.arff");
 			try {
 //				wekaObj.buildWeka(train_file.getInputStream(), null,
-//						"metabric_with_clinical");
+//						"metabric_with_clinical", featurerepo);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
