@@ -75,22 +75,18 @@ public class FileUploadController {
 	private String runFeatureUpload(String filePath) {
 		JobParameters jp = new JobParametersBuilder().addString("inputPath",
 				filePath).toJobParameters();
+
 		try {
 			JobExecution jobExecution = jobLauncher.run(job, jp);
 			return "Feature table added";
-		} catch (JobExecutionAlreadyRunningException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JobRestartException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JobInstanceAlreadyCompleteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JobParametersInvalidException e) {
+		} catch (JobExecutionAlreadyRunningException | JobRestartException
+				| JobInstanceAlreadyCompleteException
+				| JobParametersInvalidException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+
 		return "Unable to add feature table";
 	}
 
