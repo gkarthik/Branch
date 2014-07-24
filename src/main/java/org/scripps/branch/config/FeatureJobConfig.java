@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.Resource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 
@@ -51,13 +50,15 @@ public class FeatureJobConfig {
 	public ItemProcessor<Feature, Feature> processor() {
 		return new FeatureProcessor();
 	}
-	
+
 	@Bean
 	@StepScope
-	public FlatFileItemReader<Feature> reader(@Value("#{jobParameters[inputPath]}") String pathToFile, org.springframework.context.ApplicationContext ctx) {
+	public FlatFileItemReader<Feature> reader(
+			@Value("#{jobParameters[inputPath]}") String pathToFile,
+			org.springframework.context.ApplicationContext ctx) {
 		FlatFileItemReader<Feature> reader = new FlatFileItemReader<Feature>();
-		
-		Resource path = ctx.getResource("file:"+pathToFile);
+
+		Resource path = ctx.getResource("file:" + pathToFile);
 		reader.setResource(path);
 		reader.setLineMapper(new DefaultLineMapper<Feature>() {
 			{
@@ -79,7 +80,6 @@ public class FeatureJobConfig {
 		return reader;
 	}
 
-
 	@Bean
 	public Step step1(StepBuilderFactory stepBuilderFactory,
 			ItemReader<Feature> reader, ItemWriter<Feature> writer,
@@ -98,7 +98,5 @@ public class FeatureJobConfig {
 		writer.setEntityManagerFactory(emf);
 		return writer;
 	}
-
-
 
 }

@@ -66,9 +66,10 @@ public class ApplicationConfig implements WebApplicationInitializer {
 
 		servletContext.addListener(new ContextLoaderListener(rootContext));
 
-		//public MultipartConfigElement(java.lang.String location,long maxFileSize,long maxRequestSize, int fileSizeThreshold)
+		// public MultipartConfigElement(java.lang.String location,long
+		// maxFileSize,long maxRequestSize, int fileSizeThreshold)
 		dispatcher.setMultipartConfig(new MultipartConfigElement("/tmp",
-			 	1073741824, 1073741824, 1024 * 1024));
+				1073741824, 1073741824, 1024 * 1024));
 
 	}
 }

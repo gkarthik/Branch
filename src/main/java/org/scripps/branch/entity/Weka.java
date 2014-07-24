@@ -19,8 +19,8 @@ public class Weka {
 	Instances origTest = null;
 	Instances[] instancesInClass;
 
-	public void buildWeka(InputStream train_stream, InputStream test_stream, String method, 
-			String dataset) throws Exception {
+	public void buildWeka(InputStream train_stream, InputStream test_stream,
+			String method, String dataset) throws Exception {
 		setDataset(dataset);
 		// get the data
 		DataSource source = new DataSource(train_stream);
@@ -46,22 +46,23 @@ public class Weka {
 		setTrain(getOrigTrain());
 		setTest(getOrigTest());
 	}
-	
-	public void generateLimits(){
+
+	public void generateLimits() {
 		Instances data = getOrigTrain();
 		instancesInClass = new Instances[data.numClasses()];
-		for(int i=0;i<data.numClasses();i++){
-			for(int j=0;j<data.numInstances();j++){
+		for (int i = 0; i < data.numClasses(); i++) {
+			for (int j = 0; j < data.numInstances(); j++) {
 				System.out.println(data.instance(j).classValue());
-				if(data.instance(j).classValue()==i){//Not 
-					if(instancesInClass[i]==null){
-						instancesInClass[i] = new Instances(data, Math.round(data.numInstances()));
+				if (data.instance(j).classValue() == i) {// Not
+					if (instancesInClass[i] == null) {
+						instancesInClass[i] = new Instances(data,
+								Math.round(data.numInstances()));
 					}
 					instancesInClass[i].add(data.instance(j));
 				}
 			}
 		}
-		for(int i=0;i<instancesInClass.length;i++){
+		for (int i = 0; i < instancesInClass.length; i++) {
 			System.out.println(instancesInClass[i].numInstances());
 		}
 	}
@@ -76,6 +77,18 @@ public class Weka {
 
 	public Map<String, Feature> getFeatures() {
 		return features;
+	}
+
+	public Instances[] getInstancesInClass() {
+		return instancesInClass;
+	}
+
+	public Instances getOrigTest() {
+		return origTest;
+	}
+
+	public Instances getOrigTrain() {
+		return origTrain;
 	}
 
 	public Random getRand() {
@@ -102,6 +115,18 @@ public class Weka {
 		this.features = features;
 	}
 
+	public void setInstancesInClass(Instances[] numberOfInstancesInClass) {
+		this.instancesInClass = numberOfInstancesInClass;
+	}
+
+	public void setOrigTest(Instances origTest) {
+		this.origTest = origTest;
+	}
+
+	public void setOrigTrain(Instances orig_train) {
+		this.origTrain = orig_train;
+	}
+
 	public void setRand(Random rand) {
 		this.rand = rand;
 	}
@@ -112,29 +137,5 @@ public class Weka {
 
 	public void setTrain(Instances train) {
 		this.train = train;
-	}
-	
-	public Instances getOrigTrain() {
-		return origTrain;
-	}
-
-	public void setOrigTrain(Instances orig_train) {
-		this.origTrain = orig_train;
-	}
-	
-	public Instances getOrigTest() {
-		return origTest;
-	}
-
-	public void setOrigTest(Instances origTest) {
-		this.origTest = origTest;
-	}
-	
-	public Instances[] getInstancesInClass() {
-		return instancesInClass;
-	}
-
-	public void setInstancesInClass(Instances[] numberOfInstancesInClass) {
-		this.instancesInClass = numberOfInstancesInClass;
 	}
 }

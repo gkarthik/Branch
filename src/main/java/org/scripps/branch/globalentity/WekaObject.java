@@ -53,20 +53,21 @@ public class WekaObject implements ApplicationContextAware {
 			Resource test_file = ctx
 					.getResource("/WEB-INF/data/Oslo_clinical_expression_OS_sample_filt.arff");
 			try {
-				wekaObj.buildWeka(train_file.getInputStream(), test_file.getInputStream(), "test_set",
+				wekaObj.buildWeka(train_file.getInputStream(),
+						test_file.getInputStream(), "test_set",
 						"metabric_with_clinical");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
+
 		cfService.addInstanceValues(wekaObj);
 		// Set custom classifiers
 		custom_classifiers = ccService.getClassifiersfromDb(wekaObj,
 				"metabric_with_clinical");
 		wekaObj.generateLimits();
 		weka = wekaObj;
-		
+
 	}
 }

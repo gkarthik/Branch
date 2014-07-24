@@ -1,6 +1,5 @@
 package org.scripps.branch.controller;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,9 +45,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
-import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.converters.ArffSaver;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -238,54 +235,58 @@ public class MetaServerController {
 		Evaluation eval = new Evaluation(wekaObj.getTest());
 		Instances train = wekaObj.getOrigTrain();
 		Instances test = wekaObj.getOrigTest();
-		switch(data.get("testOptions").get("value").asInt()){
-			case 0:
-				wekaObj.setTrain(train);
-				wekaObj.setTest(train);
-				break;
-			case 1:
-				wekaObj.setTrain(train);
-				wekaObj.setTest(test);
-				break;
-			case 2:
-				float limitPercent = (data.get("testOptions").get("percentSplit").asLong())/(float)100;
-				System.out.println(limitPercent);
-				Instances[] classLimits = wekaObj.getInstancesInClass();
-				float numLimit = 0;
-				System.out.println(limitPercent);
-				numLimit = limitPercent * train.numInstances();
-				System.out.println(numLimit);
-				numLimit = Math.round(numLimit);
-				Instances newTrain = new Instances(train, Math.round(numLimit));
-				Instances newTest = new Instances(train,  train.numInstances()-Math.round(numLimit));
-				for(int j=0;j<classLimits.length;j++){
-					numLimit = limitPercent * classLimits[j].numInstances();
-					for(int i=0;i<classLimits[j].numInstances();i++){
-						if(i==0){
-							classLimits[j].randomize(new Random(1));
-						}
-						if(classLimits[j].instance(i)!=null){
-							if(i<=numLimit){
-								newTrain.add(classLimits[j].instance(i));
-							} else {
-								newTest.add(classLimits[j].instance(i));
-							}
+		switch (data.get("testOptions").get("value").asInt()) {
+		case 0:
+			wekaObj.setTrain(train);
+			wekaObj.setTest(train);
+			break;
+		case 1:
+			wekaObj.setTrain(train);
+			wekaObj.setTest(test);
+			break;
+		case 2:
+			float limitPercent = (data.get("testOptions").get("percentSplit")
+					.asLong()) / (float) 100;
+			System.out.println(limitPercent);
+			Instances[] classLimits = wekaObj.getInstancesInClass();
+			float numLimit = 0;
+			System.out.println(limitPercent);
+			numLimit = limitPercent * train.numInstances();
+			System.out.println(numLimit);
+			numLimit = Math.round(numLimit);
+			Instances newTrain = new Instances(train, Math.round(numLimit));
+			Instances newTest = new Instances(train, train.numInstances()
+					- Math.round(numLimit));
+			for (int j = 0; j < classLimits.length; j++) {
+				numLimit = limitPercent * classLimits[j].numInstances();
+				for (int i = 0; i < classLimits[j].numInstances(); i++) {
+					if (i == 0) {
+						classLimits[j].randomize(new Random(1));
+					}
+					if (classLimits[j].instance(i) != null) {
+						if (i <= numLimit) {
+							newTrain.add(classLimits[j].instance(i));
+						} else {
+							newTest.add(classLimits[j].instance(i));
 						}
 					}
 				}
-				wekaObj.setTrain(newTrain);
-				wekaObj.setTest(newTest);
-				System.out.println(wekaObj.getTrain().numInstances());
-				System.out.println(wekaObj.getTest().numInstances());
-//				ArffSaver saver = new ArffSaver();
-//				 saver.setInstances(newTrain);
-//				 saver.setFile(new File("/home/karthik/Documents/splits/train.arff"));				 
-//				 saver.writeBatch();
-//				 saver = new ArffSaver();
-//				 saver.setInstances(newTest);
-//				 saver.setFile(new File("/home/karthik/Documents/splits/test.arff"));				 
-//				 saver.writeBatch();
-				break;
+			}
+			wekaObj.setTrain(newTrain);
+			wekaObj.setTest(newTest);
+			System.out.println(wekaObj.getTrain().numInstances());
+			System.out.println(wekaObj.getTest().numInstances());
+			// ArffSaver saver = new ArffSaver();
+			// saver.setInstances(newTrain);
+			// saver.setFile(new
+			// File("/home/karthik/Documents/splits/train.arff"));
+			// saver.writeBatch();
+			// saver = new ArffSaver();
+			// saver.setInstances(newTest);
+			// saver.setFile(new
+			// File("/home/karthik/Documents/splits/test.arff"));
+			// saver.writeBatch();
+			break;
 		}
 		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"),
 				data.get("dataset").asText(), custom_classifiers, attr,
@@ -320,7 +321,9 @@ public class MetaServerController {
 		try {
 			result_json = mapper.writeValueAsString(result);
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch blockAim: Build a decision tree that predicts 10 year survival using gene expression values and clinical variables. 
+			// TODO Auto-generated catch blockAim: Build a decision tree that
+			// predicts 10 year survival using gene expression values and
+			// clinical variables.
 			e.printStackTrace();
 		}
 		newScore.setNovelty(nov);
