@@ -1,6 +1,5 @@
 package org.scripps.branch.entity;
 
-
 import java.io.Serializable;
 
 public class Message implements Serializable {
@@ -21,28 +20,28 @@ public class Message implements Serializable {
 		this.filename = filename;
 	}
 
-	public String getOwner() {
-		return owner;
-	}
-
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
-
 	public String getDescription() {
 		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	public String getFilename() {
 		return filename;
 	}
 
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public void setFilename(String filename) {
 		this.filename = filename;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 
 	@Override

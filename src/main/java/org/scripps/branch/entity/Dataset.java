@@ -17,7 +17,6 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
-
 @Entity
 @Table(name = "dataset")
 public class Dataset {
@@ -35,74 +34,32 @@ public class Dataset {
 
 	@Column
 	private String datasetfile;
-	
+
 	@Column
 	private String mappingfile;
 
 	@Column
 	private String featurefile;
-	
+
 	@Column
 	private String datasetname;
-	
+
 	@Column
 	private String mappingname;
 
 	@Column
 	private String featurename;
-	
+
 	@Column
 	private String name;
-
-	public String getDatasetname() {
-		return datasetname;
-	}
-
-	public void setDatasetname(String datasetname) {
-		this.datasetname = datasetname;
-	}
-
-	public String getMappingname() {
-		return mappingname;
-	}
-
-	public void setMappingname(String mappingname) {
-		this.mappingname = mappingname;
-	}
-
-	public String getFeaturename() {
-		return featurename;
-	}
-
-	public void setFeaturename(String featurename) {
-		this.featurename = featurename;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", insertable = true, updatable = true)
 	private User user;
-	
-	//description
-	@Column(length=1000)
+
+	// description
+	@Column(length = 1000)
 	private String description;
-
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
 
 	public DateTime getCreated() {
 		return created;
@@ -112,26 +69,41 @@ public class Dataset {
 		return datasetfile;
 	}
 
+	public String getDatasetname() {
+		return datasetname;
+	}
+
+	public String getDescription() {
+		return description;
+	}
 
 	public String getFeaturefile() {
 		return featurefile;
 	}
 
+	public String getFeaturename() {
+		return featurename;
+	}
 
 	public long getId() {
 		return id;
 	}
 
-
 	public String getMappingfile() {
 		return mappingfile;
 	}
 
+	public String getMappingname() {
+		return mappingname;
+	}
+
+	public String getName() {
+		return name;
+	}
 
 	public User getUser() {
 		return user;
 	}
-
 
 	@PrePersist
 	public void prePersist() {
@@ -140,36 +112,48 @@ public class Dataset {
 
 	}
 
-
 	public void setCreated(DateTime created) {
 		this.created = created;
 	}
-
 
 	public void setDatasetfile(String datasetfile) {
 		this.datasetfile = datasetfile;
 	}
 
+	public void setDatasetname(String datasetname) {
+		this.datasetname = datasetname;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	public void setFeaturefile(String featurefile) {
 		this.featurefile = featurefile;
 	}
 
+	public void setFeaturename(String featurename) {
+		this.featurename = featurename;
+	}
 
 	public void setId(long id) {
 		this.id = id;
 	}
 
-
 	public void setMappingfile(String mappingfile) {
 		this.mappingfile = mappingfile;
 	}
 
+	public void setMappingname(String mappingname) {
+		this.mappingname = mappingname;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public void setUser(User user) {
 		this.user = user;
 	}
-
-
 
 }

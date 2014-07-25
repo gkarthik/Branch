@@ -32,7 +32,7 @@ public class ApplicationConfig implements WebApplicationInitializer {
 
 		servletContext.addFilter("OpenEntityManagerInViewFilter",
 				OpenEntityManagerInViewFilter.class).addMappingForUrlPatterns(
-						null, false, "/*");
+				null, false, "/*");
 
 		// If you want to use the XML configuration, uncomment the following
 		// lines.
@@ -44,8 +44,6 @@ public class ApplicationConfig implements WebApplicationInitializer {
 				DISPATCHER_SERVLET_NAME, new DispatcherServlet(rootContext));
 		dispatcher.setLoadOnStartup(1);
 		dispatcher.addMapping(DISPATCHER_SERVLET_MAPPING);
-
-
 
 		EnumSet<DispatcherType> dispatcherTypes = EnumSet.of(
 				DispatcherType.REQUEST, DispatcherType.FORWARD);
@@ -68,13 +66,8 @@ public class ApplicationConfig implements WebApplicationInitializer {
 
 		servletContext.addListener(new ContextLoaderListener(rootContext));
 
-
-
-		dispatcher.setMultipartConfig(new MultipartConfigElement("/tmp", 1024*1024*5, 1024*1024*5*5, 1024*1024));
-
-
-
-
+		dispatcher.setMultipartConfig(new MultipartConfigElement("/tmp",
+				1024 * 1024 * 5, 1024 * 1024 * 5 * 5, 1024 * 1024));
 
 	}
 }
