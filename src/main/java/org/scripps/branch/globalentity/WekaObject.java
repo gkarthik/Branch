@@ -2,7 +2,6 @@ package org.scripps.branch.globalentity;
 
 import java.util.LinkedHashMap;
 
-import org.scripps.branch.controller.FileUploadController;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.repository.FeatureCustomRepository;
 import org.scripps.branch.service.CustomClassifierService;

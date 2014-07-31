@@ -31,10 +31,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
-import org.scripps.branch.controller.FileUploadController;
 import org.scripps.branch.entity.CustomSet;
 import org.scripps.branch.entity.Feature;
-import org.scripps.branch.repository.CustomSetRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +50,6 @@ import weka.core.Randomizable;
 import weka.core.RevisionUtils;
 import weka.core.Utils;
 import weka.core.WeightedInstancesHandler;
-import weka.experiment.ClassifierSplitEvaluator;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -92,6 +89,51 @@ public class ManualTree extends Classifier implements OptionHandler,
 	 *            object
 	 * 
 	 */
+
+	/**
+	 * Main method for this class.
+	 * 
+	 * @param argv
+	 *            the commandline parameters
+	 */
+	public static void main(String argv[]) throws Exception {
+		/*
+		 * Weka weka = new Weka(); String train_file =
+		 * "/home/karthik/workspace/cure/WebContent/WEB-INF/data/Metabric_clinical_expression_DSS_sample_filtered.arff"
+		 * ; String dataset = "metabric_with_clinical"; weka.buildWeka(new
+		 * FileInputStream(train_file), null, dataset);
+		 * evalAndAddNewFeatureValues("a17^2",weka.getTrain()); Instances data =
+		 * m_wekaObject.getTrain(); int numAttr = data.numAttributes()-2;
+		 * LOGGER.debug(data.attribute(numAttr));
+		 * LOGGER.debug(data.instance(13).value(16));
+		 * LOGGER.debug(data.instance(13).value(numAttr));
+		 */
+		ManualTree t =new ManualTree();
+		List<double[]> vertices = new ArrayList<double[]>();
+		double[] testPoint = new double[2];
+		double[] temp = new double[2];
+		temp[0] = 0;
+		temp[1] = 0;
+		vertices.add(temp);
+		temp = new double[2];
+		temp[0] = 0;
+		temp[1] = 2;
+		vertices.add(temp);
+		temp = new double[2];
+		temp[0] = 2;
+		temp[1] = 2;
+		vertices.add(temp);
+		temp = new double[2];
+		temp[0] = 2;
+		temp[1] = 0;
+		vertices.add(temp);
+		testPoint[0] =1;
+		testPoint[1] = 1;
+		int check = t.checkPointInPolygon(vertices,testPoint);
+		Boolean c = true;
+		c=!c;
+		LOGGER.debug(check+": "+c);
+	}
 
 	/** The subtrees appended to this tree. */
 	protected ManualTree[] m_Successors;
@@ -140,12 +182,12 @@ public class ManualTree extends Classifier implements OptionHandler,
 
 	/** for building up the json tree **/
 	ObjectMapper mapper;
-
+	
 	/** Custom Classifier Object **/
 	protected LinkedHashMap<String, Classifier> listOfFc = new LinkedHashMap<String, Classifier>();
 	
 	protected List<CustomSet> cSetList;
-	
+
 	protected Instances requiredInst;
 
 	/**
@@ -826,7 +868,24 @@ public class ManualTree extends Classifier implements OptionHandler,
 			}
 		}
 	}
-
+	
+	public int checkPointInPolygon(List<double[]> vertices,double[] testPoint){
+		int i, j; 
+		Boolean c = false;
+		LOGGER.debug(vertices.toString());
+		LOGGER.debug(testPoint[0]+","+testPoint[1]);
+		  for (i = 0, j = vertices.size()-1; i < vertices.size(); j = i++) {
+		    if ( ((vertices.get(i)[1]>testPoint[1]) != (vertices.get(j)[1]>testPoint[1])) &&
+		     (testPoint[0] < (vertices.get(j)[0]-vertices.get(i)[0]) * (testPoint[1]-vertices.get(i)[1]) / (vertices.get(j)[1]-vertices.get(i)[1]) + vertices.get(i)[0]) )
+		       c = !c;
+		  }
+		  if(c){
+			  LOGGER.debug("True!");
+			  return 1;
+		  }
+		return 0;
+	}
+	
 	/**
 	 * Computes class distribution for an attribute.
 	 * 
@@ -1059,66 +1118,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 		return mp;
 	}
 	
-	public CustomSet getReqCustomSet(int att, List<CustomSet> csList){
-		CustomSet cs = new CustomSet();
-		for(int i=0;i<att;i++){
-			cs = csList.get(att);
-		}
-		return cs;
-	}
-	
-	public ArrayList<double[]> generateVerticesList(JsonNode vertices){
-		ArrayList<double[]> attrVertices = new ArrayList<double[]>();
-		double[] vertex = new double[2];
-		int ctr = 0;
-		for (JsonNode v : vertices) {
-			vertex = new double[2];
-			ctr = 0;
-			for(JsonNode i:v){
-				vertex[ctr] = i.asDouble();
-				ctr++;
-			}
-			attrVertices.add(vertex);
-		}
-		return attrVertices;
-	}
-	
-	public List<Attribute> generateAttributeList(CustomSet cSet, Instances data){
-		List<Feature> fList= cSet.getFeatures();
-		List<Attribute> aList = new ArrayList<Attribute>();
-		Attribute attr = null;
-		Feature f =null;
-		for(int i=1;i>=0;i--){
-			f = new Feature();
-			f = fList.get(i);
-			LOGGER.debug(f.getShort_name());
-			for(org.scripps.branch.entity.Attribute a: f.getAttributes()){
-				if(a.getDataset().equals("metabric_with_clinical")){
-					attr = data.attribute(a.getName());
-				}
-			}
-			aList.add(attr);
-		}
-		return aList;
-	}
-	
-	public int checkPointInPolygon(List<double[]> vertices,double[] testPoint){
-		int i, j; 
-		Boolean c = false;
-		LOGGER.debug(vertices.toString());
-		LOGGER.debug(testPoint[0]+","+testPoint[1]);
-		  for (i = 0, j = vertices.size()-1; i < vertices.size(); j = i++) {
-		    if ( ((vertices.get(i)[1]>testPoint[1]) != (vertices.get(j)[1]>testPoint[1])) &&
-		     (testPoint[0] < (vertices.get(j)[0]-vertices.get(i)[0]) * (testPoint[1]-vertices.get(i)[1]) / (vertices.get(j)[1]-vertices.get(i)[1]) + vertices.get(i)[0]) )
-		       c = !c;
-		  }
-		  if(c){
-			  LOGGER.debug("True!");
-			  return 1;
-		  }
-		return 0;
-	}
-
 	/**
 	 * Computes class distribution of an instance using the decision tree.
 	 * 
@@ -1218,7 +1217,7 @@ public class ManualTree extends Classifier implements OptionHandler,
 			return returnedDist;
 		}
 	}
-
+	
 	/**
 	 * Computes value of splitting criterion after split.
 	 * 
@@ -1231,6 +1230,41 @@ public class ManualTree extends Classifier implements OptionHandler,
 	protected double gain(double[][] dist, double priorVal) {
 
 		return priorVal - ContingencyTables.entropyConditionedOnRows(dist);
+	}
+
+	public List<Attribute> generateAttributeList(CustomSet cSet, Instances data){
+		List<Feature> fList= cSet.getFeatures();
+		List<Attribute> aList = new ArrayList<Attribute>();
+		Attribute attr = null;
+		Feature f =null;
+		for(int i=1;i>=0;i--){
+			f = new Feature();
+			f = fList.get(i);
+			LOGGER.debug(f.getShort_name());
+			for(org.scripps.branch.entity.Attribute a: f.getAttributes()){
+				if(a.getDataset().equals("metabric_with_clinical")){
+					attr = data.attribute(a.getName());
+				}
+			}
+			aList.add(attr);
+		}
+		return aList;
+	}
+
+	public ArrayList<double[]> generateVerticesList(JsonNode vertices){
+		ArrayList<double[]> attrVertices = new ArrayList<double[]>();
+		double[] vertex = new double[2];
+		int ctr = 0;
+		for (JsonNode v : vertices) {
+			vertex = new double[2];
+			ctr = 0;
+			for(JsonNode i:v){
+				vertex[ctr] = i.asDouble();
+				ctr++;
+			}
+			attrVertices.add(vertex);
+		}
+		return attrVertices;
 	}
 
 	/**
@@ -1373,6 +1407,23 @@ public class ManualTree extends Classifier implements OptionHandler,
 		return result.toArray(new String[result.size()]);
 	}
 
+	public CustomSet getReqCustomSet(int att, List<CustomSet> csList){
+		CustomSet cs = new CustomSet();
+		for(int i=0;i<att;i++){
+			cs = csList.get(att);
+		}
+		return cs;
+	}
+
+	/**
+	 * Holds a required instances for distribution
+	 * 
+	 * @param rootNode
+	 */
+	public Instances getRequiredInst() {
+		return requiredInst;
+	}
+
 	/**
 	 * Returns the revision string.
 	 * 
@@ -1510,51 +1561,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 	}
 
 	/**
-	 * Main method for this class.
-	 * 
-	 * @param argv
-	 *            the commandline parameters
-	 */
-	public static void main(String argv[]) throws Exception {
-		/*
-		 * Weka weka = new Weka(); String train_file =
-		 * "/home/karthik/workspace/cure/WebContent/WEB-INF/data/Metabric_clinical_expression_DSS_sample_filtered.arff"
-		 * ; String dataset = "metabric_with_clinical"; weka.buildWeka(new
-		 * FileInputStream(train_file), null, dataset);
-		 * evalAndAddNewFeatureValues("a17^2",weka.getTrain()); Instances data =
-		 * m_wekaObject.getTrain(); int numAttr = data.numAttributes()-2;
-		 * LOGGER.debug(data.attribute(numAttr));
-		 * LOGGER.debug(data.instance(13).value(16));
-		 * LOGGER.debug(data.instance(13).value(numAttr));
-		 */
-		ManualTree t =new ManualTree();
-		List<double[]> vertices = new ArrayList<double[]>();
-		double[] testPoint = new double[2];
-		double[] temp = new double[2];
-		temp[0] = 0;
-		temp[1] = 0;
-		vertices.add(temp);
-		temp = new double[2];
-		temp[0] = 0;
-		temp[1] = 2;
-		vertices.add(temp);
-		temp = new double[2];
-		temp[0] = 2;
-		temp[1] = 2;
-		vertices.add(temp);
-		temp = new double[2];
-		temp[0] = 2;
-		temp[1] = 0;
-		vertices.add(temp);
-		testPoint[0] =1;
-		testPoint[1] = 1;
-		int check = t.checkPointInPolygon(vertices,testPoint);
-		Boolean c = true;
-		c=!c;
-		LOGGER.debug(check+": "+c);
-	}
-
-	/**
 	 * Returns the tip text for this property
 	 * 
 	 * @return tip text for this property suitable for displaying in the
@@ -1637,10 +1643,14 @@ public class ManualTree extends Classifier implements OptionHandler,
 		m_AllowUnclassifiedInstances = newAllowUnclassifiedInstances;
 	}
 
+	public void setCustomRepo(List<CustomSet> cSetRepo) {
+		this.cSetList = cSetRepo;
+	}
+
 	public void setDistributionData(HashMap newDistMap) {
 		m_distributionData = new HashMap(newDistMap);
 	}
-
+	
 	/**
 	 * Set the value of K.
 	 * 
@@ -1654,10 +1664,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 
 	public void setListOfFc(LinkedHashMap<String, Classifier> listOfFc) {
 		this.listOfFc = listOfFc;
-	}
-	
-	public void setCustomRepo(List<CustomSet> cSetRepo) {
-		this.cSetList = cSetRepo;
 	}
 
 	public void setMapper(ObjectMapper mapper) {
@@ -1794,6 +1800,10 @@ public class ManualTree extends Classifier implements OptionHandler,
 		Utils.checkForRemainingOptions(options);
 	}
 
+	public void setRequiredInst(Instances requiredInst) {
+		this.requiredInst = requiredInst;
+	}
+	
 	/**
 	 * Set the seed for random number generation.
 	 * 
@@ -1814,19 +1824,6 @@ public class ManualTree extends Classifier implements OptionHandler,
 	public void setTreeStructure(JsonNode rootNode) {
 		jsontree = rootNode;
 
-	}
-	
-	/**
-	 * Holds a required instances for distribution
-	 * 
-	 * @param rootNode
-	 */
-	public Instances getRequiredInst() {
-		return requiredInst;
-	}
-
-	public void setRequiredInst(Instances requiredInst) {
-		this.requiredInst = requiredInst;
 	}
 
 	/**
