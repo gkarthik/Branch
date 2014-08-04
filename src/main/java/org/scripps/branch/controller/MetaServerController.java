@@ -19,7 +19,7 @@ import org.scripps.branch.entity.Score;
 import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.entity.Weka;
-import org.scripps.branch.globalentity.WekaObject;
+import org.scripps.branch.globalentity.DatasetMap;
 import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.CustomClassifierRepository;
 import org.scripps.branch.repository.CustomFeatureRepository;
@@ -108,7 +108,7 @@ public class MetaServerController {
 	UserRepository userRepo;
 
 	@Autowired
-	private WekaObject weka;
+	private DatasetMap weka;
 
 	public String getClinicalFeatures(JsonNode data) {
 		ArrayList<Feature> fList = featureRepo.getMetaBricClinicalFeatures();

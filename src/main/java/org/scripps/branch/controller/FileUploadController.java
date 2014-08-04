@@ -11,7 +11,8 @@ import java.security.NoSuchAlgorithmException;
 import org.scripps.branch.entity.Collection;
 import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.User;
-import org.scripps.branch.globalentity.WekaObject;
+import org.scripps.branch.entity.Weka;
+import org.scripps.branch.globalentity.DatasetMap;
 import org.scripps.branch.repository.CollectionRepository;
 import org.scripps.branch.repository.DatasetRepository;
 import org.scripps.branch.repository.UserRepository;
@@ -68,10 +69,13 @@ public class FileUploadController {
 	UserRepository userRepo;
 
 	@Autowired
-	WekaObject wekaobj;
+	DatasetMap wekaobj;
 
 	@Autowired
 	ApplicationContext ctx;
+	
+	@Autowired 
+	String uploadPath; 
 
 	public String hashFileName(String name) {
 		MessageDigest md = null;
@@ -90,9 +94,7 @@ public class FileUploadController {
 	}
 
 	private String runFeatureUpload(String filePath) {
-		JobParameters jp = new JobParametersBuilder().addString("inputPath",
-				filePath).toJobParameters();
-
+		JobParameters jp = new JobParametersBuilder().addString("inputPath", filePath).toJobParameters();
 		try {
 			JobExecution jobExecution = jobLauncher.run(job, jp);
 			return "Feature table added";
@@ -112,25 +114,17 @@ public class FileUploadController {
 			@RequestParam("description") String description,
 			@RequestParam("datasetName") String datasetName,
 			@RequestParam("collectionId") long collectionId, WebRequest req) {
-
-		// restrictor validate the file by the user with the file type using
-		// .getContentType (appliation/pdf, text/plain...
 		String privateSet = "";
 		if (req.getParameter("private") != null) {
 			privateSet = req.getParameter("private");
 		}
-		LOGGER.debug("CollectionId = " + collectionId);
-		LOGGER.debug("Private Dataset= " + privateSet);
-		Collection colObj = colRepo.findById(collectionId);
-
+		 Weka weka = new Weka();
+		Collection col = colRepo.findById(collectionId);
 		String message = "";
 		UserDetails userDetails = null;
-		Authentication auth = SecurityContextHolder.getContext()
-				.getAuthentication();
-
-		Dataset dsObj = new Dataset();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Dataset ds = new Dataset();
 		User user = null;
-
 		String[] fileType = new String[3];
 		fileType[0] = "dataset";
 		fileType[1] = "mapping";
@@ -140,10 +134,25 @@ public class FileUploadController {
 			userDetails = (UserDetails) auth.getPrincipal();
 			user = userRepo.findByEmail(userDetails.getUsername());
 		}
+		for (int i = 0; i < files.length; i++) {
+			MultipartFile file = files[i];
+			names[i] = file.getOriginalFilename();
+		}
+		ds.setDatasetname(names[0]);
+		ds.setMappingname(names[1]);
+		ds.setFeaturename(names[2]);
+		ds.setDescription(description);
+		ds.setName(datasetName);
+		if (privateSet.equals("1"))
+			ds.setPrivateset(true);
+		else
+			ds.setPrivateset(false);
+		ds.setCollection(col);
+		ds = dataRepo.saveAndFlush(ds);
 		String[] md5FileName = new String[3];
 		int i;
 		File serverFile = null;
-	
+		Boolean check = false;
 		for (i = 0; i < files.length; i++) {
 			MultipartFile file = files[i];
 			String name = file.getOriginalFilename();
@@ -151,74 +160,58 @@ public class FileUploadController {
 			LOGGER.debug("File Name: " + name);
 			try {
 				byte[] bytes = file.getBytes();
-				File dir = new File("/home/bob/uploads/");
-				if (!dir.exists())
+				File dir = new File(uploadPath);
+				if (!dir.exists()){
 					dir.mkdirs();
-				md5FileName[i] = hashFileName(name + user.getId()
-						+ System.currentTimeMillis() + fileType[i]);
+				}
+				md5FileName[i] = hashFileName(name + user.getId() + System.currentTimeMillis() + fileType[i]);
 				LOGGER.debug("MD5 File Name: " + md5FileName[i]);
-				serverFile = new File(dir.getAbsolutePath() + File.separator
-						+ md5FileName[i]);
+				serverFile = new File(dir.getAbsolutePath() + File.separator + md5FileName[i]);
 				LOGGER.debug("MD5 FileName with path" + serverFile);
-				BufferedOutputStream stream = new BufferedOutputStream(
-						new FileOutputStream(serverFile));
+				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
 				stream.write(bytes);
 				stream.close();
-				message = message + "You successfully uploaded file=" + name
-						+ "<br />";
-
-				if(i==0){
-					InputStream path1 = ctx.getResource("file:"+serverFile).getInputStream();
-					//get path of another dataset from db.
-					
-					InputStream path2 = new FileInputStream(
-							"/home/bob/Oslo_clinical_expression_OS_sample_filt.arff");
-					//InputStream path2 = ctx.getResource("file:"+serverFile).getInputStream();
-					Boolean check = false;
-					if(path2!=null && path1 != null){
-						check = wekaobj.getWeka().checkDataset(path1, path2);
+				message = message + "You successfully uploaded file, " + name;
+				if (i == 0) {
+					InputStream path1 = ctx.getResource("file:" + serverFile).getInputStream();
+					InputStream path2 = null;
+					if(col.getDatasets().size()>1){
+						path2 = new FileInputStream(uploadPath+col.getDatasets().get(0).getDatasetfile());
+					} else {
+						check = true;
 					}
-					if(check == false){
+					if (path2 != null && path1 != null && check==false) {
+						check = weka.checkDataset(path1, path2);
+					}
+					if (check == false) {
 						serverFile.delete();
-						break;
+						return "Dataset header does not match any other in collection";
 					}
 				}
-				// if (i == 2) {
-				// System.out.println("file:" + serverFile.toString());
-				// attrSer.generateAttributesFromDataset(wekaobj.getWeka()
-				// .getTrain(), "metabric_with_clinical", serverFile
-				// .toString());
-				// message = message + "attribute file added";
-				// }
-				//
-				// if (i == 1) {
-				// // message = message +
-				// // runFeatureUpload(serverFile.toString());
-				// }
+				 if (i == 2) {
+				 System.out.println("file:" + serverFile.toString());
+				 weka.buildWeka(ctx.getResource("file:"+ uploadPath + md5FileName[0]).getInputStream(), null, "", "test");
+				 attrSer.generateAttributesFromDataset(weka.getTrain(), ds, serverFile.toString());
+				 message = message + "attribute file added";
+				 }
+				
+				 if (i == 1) {
+					  message = message +
+					  runFeatureUpload(serverFile.toString());
+				 }
 			} catch (Exception e) {
-				return "You failed to upload " + name + " => " + e.getMessage();
+				LOGGER.error("Exception",e);
 			}
-			
 		}
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			
-			LOGGER.debug("Success1");
-			dsObj.setDatasetname(names[0]);
-			dsObj.setMappingname(names[1]);
-			dsObj.setFeaturename(names[2]);
-			dsObj.setDatasetfile(md5FileName[0]);
-			dsObj.setMappingfile(md5FileName[1]);
-			dsObj.setFeaturefile(md5FileName[2]);
-			dsObj.setDescription(description);
-			dsObj.setName(datasetName);
-			if (privateSet.equals("1"))
-				dsObj.setPrivateset(true);
-			else
-				dsObj.setPrivateset(false);
-			dsObj.setCollection(colObj);
-			dsObj = dataRepo.saveAndFlush(dsObj);
-			
-			LOGGER.debug("Success2");
+		if (!(auth instanceof AnonymousAuthenticationToken && check == true)) {
+			ds.setDatasetfile(md5FileName[0]);
+			ds.setMappingfile(md5FileName[1]);
+			ds.setFeaturefile(md5FileName[2]);
+			ds = dataRepo.saveAndFlush(ds);
+			LOGGER.debug("Success");
+		} else {
+			LOGGER.debug("Deleted");
+			dataRepo.delete(ds);
 		}
 		return "redirect:/";
 	}

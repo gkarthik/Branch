@@ -4,9 +4,12 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.scripps.branch.entity.Attribute;
+import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.repository.AttributeRepository;
 import org.scripps.branch.repository.FeatureRepository;
@@ -34,8 +37,9 @@ public class AttributeServiceImpl implements AttributeService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AttributeServiceImpl.class);
 
 	@Override
-	public void generateAttributesFromDataset(Instances data, String dataset,
+	public void generateAttributesFromDataset(Instances data, Dataset dataset,
 			String inputPath) throws FileNotFoundException {
+		List<Attribute> attrList = new ArrayList<Attribute>();
 		Attribute attr;
 		Feature f;
 		HashMap<String, String> mp = getAttributeFeatureMapping(inputPath);
@@ -48,8 +52,10 @@ public class AttributeServiceImpl implements AttributeService {
 			f = featureRepo.findByUniqueId(mp.get(data.attribute(i).name()));
 			LOGGER.debug(data.attribute(i).name()+": "+mp.get(data.attribute(i).name()));
 			attr.setFeature(f);
-			attrRepo.saveAndFlush(attr);
+			attrList.add(attr);
 		}
+		attrRepo.save(attrList);
+		attrRepo.flush();
 	}
 
 	@Override
