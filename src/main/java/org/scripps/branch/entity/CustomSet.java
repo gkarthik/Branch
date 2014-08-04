@@ -51,62 +51,62 @@ public class CustomSet {
 	@JsonManagedReference
 	private List<Feature> features;
 	
-	@PrePersist
-	public void prePersist() {
-		DateTime now = DateTime.now();
-		this.created = now;
-
-	}
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "customSets")
+	private List<Tree> tree;
 	
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
 	public String getConstraints() {
 		return constraints;
-	}
-
-	public void setConstraints(String constraints) {
-		this.constraints = constraints;
 	}
 
 	public DateTime getCreated() {
 		return created;
 	}
 
-	public void setCreated(DateTime created) {
-		this.created = created;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
 	public List<Feature> getFeatures() {
 		return features;
 	}
 
-	public void setFeatures(List<Feature> features) {
-		this.features = features;
+	public long getId() {
+		return id;
 	}
 
 	public List<Tree> getTree() {
 		return tree;
 	}
 
+	public User getUser() {
+		return user;
+	}
+
+	@PrePersist
+	public void prePersist() {
+		DateTime now = DateTime.now();
+		this.created = now;
+
+	}
+
+	public void setConstraints(String constraints) {
+		this.constraints = constraints;
+	}
+
+	public void setCreated(DateTime created) {
+		this.created = created;
+	}
+
+	public void setFeatures(List<Feature> features) {
+		this.features = features;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
 	public void setTree(List<Tree> tree) {
 		this.tree = tree;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "customSets")
-	private List<Tree> tree;
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 }

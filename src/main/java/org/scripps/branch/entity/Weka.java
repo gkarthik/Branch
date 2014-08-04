@@ -1,11 +1,9 @@
 package org.scripps.branch.entity;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Random;
 
-import org.scripps.branch.controller.CollectionController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +52,24 @@ public class Weka {
 		setTest(getOrigTest());
 	}
 
+	public boolean checkDataset(InputStream path1, InputStream path2){
+		Weka wekaObj1;
+		Weka wekaObj2;
+		boolean value = false;
+		try {
+			wekaObj1 = new Weka();
+			wekaObj1.buildWeka(path1, null, "", "dataset1");
+			wekaObj2 = new Weka();
+			wekaObj2.buildWeka(path2, null, "", "dataset2");
+			value=wekaObj1.getTrain().equalHeaders(wekaObj2.getTrain());
+			LOGGER.debug("value="+value);
+		} catch (Exception e) {
+			// TODO: handle exception
+			LOGGER.error("Couldn't build Weka",e);
+		}
+		return value;
+	}
+	
 	public void generateLimits() {
 		Instances data = getOrigTrain();
 		instancesInClass = new Instances[data.numClasses()];
@@ -72,24 +88,6 @@ public class Weka {
 		for (int i = 0; i < instancesInClass.length; i++) {
 			System.out.println(instancesInClass[i].numInstances());
 		}
-	}
-	
-	public boolean checkDataset(InputStream path1, InputStream path2){
-		Weka wekaObj1;
-		Weka wekaObj2;
-		boolean value = false;
-		try {
-			wekaObj1 = new Weka();
-			wekaObj1.buildWeka(path1, null, "", "dataset1");
-			wekaObj2 = new Weka();
-			wekaObj2.buildWeka(path2, null, "", "dataset2");
-			value=wekaObj1.getTrain().equalHeaders(wekaObj2.getTrain());
-			LOGGER.debug("value="+value);
-		} catch (Exception e) {
-			// TODO: handle exception
-			LOGGER.error("Couldn't build Weka",e);
-		}
-		return value;
 	}
 
 	public String getDataset() {

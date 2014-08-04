@@ -1,8 +1,6 @@
 package org.scripps.branch.repository;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +9,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
-import org.joda.time.DateTime;
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.Feature;
 import org.slf4j.Logger;

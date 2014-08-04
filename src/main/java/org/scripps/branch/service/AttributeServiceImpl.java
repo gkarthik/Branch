@@ -3,13 +3,11 @@ package org.scripps.branch.service;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.scripps.branch.controller.FileUploadController;
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.Feature;
@@ -50,7 +48,7 @@ public class AttributeServiceImpl implements AttributeService {
 			f = new Feature();
 			attr.setName(data.attribute(i).name());
 			attr.setCol_index(data.attribute(i).index());
-			attr.setDataset(dataset);
+			//attr.setDataset(dataset);
 			f = featureRepo.findByUniqueId(mp.get(data.attribute(i).name()));
 			LOGGER.debug(data.attribute(i).name()+": "+mp.get(data.attribute(i).name()));
 			attr.setFeature(f);

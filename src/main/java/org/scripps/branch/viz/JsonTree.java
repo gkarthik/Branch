@@ -21,7 +21,6 @@ import org.scripps.branch.repository.CustomSetRepository;
 import org.scripps.branch.repository.FeatureRepository;
 import org.scripps.branch.repository.TreeRepository;
 import org.scripps.branch.service.CustomClassifierService;
-import org.scripps.branch.service.CustomClassifierServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
