@@ -71,10 +71,10 @@ public class DatasetMap implements ApplicationContextAware {
 		List<Dataset> datasetList = datasetRepo.findAll();
 		name_dataset = new HashMap<String, Weka>();
 		for(Dataset d: datasetList){
-			name_dataset.put("dataset_"+d.getId(), buildWekaAndClassifiers(d.getDatasetfile(), d.getDatasetfile(), d));
+			//name_dataset.put("dataset_"+d.getId(), buildWekaAndClassifiers(d.getDatasetfile(), d.getDatasetfile(), d));
 		}
 //		// Set custom classifiers
-		custom_classifiers = ccService.getClassifiersfromDb(name_dataset);
+		//custom_classifiers = ccService.getClassifiersfromDb(name_dataset);
 	}
 	
 	public Weka buildWekaAndClassifiers(String train, String test, Dataset d){

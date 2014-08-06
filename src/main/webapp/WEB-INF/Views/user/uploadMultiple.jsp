@@ -54,7 +54,7 @@
 			<div>
 				<div>
 					<input type="checkbox" name="private" value="1" /> Private Dataset
-					
+
 				</div>
 				<button type="submit" class="btn btn-default">
 					<span class="glyphicon glyphicon-cloud-upload"></span> Click here

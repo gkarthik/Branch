@@ -111,12 +111,21 @@ fieldset.scheduler-border {
 				<div class="col-md-6" style="float: none; margin: 0 auto;">
 					<div id="accordion">
 						<c:forEach var="o" items="${result}">
+
 							<dl>
 								<dt>${o.name}</dt>
 								<dd>${o.description}</dd>
+
 							</dl>
 
 							<div>
+								<div class=".col-xs-12 .col-md-8"></div>
+								<div class=".col-xs-6 .col-md-4">
+									<a href="upload?collectionId=${o.id}" style="float: right">
+										<span class="glyphicon glyphicon-plus-sign">Add</span>
+									</a>
+								</div>
+								<br> <br>
 								<c:forEach var="dataset" items="${o.datasets}">
 									<ul>
 										<dl>
@@ -125,7 +134,9 @@ fieldset.scheduler-border {
 										</dl>
 									</ul>
 								</c:forEach>
+
 							</div>
+
 						</c:forEach>
 					</div>
 				</div>
