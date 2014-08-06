@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.scripps.branch.entity.CustomClassifier;
+import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.Weka;
 import org.scripps.branch.repository.CustomSetRepository;
 import org.springframework.stereotype.Service;
@@ -17,26 +18,24 @@ import weka.classifiers.meta.FilteredClassifier;
 @Transactional
 public interface CustomClassifierService {
 	public void addCustomTree(String id, Weka weka,
-			LinkedHashMap<String, Classifier> custom_classifiers, String dataset, CustomSetRepository cSetRepo);
+			LinkedHashMap<String, Classifier> custom_classifiers, Dataset dataset, CustomSetRepository cSetRepo);
 
-	public FilteredClassifier buildCustomClasifier(Weka weka,
+	public FilteredClassifier buildCustomClasifier(HashMap<String, Weka> name_dataset,
 			long[] featureDbIds, int classifierType);
 
-	public FilteredClassifier getandBuildClassifier(CustomClassifier cc,
-			Weka weka, String dataset);
+	public FilteredClassifier getandBuildClassifier(CustomClassifier cc, HashMap<String, Weka> name_dataset);
 
-	public HashMap getClassifierDetails(long id, String dataset,
+	public HashMap getClassifierDetails(long id, Dataset dataset,
 			LinkedHashMap<String, Classifier> custom_classifiers);
 
-	public LinkedHashMap<String, Classifier> getClassifiersfromDb(Weka weka,
-			String dataset);
+	public LinkedHashMap<String, Classifier> getClassifiersfromDb(HashMap<String, Weka> name_dataset);
 
 	public HashMap getOrCreateClassifier(List entrezIds, int classifierType,
-			String name, String description, int player_id, Weka weka,
-			String dataset, HashMap<String, Classifier> custom_classifiers);
+			String name, String description, int player_id, HashMap<String, Weka> name_dataset,
+			Dataset dataset, HashMap<String, Classifier> custom_classifiers);
 
 	public CustomClassifier insertandAddCustomClassifier(long[] featureDbIds,
 			int classifierType, String name, String description, int player_id,
-			Weka weka, String dataset,
+			HashMap<String, Weka> name_dataset, Dataset dataset,
 			HashMap<String, Classifier> custom_classifiers);
 }

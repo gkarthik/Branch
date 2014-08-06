@@ -11,6 +11,7 @@ import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.CustomClassifier;
 import org.scripps.branch.entity.CustomFeature;
 import org.scripps.branch.entity.CustomSet;
+import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.Tree;
 import org.scripps.branch.entity.Weka;
@@ -114,7 +115,7 @@ public class JsonTree {
 	}
 
 	public JsonNode mapEntrezIdsToAttNames(Weka weka, JsonNode node,
-			String dataset,
+			Dataset dataset,
 			LinkedHashMap<String, Classifier> custom_classifiers,
 			AttributeRepository attr, CustomClassifierService ccService, CustomSetRepository cSetRepo) {
 		ObjectNode options = (ObjectNode) node.get("options");
@@ -152,7 +153,7 @@ public class JsonTree {
 	}
 
 	public ManualTree parseJsonTree(Weka weka, JsonNode rootNode,
-			String dataset,
+			Dataset dataset,
 			LinkedHashMap<String, Classifier> custom_classifiers,
 			AttributeRepository attr, CustomClassifierService ccService, CustomSetRepository cSetRepo) {
 		ManualTree tree = new ManualTree();
