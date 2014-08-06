@@ -1,6 +1,6 @@
 <div class="container">
 	<div class="col-md-6" style="float: none; margin: 0 auto;">
-		<form method="POST" action="add">
+		<form method="POST" action="/branch">
 			<input type="hidden" name="${_csrf.parameterName}"
 				value="${_csrf.token}" />
 
