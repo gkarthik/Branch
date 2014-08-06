@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 
 @Controller
@@ -30,7 +31,7 @@ public class CollectionController {
 
 	protected static final String VIEW = "user/view";
 
-	protected static final String VIEW_PAGE = "user/collection";
+	//protected static final String VIEW_PAGE = "user/view";
 	protected static final String VIEW_PUBLIC_COLLECTION = "user/publicCollection";
 	@Autowired
 	CollectionRepository collRepo;
@@ -57,23 +58,23 @@ public class CollectionController {
 			colObj = collRepo.saveAndFlush(colObj);
 
 		}
-		return "redirect:/";
+		return "/";
 	}
-
+//
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String showAdd(WebRequest request, Model model) {
 		LOGGER.debug("Rendering Add.");
 		return ADD;
 	}
 
+//	@RequestMapping(value = "/collection", method = RequestMethod.GET)
+//	public String showCollection(WebRequest request, Model model) {
+//		LOGGER.debug("Rendering Collection.");
+//
+//		return VIEW_PAGE;
+//	}
+
 	@RequestMapping(value = "/collection", method = RequestMethod.GET)
-	public String showCollection(WebRequest request, Model model) {
-		LOGGER.debug("Rendering Collection.");
-
-		return VIEW_PAGE;
-	}
-
-	@RequestMapping(value = "/view", method = RequestMethod.GET)
 	public String showViewCollection(
 			@RequestParam(value = "user_id", required = false) Long user_id,
 			WebRequest request, Model model) {
@@ -109,3 +110,6 @@ public class CollectionController {
 		return VIEW;
 	}
 }
+
+
+//action="/branch/collection?user_id=<%=request.getParameter("user_id")%>"

@@ -38,7 +38,7 @@ public class CollectionTest {
 	public void testFindByUserId() {
 
 		User user = u.findById(1);
-		List<Collection> collList = coll.findByUserId(user);
+		List<Collection> collList = coll.findByUser(user);
 		for (Collection co : collList) {
 			assertEquals(co.getId(), 1);
 		}
