@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import org.scripps.branch.entity.Attribute;
 import org.scripps.branch.entity.CustomFeature;
+import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.Feature;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.entity.Weka;
@@ -48,11 +49,12 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 	UserRepository userRepo;
 
 	@Override
-	public void addInstanceValues(Weka weka) {
+	public void addInstanceValues(Weka weka, Dataset d) {
 		List<CustomFeature> cfList = cfeatureRepo.findAll();
 		for (CustomFeature cf : cfList) {
-			evalAndAddNewFeatureValues("custom_feature_" + cf.getId(),
-					cf.getExpression(), weka.getTrain());
+			if(cfeatureRepo.getAttrDatasets(cf, d).size()>=cf.getFeatures().size()){
+				evalAndAddNewFeatureValues("custom_feature_" + cf.getId(), cf.getExpression(), weka.getTrain());
+			}
 		}
 	}
 
@@ -91,7 +93,7 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 
 	@Override
 	public HashMap findOrCreateCustomFeature(String feature_name, String exp,
-			String description, long user_id, String dataset, Weka weka) {
+			String description, long user_id, Dataset dataset, Weka weka) {
 		HashMap mp = new HashMap();
 		Boolean success = true;
 		String message = "";
@@ -141,7 +143,6 @@ public class CustomFeatureServiceImpl implements CustomFeatureService {
 			cf = new CustomFeature();
 			User newuser = userRepo.findById(user_id);
 			cf.setName(feature_name);
-			cf.setDataset(dataset);
 			cf.setExpression(exp);
 			cf.setDescription(description);
 			cf.setUser(newuser);
