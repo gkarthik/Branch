@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import weka.core.Instances;
+import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVLoader;
 import weka.core.converters.ConverterUtils.DataSource;
 
@@ -29,9 +30,29 @@ public class Weka {
 	Instances test = null;
 	private Instances train = null;
 
-	
-	
-	public void buildWeka(InputStream train_stream, InputStream test_stream,
+
+
+	public Instances load(String csvFile) throws IOException {
+		// load CSV
+		System.out.println("Loading CSV dataset");
+		CSVLoader loader = new CSVLoader();
+		//loader.setFieldSeperator("\\t");
+		loader.setSource(new File(csvFile));
+		Instances data = loader.getDataSet();
+		return data;
+	}
+
+	public  void toArff(Instances data, String arffFileName) throws IOException {
+		System.out.println("Saving dataset as ARFF");
+		// save ARFF
+		ArffSaver saver = new ArffSaver();
+		saver.setInstances(data);
+		saver.setFile(new File(arffFileName));
+		//saver.setDestination(new File(args[1]));
+		saver.writeBatch();
+	}
+
+	public Instances buildWeka(InputStream train_stream, InputStream test_stream,
 			String method) throws Exception {
 		setDataset(dataset);
 		// get the data
@@ -57,6 +78,7 @@ public class Weka {
 		// get the features related to this weka dataset
 		setTrain(getOrigTrain());
 		setTest(getOrigTest());
+		return getOrigTrain();
 	}
 
 	public void generateLimits() {
@@ -170,16 +192,16 @@ public class Weka {
 	}
 
 
-//	public static void main(String args[]){
-//			Weka weka = new Weka();
-//			try {
-//				weka.load("/home/bob/r5x4-with-extra.txt");
-//				LOGGER.debug("number of instances"+weka.getTrain().numInstances());
-//				LOGGER.debug("done");
-//				
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//	}
+	//	public static void main(String args[]){
+	//			Weka weka = new Weka();
+	//			try {
+	//				weka.load("/home/bob/r5x4-with-extra.txt");
+	//				LOGGER.debug("number of instances"+weka.getTrain().numInstances());
+	//				LOGGER.debug("done");
+	//				
+	//			} catch (IOException e) {
+	//				// TODO Auto-generated catch block
+	//				e.printStackTrace();
+	//			}
+	//	}
 }

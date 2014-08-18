@@ -20,8 +20,9 @@
 			<h3>
 				<span class="label label-default">Dataset File Type</span>
 			</h3>
-			<input type="radio" name="radio1" value="arff" checked> Arff
-			<input type="radio" name="radio1" value="CSV"> CSV/TSV<br>
+			<input type="radio" name="fileType" value="ARFF" checked> ARFF
+			<br> <input type="radio" name="fileType" value="CSV">
+			CSV/TSV<br>
 
 
 			<h3>

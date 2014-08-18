@@ -1,12 +1,19 @@
 package org.scripps.branch.controller;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.lang.Object;
+
+import liquibase.util.csv.opencsv.CSVReader;
 
 import org.scripps.branch.entity.Collection;
 import org.scripps.branch.entity.Dataset;
@@ -39,8 +46,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
+
+import weka.classifiers.Classifier;
+import weka.classifiers.Evaluation;
+import weka.classifiers.trees.J48;
+import weka.core.Instances;
 
 @Controller
 public class FileUploadController {
@@ -100,12 +113,13 @@ public class FileUploadController {
 	}
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public String uploadMultipleFileHandler(
+	public @ResponseBody String uploadMultipleFileHandler(
 			@RequestParam(value = "user_id", required = false) Long user_id, 
 			@RequestParam("file") MultipartFile[] files,
 			@RequestParam("description") String description,
 			@RequestParam("datasetName") String datasetName,
-			@RequestParam("collectionId") long collectionId, WebRequest req) {
+			@RequestParam("collectionId") long collectionId, 
+			@RequestParam("fileType") String fileExt,WebRequest req) {
 		String privateSet = "";
 		if (req.getParameter("private") != null) {
 			privateSet = req.getParameter("private");
@@ -145,7 +159,7 @@ public class FileUploadController {
 		ds.setCollection(col);
 		ds = dataRepo.saveAndFlush(ds);
 		String[] md5FileName = new String[3];
-	
+
 		File serverFile = null;
 		Boolean check = false;
 		for (int i = 0; i < files.length; i++) {
@@ -167,37 +181,100 @@ public class FileUploadController {
 				stream.write(bytes);
 				stream.close();
 				message = message + "You successfully uploaded file, " + name;
-				if (i == 0) {
-					InputStream path1 = ctx.getResource("file:" + serverFile).getInputStream();
-					InputStream path2 = null;
-					if(col.getDatasets().size()>1){
-						path2 = new FileInputStream(uploadPath+col.getDatasets().get(0).getDatasetfile());
-					} else {
-						check = true;
-					}
-					if (path2 != null && path1 != null && check==false) {
-						check = weka.checkDataset(path1, path2);
-					}
-					if (check == false) {
-						serverFile.delete();
-						return "Dataset header does not match any other in collection";
-					}
-				}
-				if (i == 2) {
-					System.out.println("file:" + serverFile.toString());
-					//					
-					//					if(files[0].getContentType().equals("filetext/csv")||files[0].getContentType().equals("filetext/plain")){
-					//						weka.buildWekaForCSV(uploadPath + md5FileName[0]);
+
+				//
+				//				if (i == 0) {
+				//					InputStream path1 = ctx.getResource("file:" + serverFile).getInputStream();
+				//					InputStream path2 = null;
+				//					if(col.getDatasets().size()>1){
+				//						path2 = new FileInputStream(uploadPath+col.getDatasets().get(0).getDatasetfile());
+				//					} else {
+				//						check = true;
+				//					}
+				//					if (path2 != null && path1 != null && check==false) {
+				//						check = weka.checkDataset(path1, path2);
+				//					}
+				//					if (check == false) {
+				//						serverFile.delete();
+				//						return "Dataset header does not match any other in collection";
+				//					}
+				//				}
+				//				if (i == 1) {
+				//					message = message +
+				//							runFeatureUpload(serverFile.toString());
+				//				}
+
+				if (i == 2) {	
+
+					LOGGER.debug("File Name:" + serverFile.toString());
+					LOGGER.debug("File Extention"+fileExt);
+
+					String datasetFile= md5FileName[0];
+					Instances data;
+					boolean success = false;
+
+					try {
+						if(checkArff(uploadPath + datasetFile)){
+							datasetFile=md5FileName[0]+".arff";
+							data=weka.buildWeka(ctx.getResource("file:"+ uploadPath + datasetFile).getInputStream(), null, "");
+							attrSer.generateAttributesFromDataset(weka.getTrain(), ds, serverFile.toString());
+
+							Classifier c = new J48();
+							c.buildClassifier(data);
+							Evaluation eval = new Evaluation(data); 
+							eval.evaluateModel(c, data);
+
+							message = message +"\n File type is ARFF"+ "\nAttribute file added\n"+eval.toSummaryString();
+						}
+						else if(checkCSV(uploadPath + datasetFile)){
+							data = weka.load(uploadPath + datasetFile);
+							datasetFile=md5FileName[0]+".csv";
+							weka.toArff(data, uploadPath + datasetFile);
+							//attrSer.generateAttributesFromDataset(weka.getTrain(), ds, serverFile.toString());
+							LOGGER.debug("Number of Attributes are : "+data.numAttributes());
+							LOGGER.debug("Number of Instances are : "+data.numInstances());
+							data.setClassIndex(data.numAttributes()-1);
+							Classifier c = new J48();
+							c.buildClassifier(data);
+							Evaluation eval = new Evaluation(data); 
+							eval.evaluateModel(c, data);
+
+							message = message +"\nFile Type is CSV\n"+"\nAttribute file added\n"+eval.toSummaryString();
+						}
+						else
+							message= "Error in uploaded file";
+					} catch (Exception e) {
+						
+						LOGGER.debug("File Uploaded is not right"+e.getStackTrace());
+						
+					} 
+
+					//					if(fileExt.equals("CSV")){
+					//						Instances data = weka.load(uploadPath + datasetFile);
+					//						datasetFile=md5FileName[0]+".csv";
+					//						weka.toArff(data, uploadPath + datasetFile);
+					//						//attrSer.generateAttributesFromDataset(weka.getTrain(), ds, serverFile.toString());
+					//						LOGGER.debug("Number of Attributes are : "+data.numAttributes());
+					//						LOGGER.debug("Number of Instances are : "+data.numInstances());
+					//						data.setClassIndex(data.numAttributes()-1);
+					//						Classifier c = new J48();
+					//						c.buildClassifier(data);
+					//						Evaluation eval = new Evaluation(data); 
+					//						eval.evaluateModel(c, data);
+					//
+					//						message = message + "attribute file added"+eval.toSummaryString();
+					//
 					//					}
-					weka.buildWeka(ctx.getResource("file:"+ uploadPath + md5FileName[0]).getInputStream(), null, "");
-					attrSer.generateAttributesFromDataset(weka.getTrain(), ds, serverFile.toString());
-					message = message + "attribute file added";
+					//
+					//					if(fileExt.equals("ARFF")){
+					//						datasetFile=md5FileName[0]+".arff";
+					//						weka.buildWeka(ctx.getResource("file:"+ uploadPath + datasetFile).getInputStream(), null, "");
+					//						attrSer.generateAttributesFromDataset(weka.getTrain(), ds, serverFile.toString());
+					//						message = message + "attribute file added";
+					//					}
 				}
 
-				if (i == 1) {
-					message = message +
-							runFeatureUpload(serverFile.toString());
-				}
+
 			} catch (Exception e) {
 				LOGGER.error("Exception",e);
 			}
@@ -212,7 +289,36 @@ public class FileUploadController {
 			LOGGER.debug("Deleted");
 			dataRepo.delete(ds);
 		}
-		return "redirect:/collection?user_id="+user_id;
+		
+		return message;//"redirect:/collection?user_id="+user_id;
+	}
+
+	private boolean checkCSV(String file) {
+
+
+		return false;
+	}
+
+	private boolean checkArff(String inputfile) {
+
+		try {
+			LOGGER.debug(inputfile);
+			LOGGER.debug("Entered");
+			BufferedReader br = new BufferedReader(new FileReader(inputfile));
+			String s=null;
+			LOGGER.debug("While");
+			while((s=br.readLine())!=null && (s = s.trim()).length() > 0){
+				String f[] = s.split(" ");
+				if(f[0].equals("@relation")){
+					br.close();
+					return true;
+				}
+			} 
+			br.close();
+		} catch (IOException ex) {
+			LOGGER.debug("ERROR with file"+ex);
+		}
+		return false;
 	}
 
 	@RequestMapping(value = "/upload", method = RequestMethod.GET)
