@@ -3,8 +3,10 @@ package org.scripps.branch.controller;
 import java.util.List;
 
 import org.scripps.branch.entity.Collection;
+import org.scripps.branch.entity.Dataset;
 import org.scripps.branch.entity.User;
 import org.scripps.branch.repository.CollectionRepository;
+import org.scripps.branch.repository.DatasetRepository;
 import org.scripps.branch.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +40,11 @@ public class CollectionController {
 	@Autowired
 	UserRepository userRepo;
 
+	@Autowired
+	DatasetRepository datasetRepo;
+
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String addCollection(@RequestParam("name") String name,
+	public String addCollection(@RequestParam(value = "user_id", required = false) Long user_id,@RequestParam("name") String name,
 			@RequestParam("description") String description) {
 
 		// /LOGGER.debug("UserID at Add"+user_id);
@@ -58,21 +63,38 @@ public class CollectionController {
 			colObj = collRepo.saveAndFlush(colObj);
 
 		}
-		return "/";
+		return VIEW;
 	}
-//
+	//
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String showAdd(WebRequest request, Model model) {
 		LOGGER.debug("Rendering Add.");
 		return ADD;
 	}
 
-//	@RequestMapping(value = "/collection", method = RequestMethod.GET)
-//	public String showCollection(WebRequest request, Model model) {
-//		LOGGER.debug("Rendering Collection.");
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	public String deleteCollection(@RequestParam(value = "user_id", required = false) Long user_id, @RequestParam("collectionId") long collectionId) {
+
+		LOGGER.debug("collID: "+collectionId);
+		LOGGER.debug("Rendering delete.");
+
+		Collection colObj=collRepo.findById(collectionId);
+		List<Dataset> dsObj= datasetRepo.findByCollection(colObj);
+		datasetRepo.delete(dsObj);
+		collRepo.delete(colObj);
+
+		LOGGER.debug("Number of Rows Deleted are :");
+
+		return "redirect:/collection?user_id="+user_id;
+	}
+
 //
-//		return VIEW_PAGE;
-//	}
+//		@RequestMapping(value = "/collection", method = RequestMethod.GET)
+//		public String showCollection(WebRequest request, Model model) {
+//			LOGGER.debug("Rendering Collection.");
+//	
+//			return VIEW;
+//		}
 
 	@RequestMapping(value = "/collection", method = RequestMethod.GET)
 	public String showViewCollection(

@@ -40,6 +40,7 @@ fieldset.scheduler-border {
 			</ul>
 			<ul>
 				<a class="showSingle" target="3">View Public Dataset</a>
+				
 			</ul>
 
 		</fieldset>
@@ -50,64 +51,75 @@ fieldset.scheduler-border {
 			<fieldset class="scheduler-border">
 				<legend class="scheduler-border">My Dataset Collections</legend>
 
+
+
 				<div id="Add">
 					<a href="#">Add New Collection</a>
 				</div>
+
+
+
+				<!-- <div id="Add">
+					<a href="#">Add New Collection</a>
+				</div> -->
 
 				<div>
 					<a href="add">Add New Collection via link</a>
 				</div>
 
+				<form action="collection" method="POST">
+					<input type="hidden" name="${_csrf.parameterName}"
+						value="${_csrf.token}" /> <input type="hidden" name="user_id"
+						value="<sec:authentication property="principal.id" />" />
 
-				<div id="makeVisible" class="panel"
-					style="display: none; position: absolute; top: 0; left: 0; z-index: 1">
+					<div id="makeVisible" class="panel"
+						style="display: none; position: absolute; top: 0; left: 0; z-index: 1">
 
 
 
 
-					<div id="AddCollection" class="panel panel-default">
+						<div id="AddCollection" class="panel panel-default">
 
 
-						<div class='alert alert-error'>
-							<button id='closeID' type="button" class="close"
-								data-dismiss="alert">
-								<span>&times;</span><span class="sr-only">Close</span>
-							</button>
-						</div>
-						<div class="panel-body">
-							<div class="container">
-								<div class="col-md-6" style="float: none; margin: 0 auto;">
-
-									<h3>
-										<span class="label label-default">Collection Name</span>
-									</h3>
-									<span class="btn btn-default btn-file"> <input
-										id='colName' type="text" name="name">
-									</span>
-
-									<h3>
-										<span class="label label-default">Description</span>
-									</h3>
-									<span class="btn btn-default btn-file"> <input
-										id='colDesc' type="text" name="description">
-									</span>
-
-									<button id="submit" type="submit" class="btn btn-default">
-										<span class="glyphicon glyphicon-cloud-upload"></span> Press
-										here to add collection.
-									</button>
-
-								</div>
+							<div class='alert alert-error'>
+								<button id='closeID' type="button" class="close"
+									data-dismiss="alert">
+									<span>&times;</span><span class="sr-only">Close</span>
+								</button>
 							</div>
+							<div class="panel-body">
+								<div class="container">
+									<div class="col-md-6" style="float: none; margin: 0 auto;">
 
+										<h3>
+											<span class="label label-default">Collection Name</span>
+										</h3>
+										<span class="btn btn-default btn-file"> <input
+											id='colName' type="text" name="name">
+										</span>
+
+										<h3>
+											<span class="label label-default">Description</span>
+										</h3>
+										<span class="btn btn-default btn-file"> <input
+											id='colDesc' type="text" name="description">
+										</span>
+
+										<button id="submit" type="submit" class="btn btn-default">
+											<span class="glyphicon glyphicon-cloud-upload"></span> Press
+											here to add collection.
+										</button>
+
+									</div>
+								</div>
+
+							</div>
 						</div>
+
 					</div>
 
+				</form>
 
-
-
-
-				</div>
 				<div class="col-md-6" style="float: none; margin: 0 auto;">
 					<div id="accordion">
 						<c:forEach var="o" items="${result}">
@@ -124,6 +136,20 @@ fieldset.scheduler-border {
 									<a href="upload?collectionId=${o.id}" style="float: right">
 										<span class="glyphicon glyphicon-plus-sign">Add</span>
 									</a>
+
+
+									<form method="POST" action="delete"
+										style="float: right">
+									<input type="hidden" name="user_id"
+									value="<sec:authentication property="principal.id" />" />
+											<input type="hidden" name="collectionId"
+											value="${o.id}" />
+											<input
+											type="hidden" name="${_csrf.parameterName}"
+											value="${_csrf.token}" /> <input type="submit"
+											value="delete" />
+
+									</form>
 								</div>
 								<br> <br>
 								<c:forEach var="dataset" items="${o.datasets}">
@@ -171,7 +197,7 @@ fieldset.scheduler-border {
 
 			<h1>View Public Collections</h1>
 			<br>
-			<table class="table">
+			<table id="colTable" class="table">
 				<tr>
 
 					<th>User Name</th>
@@ -271,10 +297,11 @@ fieldset.scheduler-border {
 
 <script>
 	$(document).ready(function() {
+	
 		$("#closeID").click(function() {
-			location.reload(true);
+		
 			$("#makeVisible").hide("slow");
-
+			location.reload(true);
 		});
 
 		$("#Add").click(function() {
@@ -283,4 +310,3 @@ fieldset.scheduler-border {
 		});
 	});
 </script>
-

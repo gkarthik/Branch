@@ -1,6 +1,8 @@
 package org.scripps.branch.entity;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Random;
@@ -10,10 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import weka.core.Instances;
+import weka.core.converters.CSVLoader;
 import weka.core.converters.ConverterUtils.DataSource;
 
 public class Weka {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(Weka.class);
 
 	String dataset;
@@ -26,6 +29,8 @@ public class Weka {
 	Instances test = null;
 	private Instances train = null;
 
+	
+	
 	public void buildWeka(InputStream train_stream, InputStream test_stream,
 			String method) throws Exception {
 		setDataset(dataset);
@@ -73,7 +78,7 @@ public class Weka {
 			System.out.println(instancesInClass[i].numInstances());
 		}
 	}
-	
+
 	public boolean checkDataset(InputStream path1, InputStream path2){
 		Weka wekaObj1;
 		Weka wekaObj2;
@@ -163,4 +168,18 @@ public class Weka {
 	public void setTrain(Instances train) {
 		this.train = train;
 	}
+
+
+//	public static void main(String args[]){
+//			Weka weka = new Weka();
+//			try {
+//				weka.load("/home/bob/r5x4-with-extra.txt");
+//				LOGGER.debug("number of instances"+weka.getTrain().numInstances());
+//				LOGGER.debug("done");
+//				
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//	}
 }

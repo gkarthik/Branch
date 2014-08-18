@@ -1,5 +1,7 @@
 
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
+<%@ taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 <div class="container">
 
 	<div class="col-md-6" style="float: none; margin: 0 auto;">
@@ -10,8 +12,17 @@
 			<span class="label label-default">Collection: <%=request.getParameter("collectionId")%></span>
 		</h3>
 		<form method="POST" action="upload" enctype="multipart/form-data">
-			<input type="hidden" name="${_csrf.parameterName}"
-				value="${_csrf.token}" />
+			<input type="hidden" name="user_id"
+				value="<sec:authentication property="principal.id" />" /> <input
+				type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+
+
+			<h3>
+				<span class="label label-default">Dataset File Type</span>
+			</h3>
+			<input type="radio" name="radio1" value="arff" checked> Arff
+			<input type="radio" name="radio1" value="CSV"> CSV/TSV<br>
+
 
 			<h3>
 				<span class="label label-default">Dataset File</span>
