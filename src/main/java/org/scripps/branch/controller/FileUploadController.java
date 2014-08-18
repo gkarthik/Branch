@@ -9,8 +9,10 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.lang.Object;
 
 import liquibase.util.csv.opencsv.CSVReader;
@@ -214,7 +216,7 @@ public class FileUploadController {
 					boolean success = false;
 
 					try {
-						if(checkArff(uploadPath + datasetFile)){
+						if(checkArff(uploadPath + datasetFile)==true){
 							datasetFile=md5FileName[0]+".arff";
 							data=weka.buildWeka(ctx.getResource("file:"+ uploadPath + datasetFile).getInputStream(), null, "");
 							attrSer.generateAttributesFromDataset(weka.getTrain(), ds, serverFile.toString());
@@ -226,7 +228,9 @@ public class FileUploadController {
 
 							message = message +"\n File type is ARFF"+ "\nAttribute file added\n"+eval.toSummaryString();
 						}
-						else if(checkCSV(uploadPath + datasetFile)){
+						else if(checkCSV(uploadPath + datasetFile)==true){
+							
+							LOGGER.debug("returned true");
 							data = weka.load(uploadPath + datasetFile);
 							datasetFile=md5FileName[0]+".csv";
 							weka.toArff(data, uploadPath + datasetFile);
@@ -293,10 +297,35 @@ public class FileUploadController {
 		return message;//"redirect:/collection?user_id="+user_id;
 	}
 
-	private boolean checkCSV(String file) {
+	private boolean checkCSV(String file) throws IOException {
+		
+		LOGGER.debug("CSVREADER");
+		CSVReader reader = null;
+		try {
+			reader = new CSVReader(new FileReader(file));
+			String []f= reader.readNext();
+			LOGGER.debug("reader content: "+f[0]);
+		
+			
+			
+			//List<String> myEntries = reader.readAll();
+			
+//			for (String temp : myEntries) {
+//				LOGGER.debug(temp);
+//			}
+//			
+//			if(myEntries.isEmpty()==true) return false;
+			
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+	
+		
 
-
-		return false;
+		return true;
 	}
 
 	private boolean checkArff(String inputfile) {
