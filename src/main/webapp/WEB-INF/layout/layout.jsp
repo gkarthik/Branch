@@ -65,13 +65,15 @@
 						</li>
 
 						<li>
-							<p class="nav navbar-nav navbar-right navbar-text sign-in-text">
-
-								<a
-									href="/branch/collection?user_id=<sec:authentication property="principal.id" />">My
-									Collection</a>
-
+							<p>
+							<form action="/branch/collection" method="GET">
+								<input type="hidden" name="user_id"
+									value="<sec:authentication property="principal.id" />" />
+								<button type="submit" class="btn btn-link">My
+									Collections</button>
+							</form>
 							</p>
+
 						</li>
 
 						<li>

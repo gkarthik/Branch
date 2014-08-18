@@ -52,28 +52,20 @@ public class FileUploadController {
 
 	@Autowired
 	AttributeService attrSer;
-
 	@Autowired
 	CollectionRepository colRepo;
-
 	@Autowired
 	DatasetRepository dataRepo;
-
 	@Autowired
 	private Job job;
-
 	@Autowired
 	private JobLauncher jobLauncher;
-
 	@Autowired
 	UserRepository userRepo;
-
 	@Autowired
 	DatasetMap wekaobj;
-
 	@Autowired
 	ApplicationContext ctx;
-	
 	@Autowired 
 	String uploadPath; 
 
@@ -101,7 +93,6 @@ public class FileUploadController {
 		} catch (JobExecutionAlreadyRunningException | JobRestartException
 				| JobInstanceAlreadyCompleteException
 				| JobParametersInvalidException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -110,6 +101,7 @@ public class FileUploadController {
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public String uploadMultipleFileHandler(
+			@RequestParam(value = "user_id", required = false) Long user_id, 
 			@RequestParam("file") MultipartFile[] files,
 			@RequestParam("description") String description,
 			@RequestParam("datasetName") String datasetName,
@@ -118,7 +110,7 @@ public class FileUploadController {
 		if (req.getParameter("private") != null) {
 			privateSet = req.getParameter("private");
 		}
-		 Weka weka = new Weka();
+		Weka weka = new Weka();
 		Collection col = colRepo.findById(collectionId);
 		String message = "";
 		UserDetails userDetails = null;
@@ -138,6 +130,9 @@ public class FileUploadController {
 			MultipartFile file = files[i];
 			names[i] = file.getOriginalFilename();
 		}
+
+		LOGGER.debug("get Extention of dataset file" + files[0].getContentType());
+
 		ds.setDatasetname(names[0]);
 		ds.setMappingname(names[1]);
 		ds.setFeaturename(names[2]);
@@ -150,10 +145,10 @@ public class FileUploadController {
 		ds.setCollection(col);
 		ds = dataRepo.saveAndFlush(ds);
 		String[] md5FileName = new String[3];
-		int i;
+	
 		File serverFile = null;
 		Boolean check = false;
-		for (i = 0; i < files.length; i++) {
+		for (int i = 0; i < files.length; i++) {
 			MultipartFile file = files[i];
 			String name = file.getOriginalFilename();
 			names[i] = file.getOriginalFilename();
@@ -188,17 +183,21 @@ public class FileUploadController {
 						return "Dataset header does not match any other in collection";
 					}
 				}
-				 if (i == 2) {
-				 System.out.println("file:" + serverFile.toString());
-				 weka.buildWeka(ctx.getResource("file:"+ uploadPath + md5FileName[0]).getInputStream(), null, "");
-				 attrSer.generateAttributesFromDataset(weka.getTrain(), ds, serverFile.toString());
-				 message = message + "attribute file added";
-				 }
-				
-				 if (i == 1) {
-					  message = message +
-					  runFeatureUpload(serverFile.toString());
-				 }
+				if (i == 2) {
+					System.out.println("file:" + serverFile.toString());
+					//					
+					//					if(files[0].getContentType().equals("filetext/csv")||files[0].getContentType().equals("filetext/plain")){
+					//						weka.buildWekaForCSV(uploadPath + md5FileName[0]);
+					//					}
+					weka.buildWeka(ctx.getResource("file:"+ uploadPath + md5FileName[0]).getInputStream(), null, "");
+					attrSer.generateAttributesFromDataset(weka.getTrain(), ds, serverFile.toString());
+					message = message + "attribute file added";
+				}
+
+				if (i == 1) {
+					message = message +
+							runFeatureUpload(serverFile.toString());
+				}
 			} catch (Exception e) {
 				LOGGER.error("Exception",e);
 			}
@@ -213,7 +212,7 @@ public class FileUploadController {
 			LOGGER.debug("Deleted");
 			dataRepo.delete(ds);
 		}
-		return "redirect:/";
+		return "redirect:/collection?user_id="+user_id;
 	}
 
 	@RequestMapping(value = "/upload", method = RequestMethod.GET)
