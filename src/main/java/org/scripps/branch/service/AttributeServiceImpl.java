@@ -72,7 +72,8 @@ public class AttributeServiceImpl implements AttributeService {
 		try {
 
 			if(delimiterCheck(inputPath).equals("tab")) DELIMITER ="\t";
-			else DELIMITER = ",";
+			else if(delimiterCheck(inputPath).equals("comma")) DELIMITER = ",";
+			else throw new IOException("Invalid File");
 		} catch (Exception e1) {
 			LOGGER.debug("DELIMITER not set Correctly"+e1);
 			e1.printStackTrace();
@@ -108,33 +109,49 @@ public class AttributeServiceImpl implements AttributeService {
 	private static String delimiterCheck(String inputPath) {
 
 		String line=null;
+		String prevLine=null;
 		int noOfLinesToScan=100;
 		int count =0;
 		String[]tabs = null ;
 		String[] comma = null;
-		int a[] = new int[noOfLinesToScan] ;
-		int b[] = new int[noOfLinesToScan] ;
+		int tFlag=0, cFlag=0;
 
 		try {
 			BufferedReader fileReader = new BufferedReader(new FileReader(inputPath));
+
 			while ((line = fileReader.readLine()) != null && count<noOfLinesToScan)
 			{
-				tabs= line.split("\t");
-				comma=line.split(",");
+				if(prevLine!=null && line.length()>0 && line.charAt(0)!='#')
+				{
 
-				a[count]=tabs.length;
-				b[count]=comma.length;	
+					tabs=line.split("\t");
+					comma=line.split(",");
+
+					if(tabs.length<1 && comma.length<1 && (prevLine.split(",")).length < 1 && (prevLine.split("\t")).length <1) return "invalid";
+
+					if( prevLine.split(",").length == comma.length && comma.length>1 && comma.length> tabs.length){
+						cFlag=1;
+					}
+					else cFlag=0;
+
+					if(prevLine.split("\t").length==tabs.length && tabs.length>1 && tabs.length>comma.length)
+						tFlag=1;
+					else tFlag=0;
+				}
+				else{
+					prevLine =line;
+					fileReader.readLine();
+				}				
+				//prevLine=line;
 				count++;
 			}
+
 		} catch (IOException e) {
 			LOGGER.debug("Exception Occured while reading file"+e);
 			e.printStackTrace();
 		}
-
-		if(tabs.length>comma.length) return "tab";
-		else return "comma";
+		if(tFlag==1 && cFlag==0) return "tab";
+		else if(tFlag==0 && cFlag==1)return "comma";
+		else return "invalid";
 	}
-
-
-
 }
