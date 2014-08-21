@@ -8,18 +8,12 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class FeatureProcessor implements ItemProcessor<Feature, Feature> {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(FeatureProcessor.class);
-	
-	@Autowired 
-	FeatureRepository fRepo;
-	
+
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(FeatureProcessor.class);
+
 	@Override
 	public Feature process(Feature f) {
-		LOGGER.debug(f.getShort_name());	
-		if(fRepo.findByUniqueId(f.getUnique_id())==null){
-			return f;
-		}
-		return null;
+		return f;
 	}
 }

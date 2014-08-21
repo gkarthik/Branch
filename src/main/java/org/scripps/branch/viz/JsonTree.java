@@ -33,11 +33,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class JsonTree {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(JsonTree.class);
-	
+
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(JsonTree.class);
+
 	public static void main(String[] args) {
-		
+
 	}
 
 	public void getFeatures(JsonNode node, HashMap mp, FeatureRepository f,
@@ -89,8 +90,8 @@ public class JsonTree {
 						ccList.add(temp);
 					}
 				} else if (uid.contains("custom_set")) {
-					CustomSet temp = cs.findById(Long.valueOf(uid
-							.replace("custom_set_", "")));
+					CustomSet temp = cs.findById(Long.valueOf(uid.replace(
+							"custom_set_", "")));
 					if (temp != null) {
 						csList.add(temp);
 					}
@@ -117,7 +118,8 @@ public class JsonTree {
 	public JsonNode mapEntrezIdsToAttNames(Weka weka, JsonNode node,
 			Dataset dataset,
 			LinkedHashMap<String, Classifier> custom_classifiers,
-			AttributeRepository attr, CustomClassifierService ccService, CustomSetRepository cSetRepo) {
+			AttributeRepository attr, CustomClassifierService ccService,
+			CustomSetRepository cSetRepo) {
 		ObjectNode options = (ObjectNode) node.get("options");
 		if (options != null) {
 			JsonNode unique_id = options.get("unique_id");
@@ -155,7 +157,8 @@ public class JsonTree {
 	public ManualTree parseJsonTree(Weka weka, JsonNode rootNode,
 			Dataset dataset,
 			LinkedHashMap<String, Classifier> custom_classifiers,
-			AttributeRepository attr, CustomClassifierService ccService, CustomSetRepository cSetRepo) {
+			AttributeRepository attr, CustomClassifierService ccService,
+			CustomSetRepository cSetRepo) {
 		ManualTree tree = new ManualTree();
 		try {
 			if (!dataset.equals("mammal")) {
@@ -168,13 +171,13 @@ public class JsonTree {
 			tree.buildClassifier(weka.getTrain());
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
-			LOGGER.error("JsonProcessingException",e);
+			LOGGER.error("JsonProcessingException", e);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			LOGGER.error("IOException",e);
+			LOGGER.error("IOException", e);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			LOGGER.error("Exception",e);
+			LOGGER.error("Exception", e);
 		}
 		return tree;
 	}

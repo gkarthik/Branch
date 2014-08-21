@@ -60,7 +60,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Controller
 public class MetaServerController {
-	
+
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(MetaServerController.class);
 
@@ -99,10 +99,10 @@ public class MetaServerController {
 
 	@Autowired
 	private TreeService treeService;
-	
+
 	@Autowired
 	private AttributeRepository attrRepo;
-	
+
 	@Autowired
 	private CustomSetRepository customSetRepo;
 
@@ -111,7 +111,7 @@ public class MetaServerController {
 
 	@Autowired
 	private DatasetMap weka;
-	
+
 	@Autowired
 	private DatasetRepository dataRepo;
 
@@ -122,7 +122,7 @@ public class MetaServerController {
 			result_json = mapper.writeValueAsString(fList);
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
-			LOGGER.error("Couldn't write clinical feature to string",e);
+			LOGGER.error("Couldn't write clinical feature to string", e);
 		}
 		return result_json;
 	}
@@ -186,22 +186,23 @@ public class MetaServerController {
 			result_json = getClinicalFeatures(data);
 		} else if (command.contains("custom_feature_")) {
 			if (command.equals("custom_feature_create")) {
-				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
+				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset")
+						.asInt()));
 				HashMap mp = cfeatureService.findOrCreateCustomFeature(data
 						.get("name").asText(), data.get("expression").asText(),
 						data.get("description").asText(), data.get("user_id")
-								.asLong(), d, weka
-								.getWeka(d.getId()));
+								.asLong(), d, weka.getWeka(d.getId()));
 				result_json = mapper.writeValueAsString(mp);
 			} else if (command.equals("custom_feature_search")) {
 				List<CustomFeature> cfList = cfeatureRepo
 						.searchCustomFeatures(data.get("query").asText());
 				result_json = mapper.writeValueAsString(cfList);
 			} else if (command.equals("custom_feature_testcase")) {
-				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
+				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset")
+						.asInt()));
 				HashMap mp = cfeatureService.getTestCase(data.get("id")
 						.asText(), weka.getWeka(d.getId()));
-				result_json = mapper.writeValueAsString(mp);			
+				result_json = mapper.writeValueAsString(mp);
 			}
 		} else if (command.contains("custom_classifier_")) {
 			if (command.equals("custom_classifier_create")) {
@@ -214,7 +215,8 @@ public class MetaServerController {
 				int player_id = data.get("user_id").asInt();
 				int classifierType = data.get("type").asInt();
 				String dataset = data.get("dataset").asText();
-				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
+				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset")
+						.asInt()));
 				HashMap mp = cClassifierService.getOrCreateClassifier(
 						entrezIds, classifierType, name, description,
 						player_id, weka.getMap(), d,
@@ -225,18 +227,19 @@ public class MetaServerController {
 						.searchCustomClassifiers(data.get("query").asText());
 				result_json = mapper.writeValueAsString(cclist);
 			} else if (command.equals("custom_classifier_getById")) {
-				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
+				Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset")
+						.asInt()));
 				HashMap mp = cClassifierService.getClassifierDetails(
 						data.get("id").asLong(), d,
 						weka.getCustomClassifierObject());
 				result_json = mapper.writeValueAsString(mp);
 			}
-		} else if(command.contains("custom_set_")){
-			if(command.equals("custom_set_create")){
+		} else if (command.contains("custom_set_")) {
+			if (command.equals("custom_set_create")) {
 				CustomSet c = new CustomSet();
 				c.setConstraints(data.get("constraints").toString());
 				List<Feature> fList = new ArrayList<Feature>();
-				for(JsonNode el : data.path("unique_ids")){
+				for (JsonNode el : data.path("unique_ids")) {
 					fList.add(featureRepo.findByUniqueId(el.asText()));
 				}
 				c.setFeatures(fList);
@@ -244,7 +247,7 @@ public class MetaServerController {
 				c.setUser(user);
 				c = customSetRepo.saveAndFlush(c);
 				result_json = mapper.writeValueAsString(c);
-			} else if(command.equals("custom_set_get")) {
+			} else if (command.equals("custom_set_get")) {
 				CustomSet c = new CustomSet();
 				c = customSetRepo.findById(data.get("customset_id").asLong());
 				result_json = mapper.writeValueAsString(c);
@@ -266,7 +269,8 @@ public class MetaServerController {
 	}
 
 	public String scoreSaveManualTree(JsonNode data) throws Exception {
-		Dataset d = dataRepo.findById(Long.valueOf(data.get("dataset").asInt()));
+		Dataset d = dataRepo
+				.findById(Long.valueOf(data.get("dataset").asInt()));
 		Weka wekaObj = weka.getWeka(d.getId());
 		JsonTree t = new JsonTree();
 		ManualTree readtree = new ManualTree();
@@ -323,14 +327,13 @@ public class MetaServerController {
 			// saver.writeBatch();
 			break;
 		}
-		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"),
-				d, custom_classifiers, attr,
-				cClassifierService, customSetRepo);
+		readtree = t.parseJsonTree(wekaObj, data.get("treestruct"), d,
+				custom_classifiers, attr, cClassifierService, customSetRepo);
 		eval.evaluateModel(readtree, wekaObj.getTest());
 		JsonNode cfmatrix = mapper.valueToTree(eval.confusionMatrix());
 		JsonNode treenode = readtree.getJsontree();
 		HashMap distributionData = readtree.getDistributionData();
-		//get Attribute Data from instances
+		// get Attribute Data from instances
 		ArrayList instanceData = new ArrayList();
 		Instances reqInstances = readtree.getRequiredInst();
 		double[] values;
@@ -340,14 +343,14 @@ public class MetaServerController {
 		for (JsonNode el : data.path("pickedAttrs")) {
 			attr = new ArrayList<Attribute>();
 			attr = attrRepo.findByFeatureUniqueId(el.asText(), d);
-			for(Attribute a : attr){	
+			for (Attribute a : attr) {
 				attrIndex = reqInstances.attribute(a.getName()).index();
 			}
 			attrIndexes.add(attrIndex);
 		}
-		for(int i=0;i<reqInstances.numInstances();i++){
+		for (int i = 0; i < reqInstances.numInstances(); i++) {
 			values = new double[3];
-			for(int j=0;j<attrIndexes.size();j++){
+			for (int j = 0; j < attrIndexes.size(); j++) {
 				values[j] = reqInstances.instance(i).value(attrIndexes.get(j));
 			}
 			values[2] = reqInstances.instance(i).classValue();
@@ -362,7 +365,8 @@ public class MetaServerController {
 		double nov = 0;
 		List<Feature> fList = (List<Feature>) mp.get("fList");
 		List<CustomFeature> cfList = (List<CustomFeature>) mp.get("cfList");
-		List<CustomClassifier> ccList = (List<CustomClassifier>) mp.get("ccList");
+		List<CustomClassifier> ccList = (List<CustomClassifier>) mp
+				.get("ccList");
 		List<Tree> tList = (List<Tree>) mp.get("tList");
 		List<CustomSet> csList = (List<CustomSet>) mp.get("csList");
 		nov = treeService
@@ -375,7 +379,7 @@ public class MetaServerController {
 		result.put("text_tree", readtree.toString());
 		result.put("treestruct", treenode);
 		result.put("distribution_data", mapper.valueToTree(distributionData));
-		if(data.path("pickedAttrs").size()>0){
+		if (data.path("pickedAttrs").size() > 0) {
 			result.put("instances_data", mapper.valueToTree(instanceData));
 		}
 		result.put("treestruct", treenode);
@@ -383,9 +387,12 @@ public class MetaServerController {
 		try {
 			result_json = mapper.writeValueAsString(result);
 		} catch (JsonProcessingException e) {
-			LOGGER.error("Couldn't write response from scoreSaveManualTree to String",e);
+			LOGGER.error(
+					"Couldn't write response from scoreSaveManualTree to String",
+					e);
 		}
-		if(distributionData.size()==0 && data.path("pickedAttrs").size() == 0){
+		if (distributionData.size() == 0
+				&& data.path("pickedAttrs").size() == 0) {
 			newScore.setNovelty(nov);
 			newScore.setDataset(data.get("dataset").asText());
 			newScore.setPct_correct(eval.pctCorrect());
@@ -408,8 +415,8 @@ public class MetaServerController {
 			newTree.setUser_saved(false);
 			newTree.setPrivate_tree(false);
 			newTree.setScore(newScore);
-			Tree prevTree = treeRepo
-					.findById(data.get("previous_tree_id").asLong());
+			Tree prevTree = treeRepo.findById(data.get("previous_tree_id")
+					.asLong());
 			newTree.setPrev_tree_id(prevTree);
 			if (data.get("command").asText().equals("savetree")) {
 				newTree.setUser_saved(true);

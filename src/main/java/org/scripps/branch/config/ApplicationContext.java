@@ -26,14 +26,15 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class ApplicationContext {
 
 	private static final String MESSAGE_SOURCE_BASE_NAME = "i18n/messages";
-	
+
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertyPlaceHolderConfigurer() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
+
 	@Autowired
 	Environment env;
-	
-	@Bean String setUploadsDir(){
-		return env.getProperty("uploads.dir");
-	}
-	
+
 	@Bean
 	public HibernateAwareObjectMapper initHibernateAwareObjectMapper() {
 		return new HibernateAwareObjectMapper();
@@ -53,8 +54,8 @@ public class ApplicationContext {
 	}
 
 	@Bean
-	public static PropertySourcesPlaceholderConfigurer propertyPlaceHolderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
+	String setUploadsDir() {
+		return env.getProperty("uploads.dir");
 	}
 
 }

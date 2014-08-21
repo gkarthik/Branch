@@ -21,8 +21,9 @@ public class WekaObject implements ApplicationContextAware {
 	private static ApplicationContext ctx;
 	private Weka weka;
 	private LinkedHashMap<String, Classifier> custom_classifiers;
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(WekaObject.class);
+
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(WekaObject.class);
 
 	public static ApplicationContext getApplicationContext() {
 		return ctx;
@@ -61,7 +62,7 @@ public class WekaObject implements ApplicationContextAware {
 						"metabric_with_clinical");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				LOGGER.error("Couldn't build Weka",e);
+				LOGGER.error("Couldn't build Weka", e);
 			}
 		}
 
