@@ -105,69 +105,69 @@ public class CSV2Arff {
 
 	private static String delimiterCheck(String inputPath) {
 
-		try {
-
-			BufferedReader fileReader = new BufferedReader(new FileReader(inputPath));
-			String line=null;
-			int noOfLinesToScan=10;
-			int count =0;
-			String[]tabs = null ;
-			String[] comma = null;
-			int a[] = new int[noOfLinesToScan] ;
-			int b[] = new int[noOfLinesToScan] ;
-			while ((line = fileReader.readLine()) != null && count<noOfLinesToScan)
-			{
-				tabs= line.split("\t");
-				comma=line.split(",");
-
-				a[count]=tabs.length;
-				b[count]=comma.length;	
-				count++;
-			}
-
-			
-			for (int i = 0; i < b.length; i++) {
-				System.out.println(b[i]);
-				System.out.println(a[i]);
-			}
-			System.out.println("tabs"+tabs.length);
-			System.out.println("commas"+comma.length);
-			int i=0,j=0;
-			if (a.length == 0 && b.length== 0) {
-				return "";
-			} 
-			else if(a.length>0){
-				int first = a[0];
-				for (int element : a) {
-					if (element != first) {
-						break;
-					}
-					i++;
-				}
-			}
-			else if(b.length>0){
-				int first = b[0];
-				for (int element : b) {
-					if (element != first) {
-						break;
-					}
-					j++;
-				}
-			}
-			System.out.println("i"+i);
-
-			System.out.println("j"+j);
-			if(i==noOfLinesToScan)
-				return "tab";
-			else if (j==noOfLinesToScan)
-				return "comma";
-			else
-				System.out.println("Nothin");
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//
+//			BufferedReader fileReader = new BufferedReader(new FileReader(inputPath));
+//			String line=null;
+//			int noOfLinesToScan=10;
+//			int count =0;
+//			String[]tabs = null ;
+//			String[] comma = null;
+//			int a[] = new int[noOfLinesToScan] ;
+//			int b[] = new int[noOfLinesToScan] ;
+//			while ((line = fileReader.readLine()) != null && count<noOfLinesToScan)
+//			{
+//				tabs= line.split("\t");
+//				comma=line.split(",");
+//
+//				a[count]=tabs.length;
+//				b[count]=comma.length;	
+//				count++;
+//			}
+//
+//			
+//			for (int i = 0; i < b.length; i++) {
+//				System.out.println(b[i]);
+//				System.out.println(a[i]);
+//			}
+//			System.out.println("tabs"+tabs.length);
+//			System.out.println("commas"+comma.length);
+//			int i=0,j=0;
+//			if (a.length == 0 && b.length== 0) {
+//				return "";
+//			} 
+//			else if(a.length>0){
+//				int first = a[0];
+//				for (int element : a) {
+//					if (element != first) {
+//						break;
+//					}
+//					i++;
+//				}
+//			}
+//			else if(b.length>0){
+//				int first = b[0];
+//				for (int element : b) {
+//					if (element != first) {
+//						break;
+//					}
+//					j++;
+//				}
+//			}
+//			System.out.println("i"+i);
+//
+//			System.out.println("j"+j);
+//			if(i==noOfLinesToScan)
+//				return "tab";
+//			else if (j==noOfLinesToScan)
+//				return "comma";
+//			else
+//				System.out.println("Nothin");
+//
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		return "abc";
 	}
 
