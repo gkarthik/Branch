@@ -171,8 +171,7 @@ dependencies {
 
 	compile 'net.sf.squirrel-sql.thirdparty-non-maven:java-cup:0.11a'
 
-	//csv
-	compile 'net.sf.opencsv:opencsv:2.3'
+
 }
 
 eclipse {

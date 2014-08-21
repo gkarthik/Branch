@@ -50,10 +50,10 @@ public class CustomSet {
 	@JoinTable(name = "custom_set_feature", joinColumns = { @JoinColumn(name = "feature_id") }, inverseJoinColumns = { @JoinColumn(name = "custom_set_id") })
 	@JsonManagedReference
 	private List<Feature> features;
-	
+
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "customSets")
 	private List<Tree> tree;
-	
+
 	public String getConstraints() {
 		return constraints;
 	}

@@ -1,8 +1,12 @@
 package org.scripps.branch.service;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,11 +34,12 @@ public class AttributeServiceImpl implements AttributeService {
 
 	@Autowired
 	FeatureRepository featureRepo;
-	
+
 	@Autowired
 	ApplicationContext ctx;
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(AttributeServiceImpl.class);
+
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(AttributeServiceImpl.class);
 
 	@Override
 	public void generateAttributesFromDataset(Instances data, Dataset dataset,
@@ -48,9 +53,10 @@ public class AttributeServiceImpl implements AttributeService {
 			f = new Feature();
 			attr.setName(data.attribute(i).name());
 			attr.setCol_index(data.attribute(i).index());
-			//attr.setDataset(dataset);
+			attr.setDataset(dataset);
 			f = featureRepo.findByUniqueId(mp.get(data.attribute(i).name()));
-			LOGGER.debug(data.attribute(i).name()+": "+mp.get(data.attribute(i).name()));
+			LOGGER.debug(data.attribute(i).name() + ": "
+					+ mp.get(data.attribute(i).name()));
 			attr.setFeature(f);
 			attrList.add(attr);
 		}
@@ -62,26 +68,76 @@ public class AttributeServiceImpl implements AttributeService {
 	public HashMap<String, String> getAttributeFeatureMapping(String inputPath) {
 		HashMap<String, String> mp = new HashMap<String, String>();
 		BufferedReader fileReader = null;
-		final String DELIMITER = "\t";
+		String DELIMITER = delimiterCheck(inputPath); //final String DELIMITER = ",|\\\t";
 		try {
+			
 			String line = "";
-			Resource input = ctx.getResource("file:"+inputPath);
-			fileReader = new BufferedReader(new InputStreamReader(input.getInputStream()));
+			
+			Resource input = ctx.getResource("file:" + inputPath);
+			
+			fileReader = new BufferedReader(new InputStreamReader(
+					input.getInputStream()));
+			
+			
 			while ((line = fileReader.readLine()) != null) {
+				
 				String[] tokens = line.split(DELIMITER);
-				if (tokens.length == 3) {
-					mp.put(tokens[0], tokens[2]);
+			
+				if (tokens.length >1) {
+					String[] token2= tokens[2].split("///");
+
+					LOGGER.debug(token2[0]);
+
+					mp.put(tokens[0], token2[0]);
 				}
 			}
+			
 		} catch (Exception e) {
-			LOGGER.error("Couldn't read resource",e);
+			LOGGER.error("Couldn't read resource", e);
+			e.printStackTrace();
 		} finally {
 			try {
 				fileReader.close();
 			} catch (IOException e) {
-				LOGGER.error("Couldn't close file reader",e);
+				LOGGER.error("Couldn't close file reader", e);
+				e.printStackTrace();
 			}
 		}
 		return mp;
 	}
+
+	private String delimiterCheck(String inputPath) {
+			
+		try {
+			BufferedReader fileReader = new BufferedReader(new FileReader(inputPath));
+			String line="";
+			int count =0;
+			
+			while ((line = fileReader.readLine()) != null && count==10 ){
+				
+				String[] tabs= line.split("/t");
+				String[] comma=line.split(",");
+				
+			}
+		
+		
+		
+		
+		
+		
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+		
+		
+		return null;
+	}
+	
+	
+	
 }

@@ -86,7 +86,7 @@ public class FeatureJobConfig {
 			ItemProcessor<Feature, Feature> processor) {
 		return stepBuilderFactory.get("step1")
 				.transactionManager(new JpaTransactionManager(emf))
-				.<Feature, Feature> chunk(100).reader(reader)
+				.<Feature, Feature> chunk(10000).reader(reader)
 				.processor(processor).writer(writer).build();
 	}
 

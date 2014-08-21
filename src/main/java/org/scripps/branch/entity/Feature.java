@@ -58,7 +58,7 @@ public class Feature {
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "feature")
 	private List<CustomClassifier> custom_classifier;
-	
+
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "features")
 	@JsonBackReference
 	private List<CustomSet> custom_set;

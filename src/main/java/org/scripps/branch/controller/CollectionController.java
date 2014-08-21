@@ -20,7 +20,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 
 @Controller
@@ -33,7 +32,7 @@ public class CollectionController {
 
 	protected static final String VIEW = "user/view";
 
-	//protected static final String VIEW_PAGE = "user/view";
+	// protected static final String VIEW_PAGE = "user/view";
 	protected static final String VIEW_PUBLIC_COLLECTION = "user/publicCollection";
 	@Autowired
 	CollectionRepository collRepo;
@@ -44,7 +43,9 @@ public class CollectionController {
 	DatasetRepository datasetRepo;
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String addCollection(@RequestParam(value = "user_id", required = false) Long user_id,@RequestParam("name") String name,
+	public String addCollection(
+			@RequestParam(value = "user_id", required = false) Long user_id,
+			@RequestParam("name") String name,
 			@RequestParam("description") String description) {
 
 		// /LOGGER.debug("UserID at Add"+user_id);
@@ -65,6 +66,25 @@ public class CollectionController {
 		}
 		return VIEW;
 	}
+
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	public String deleteCollection(
+			@RequestParam(value = "user_id", required = false) Long user_id,
+			@RequestParam("collectionId") long collectionId) {
+
+		LOGGER.debug("collID: " + collectionId);
+		LOGGER.debug("Rendering delete.");
+
+		Collection colObj = collRepo.findById(collectionId);
+		List<Dataset> dsObj = datasetRepo.findByCollection(colObj);
+		datasetRepo.delete(dsObj);
+		collRepo.delete(colObj);
+
+		LOGGER.debug("Number of Rows Deleted are :");
+
+		return "redirect:/collection?user_id=" + user_id;
+	}
+
 	//
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String showAdd(WebRequest request, Model model) {
@@ -72,29 +92,13 @@ public class CollectionController {
 		return ADD;
 	}
 
-	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public String deleteCollection(@RequestParam(value = "user_id", required = false) Long user_id, @RequestParam("collectionId") long collectionId) {
-
-		LOGGER.debug("collID: "+collectionId);
-		LOGGER.debug("Rendering delete.");
-
-		Collection colObj=collRepo.findById(collectionId);
-		List<Dataset> dsObj= datasetRepo.findByCollection(colObj);
-		datasetRepo.delete(dsObj);
-		collRepo.delete(colObj);
-
-		LOGGER.debug("Number of Rows Deleted are :");
-
-		return "redirect:/collection?user_id="+user_id;
-	}
-
-//
-//		@RequestMapping(value = "/collection", method = RequestMethod.GET)
-//		public String showCollection(WebRequest request, Model model) {
-//			LOGGER.debug("Rendering Collection.");
-//	
-//			return VIEW;
-//		}
+	//
+	// @RequestMapping(value = "/collection", method = RequestMethod.GET)
+	// public String showCollection(WebRequest request, Model model) {
+	// LOGGER.debug("Rendering Collection.");
+	//
+	// return VIEW;
+	// }
 
 	@RequestMapping(value = "/collection", method = RequestMethod.GET)
 	public String showViewCollection(
@@ -133,5 +137,4 @@ public class CollectionController {
 	}
 }
 
-
-//action="/branch/collection?user_id=<%=request.getParameter("user_id")%>"
+// action="/branch/collection?user_id=<%=request.getParameter("user_id")%>"

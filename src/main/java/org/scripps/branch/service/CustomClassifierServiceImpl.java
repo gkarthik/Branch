@@ -62,12 +62,14 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 
 	@Autowired
 	HibernateAwareObjectMapper mapper;
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(CustomClassifierServiceImpl.class);
+
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(CustomClassifierServiceImpl.class);
 
 	@Override
 	public void addCustomTree(String id, Weka weka,
-			LinkedHashMap<String, Classifier> custom_classifiers, Dataset dataset, CustomSetRepository cSetRepo) {
+			LinkedHashMap<String, Classifier> custom_classifiers,
+			Dataset dataset, CustomSetRepository cSetRepo) {
 		if (!custom_classifiers.containsKey(id)) {
 			Tree t = treeRepo.findById(Long.valueOf(id.replace("custom_tree_",
 					"")));
@@ -77,10 +79,10 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 				rootNode = mapper.readTree(t.getJson_tree()).get("treestruct");
 			} catch (JsonProcessingException e) {
 				// TODO Auto-generated catch block
-				LOGGER.error("Couldn't convert json to JsonNode",e);
+				LOGGER.error("Couldn't convert json to JsonNode", e);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				LOGGER.error("IO Exception",e);
+				LOGGER.error("IO Exception", e);
 			}
 			JsonTree jtree = new JsonTree();
 			rootNode = jtree.mapEntrezIdsToAttNames(weka, rootNode, dataset,
@@ -92,18 +94,20 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 				tree.buildClassifier(weka.getTrain());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				LOGGER.error("Couldn't build classifier",e);
+				LOGGER.error("Couldn't build classifier", e);
 			}
 			custom_classifiers.put(id, tree);
 		}
 	}
 
 	@Override
-	public FilteredClassifier buildCustomClasifier(HashMap<String, Weka> name_dataset,
-			long[] featureDbIds, int classifierType) {
+	public FilteredClassifier buildCustomClasifier(
+			HashMap<String, Weka> name_dataset, long[] featureDbIds,
+			int classifierType) {
 		Instances data;
 		List<Attribute> a = attrRepo.findByFeatureDbId(featureDbIds[0]);
-		data = name_dataset.get("dataset_"+a.get(0).getDataset().getId()).getTrain();
+		data = name_dataset.get("dataset_" + a.get(0).getDataset().getId())
+				.getTrain();
 		String att_name = "";
 		String indices = new String();
 		for (long featureDbId : featureDbIds) {
@@ -139,7 +143,7 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 			fc.buildClassifier(data);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			LOGGER.error("Error building classifier",e);
+			LOGGER.error("Error building classifier", e);
 		}
 		return fc;
 	}
@@ -177,7 +181,8 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 	}
 
 	@Override
-	public LinkedHashMap<String, Classifier> getClassifiersfromDb(HashMap<String, Weka> name_dataset) {
+	public LinkedHashMap<String, Classifier> getClassifiersfromDb(
+			HashMap<String, Weka> name_dataset) {
 		LinkedHashMap<String, Classifier> listOfClassifiers = new LinkedHashMap<String, Classifier>();
 		List<CustomClassifier> ccList = new ArrayList<CustomClassifier>();
 		ccList = ccRepo.findAll();
@@ -190,8 +195,9 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 
 	@Override
 	public HashMap getOrCreateClassifier(List entrezIds, int classifierType,
-			String name, String description, int player_id, HashMap<String, Weka> name_dataset,
-			Dataset dataset, HashMap<String, Classifier> custom_classifiers) {
+			String name, String description, int player_id,
+			HashMap<String, Weka> name_dataset, Dataset dataset,
+			HashMap<String, Classifier> custom_classifiers) {
 		List<CustomClassifier> ccList = ccRepo.findAll();
 		CustomClassifier returncf = new CustomClassifier();
 		Boolean exists = false;
@@ -237,8 +243,8 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		if (!exists) {
 			try {
 				returncf = insertandAddCustomClassifier(featureDbIds,
-						classifierType, name, description, player_id, name_dataset,
-						dataset, custom_classifiers);
+						classifierType, name, description, player_id,
+						name_dataset, dataset, custom_classifiers);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -262,8 +268,8 @@ public class CustomClassifierServiceImpl implements CustomClassifierService {
 		HashMap mp = new HashMap();
 		int custom_classifier_id = 0;
 		List<Feature> featureList = new ArrayList<Feature>();
-		FilteredClassifier fc = buildCustomClasifier(name_dataset, featureDbIds,
-				classifierType);
+		FilteredClassifier fc = buildCustomClasifier(name_dataset,
+				featureDbIds, classifierType);
 		for (long id : featureDbIds) {
 			featureList.add(fRepo.getByDbId(id));
 		}

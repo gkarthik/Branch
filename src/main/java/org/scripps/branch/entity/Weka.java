@@ -1,13 +1,11 @@
 package org.scripps.branch.entity;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Random;
 
-import org.scripps.branch.controller.CollectionController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,30 +28,8 @@ public class Weka {
 	Instances test = null;
 	private Instances train = null;
 
-
-
-	public Instances load(String csvFile) throws IOException {
-		// load CSV
-		System.out.println("Loading CSV dataset");
-		CSVLoader loader = new CSVLoader();
-		//loader.setFieldSeperator("\\t");
-		loader.setSource(new File(csvFile));
-		Instances data = loader.getDataSet();
-		return data;
-	}
-
-	public  void toArff(Instances data, String arffFileName) throws IOException {
-		System.out.println("Saving dataset as ARFF");
-		// save ARFF
-		ArffSaver saver = new ArffSaver();
-		saver.setInstances(data);
-		saver.setFile(new File(arffFileName));
-		//saver.setDestination(new File(args[1]));
-		saver.writeBatch();
-	}
-
-	public Instances buildWeka(InputStream train_stream, InputStream test_stream,
-			String method) throws Exception {
+	public void buildWeka(InputStream train_stream,
+			InputStream test_stream, String method) throws Exception {
 		setDataset(dataset);
 		// get the data
 		DataSource source = new DataSource(train_stream);
@@ -78,7 +54,27 @@ public class Weka {
 		// get the features related to this weka dataset
 		setTrain(getOrigTrain());
 		setTest(getOrigTest());
-		return getOrigTrain();
+
+
+
+	}
+
+	public boolean checkDataset(InputStream path1, InputStream path2) {
+		Weka wekaObj1;
+		Weka wekaObj2;
+		boolean value = false;
+		try {
+			wekaObj1 = new Weka();
+			wekaObj1.buildWeka(path1, null, "");
+			wekaObj2 = new Weka();
+			wekaObj2.buildWeka(path2, null, "");
+			value = wekaObj1.getTrain().equalHeaders(wekaObj2.getTrain());
+			LOGGER.debug("value=" + value);
+		} catch (Exception e) {
+			// TODO: handle exception
+			LOGGER.error("Couldn't build Weka", e);
+		}
+		return value;
 	}
 
 	public void generateLimits() {
@@ -86,7 +82,7 @@ public class Weka {
 		instancesInClass = new Instances[data.numClasses()];
 		for (int i = 0; i < data.numClasses(); i++) {
 			for (int j = 0; j < data.numInstances(); j++) {
-				System.out.println(data.instance(j).classValue());	
+				System.out.println(data.instance(j).classValue());
 				if (data.instance(j).classValue() == i) {// Not
 					if (instancesInClass[i] == null) {
 						instancesInClass[i] = new Instances(data,
@@ -99,24 +95,6 @@ public class Weka {
 		for (int i = 0; i < instancesInClass.length; i++) {
 			System.out.println(instancesInClass[i].numInstances());
 		}
-	}
-
-	public boolean checkDataset(InputStream path1, InputStream path2){
-		Weka wekaObj1;
-		Weka wekaObj2;
-		boolean value = false;
-		try {
-			wekaObj1 = new Weka();
-			wekaObj1.buildWeka(path1, null, "");
-			wekaObj2 = new Weka();
-			wekaObj2.buildWeka(path2, null, "");
-			value=wekaObj1.getTrain().equalHeaders(wekaObj2.getTrain());
-			LOGGER.debug("value="+value);
-		} catch (Exception e) {
-			// TODO: handle exception
-			LOGGER.error("Couldn't build Weka",e);
-		}
-		return value;
 	}
 
 	public String getDataset() {
@@ -155,6 +133,16 @@ public class Weka {
 		return train;
 	}
 
+	public Instances load(String csvFile) throws IOException {
+		// load CSV
+		System.out.println("Loading CSV dataset");
+		CSVLoader loader = new CSVLoader();
+		// loader.setFieldSeperator("\\t");
+		loader.setSource(new File(csvFile));
+		Instances data = loader.getDataSet();
+		return data;
+	}
+
 	public void setDataset(String dataset) {
 		this.dataset = dataset;
 	}
@@ -191,17 +179,26 @@ public class Weka {
 		this.train = train;
 	}
 
+	public void toArff(Instances data, String arffFileName) throws IOException {
+		System.out.println("Saving dataset as ARFF");
+		// save ARFF
+		ArffSaver saver = new ArffSaver();
+		saver.setInstances(data);
+		saver.setFile(new File(arffFileName));
+		// saver.setDestination(new File(args[1]));
+		saver.writeBatch();
+	}
 
-	//	public static void main(String args[]){
-	//			Weka weka = new Weka();
-	//			try {
-	//				weka.load("/home/bob/r5x4-with-extra.txt");
-	//				LOGGER.debug("number of instances"+weka.getTrain().numInstances());
-	//				LOGGER.debug("done");
-	//				
-	//			} catch (IOException e) {
-	//				// TODO Auto-generated catch block
-	//				e.printStackTrace();
-	//			}
-	//	}
+	// public static void main(String args[]){
+	// Weka weka = new Weka();
+	// try {
+	// weka.load("/home/bob/r5x4-with-extra.txt");
+	// LOGGER.debug("number of instances"+weka.getTrain().numInstances());
+	// LOGGER.debug("done");
+	//
+	// } catch (IOException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// }
+	// }
 }

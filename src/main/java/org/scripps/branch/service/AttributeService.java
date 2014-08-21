@@ -10,7 +10,8 @@ import weka.core.Instances;
 
 @Service
 public interface AttributeService {
-	public void generateAttributesFromDataset(Instances data, Dataset dataset, String inputPath) throws FileNotFoundException;
+	public void generateAttributesFromDataset(Instances data, Dataset dataset,
+			String inputPath) throws FileNotFoundException;
 
 	public HashMap<String, String> getAttributeFeatureMapping(String inputPath);
 }

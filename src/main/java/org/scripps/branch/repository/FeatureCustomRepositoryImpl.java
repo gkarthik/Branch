@@ -27,12 +27,14 @@ public class FeatureCustomRepositoryImpl implements FeatureCustomRepository {
 	protected EntityManager em;
 
 	@Override
-	public Map<String, Feature> getByDataset(String dataset, boolean load_annotations_very_slowly) {
+	public Map<String, Feature> getByDataset(String dataset,
+			boolean load_annotations_very_slowly) {
 		Map<String, Feature> features = new HashMap<String, Feature>();
-		String query = "select f from Feature f, Attribute a where a.dataset = '"	+ dataset + "'and f.id = a.feature_id";
+		String query = "select f from Feature f, Attribute a where a.dataset = '"
+				+ dataset + "'and f.id = a.feature_id";
 		Query q = em.createQuery(query);
 		List<Feature> fList = q.getResultList();
-		for(Feature f:fList){
+		for (Feature f : fList) {
 			features.put(f.getUnique_id(), f);
 		}
 		return features;
