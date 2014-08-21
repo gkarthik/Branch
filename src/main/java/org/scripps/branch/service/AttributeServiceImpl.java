@@ -68,30 +68,29 @@ public class AttributeServiceImpl implements AttributeService {
 	public HashMap<String, String> getAttributeFeatureMapping(String inputPath) {
 		HashMap<String, String> mp = new HashMap<String, String>();
 		BufferedReader fileReader = null;
-		String DELIMITER = delimiterCheck(inputPath); //final String DELIMITER = ",|\\\t";
+		String DELIMITER = null;
 		try {
-			
+
+			if(delimiterCheck(inputPath).equals("tab")) DELIMITER ="\t";
+			else DELIMITER = ",";
+		} catch (Exception e1) {
+			LOGGER.debug("DELIMITER not set Correctly"+e1);
+			e1.printStackTrace();
+		}
+		try {
 			String line = "";
-			
 			Resource input = ctx.getResource("file:" + inputPath);
-			
 			fileReader = new BufferedReader(new InputStreamReader(
 					input.getInputStream()));
-			
-			
+
 			while ((line = fileReader.readLine()) != null) {
-				
 				String[] tokens = line.split(DELIMITER);
-			
 				if (tokens.length >1) {
 					String[] token2= tokens[2].split("///");
-
 					LOGGER.debug(token2[0]);
-
 					mp.put(tokens[0], token2[0]);
 				}
 			}
-			
 		} catch (Exception e) {
 			LOGGER.error("Couldn't read resource", e);
 			e.printStackTrace();
@@ -106,38 +105,36 @@ public class AttributeServiceImpl implements AttributeService {
 		return mp;
 	}
 
-	private String delimiterCheck(String inputPath) {
-			
+	private static String delimiterCheck(String inputPath) {
+
+		String line=null;
+		int noOfLinesToScan=100;
+		int count =0;
+		String[]tabs = null ;
+		String[] comma = null;
+		int a[] = new int[noOfLinesToScan] ;
+		int b[] = new int[noOfLinesToScan] ;
+
 		try {
 			BufferedReader fileReader = new BufferedReader(new FileReader(inputPath));
-			String line="";
-			int count =0;
-			
-			while ((line = fileReader.readLine()) != null && count==10 ){
-				
-				String[] tabs= line.split("/t");
-				String[] comma=line.split(",");
-				
+			while ((line = fileReader.readLine()) != null && count<noOfLinesToScan)
+			{
+				tabs= line.split("\t");
+				comma=line.split(",");
+
+				a[count]=tabs.length;
+				b[count]=comma.length;	
+				count++;
 			}
-		
-		
-		
-		
-		
-		
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			LOGGER.debug("Exception Occured while reading file"+e);
 			e.printStackTrace();
 		}
-		
-		
-		
-		
-		
-		
-		return null;
+
+		if(tabs.length>comma.length) return "tab";
+		else return "comma";
 	}
-	
-	
-	
+
+
+
 }

@@ -148,7 +148,7 @@ public class FileUploadController {
 			@RequestParam("description") String description,
 			@RequestParam("datasetName") String datasetName,
 			@RequestParam("collectionId") long collectionId,
-			@RequestParam("fileType") String fileExt, WebRequest req) {
+			@RequestParam("fileType") String fileExt, WebRequest req,Model model) {
 
 		Weka weka = new Weka();
 		Collection col = colRepo.findById(collectionId);
@@ -172,10 +172,10 @@ public class FileUploadController {
 
 		String[] names = new String[3];
 
-				if (!(auth instanceof AnonymousAuthenticationToken)) {
-					userDetails = (UserDetails) auth.getPrincipal();
-					user = userRepo.findByEmail(userDetails.getUsername());
-				}
+		if (!(auth instanceof AnonymousAuthenticationToken)) {
+			userDetails = (UserDetails) auth.getPrincipal();
+			user = userRepo.findByEmail(userDetails.getUsername());
+		}
 
 
 
@@ -212,7 +212,7 @@ public class FileUploadController {
 					dir.mkdirs();
 				}
 
-			
+
 				md5FileName[i] = hashFileName(name + user.getId()
 						+ System.currentTimeMillis() + fileType[i]);
 				LOGGER.debug("MD5 File Name: " + md5FileName[i]);
@@ -226,95 +226,95 @@ public class FileUploadController {
 				message = message + "You successfully uploaded file, " + name;
 
 				if(i==2)
-				LOGGER.debug("Mapping File="+files[2]+"MD5 NaME="+md5FileName[2]+"ServerPath="+serverFile);
+					LOGGER.debug("Mapping File="+files[2]+"MD5 NaME="+md5FileName[2]+"ServerPath="+serverFile);
 
 
-//				if (i == 0) {
-//					InputStream path1 = ctx.getResource("file:" +
-//							serverFile).getInputStream();
-//					InputStream path2 = null;
-//					if(col.getDatasets().size()>1){
-//						path2 = new
-//								FileInputStream(uploadPath+col.getDatasets().get(0).getDatasetfile());
-//					} else {
-//						check = true;
-//					}
-//					if (path2 != null && path1 != null && check==false) {
-//						check = weka.checkDataset(path1, path2);
-//					}
-//					if (check == false) {
-//						serverFile.delete();
-//						return
-//								"Dataset header does not match any other in collection";
-//					}
-//				}
-//				if (i == 1) {
-//					message = message +
-//							runFeatureUpload(serverFile.toString());
-//				}
+				if (i == 0) {
+					InputStream path1 = ctx.getResource("file:" +
+							serverFile).getInputStream();
+					InputStream path2 = null;
+					if(col.getDatasets().size()>1){
+						path2 = new
+								FileInputStream(uploadPath+col.getDatasets().get(0).getDatasetfile());
+					} else {
+						check = true;
+					}
+					if (path2 != null && path1 != null && check==false) {
+						check = weka.checkDataset(path1, path2);
+					}
+					if (check == false) {
+						serverFile.delete();
+						return
+								"Dataset header does not match any other in collection";
+					}
+				}
+				if (i == 1) {
+					message = message +
+							runFeatureUpload(serverFile.toString());
+				}
 
-//				if (i == 2) {
-//
-//					LOGGER.debug("File Name:" + serverFile.toString());
-//					LOGGER.debug("File Extention" + fileExt);
-//
-//					String datasetFile = md5FileName[0];
-//					Instances data;
-//					// boolean success = false;
-//
-//					try {
-//						if (checkArff(uploadPath + datasetFile) == true) {
-//							LOGGER.debug("file:" + serverFile.toString());
-//							weka.buildWeka(
-//									ctx.getResource(
-//											"file:" + uploadPath
-//											+ md5FileName[0])
-//											.getInputStream(), null, "");
-//							attrSer.generateAttributesFromDataset(
-//									weka.getTrain(), ds, serverFile.toString());
-//
-//
-//							// message = message + "attribute file added";
-//
-//							message = message + "\nFile Type is ARFF\n"
-//									+ "\nAttribute file added\n";
-//							exception = false;
-//						} 
-//						else {
-//
-//							LOGGER.debug("returned true");
-//							data = weka.load(uploadPath + datasetFile);
-//							datasetFile = md5FileName[0] + ".csv";
-//							weka.toArff(data, uploadPath + datasetFile);
-//							attrSer.generateAttributesFromDataset(data,
-//									ds, serverFile.toString());
-//							LOGGER.debug("Number of Attributes are : "
-//									+ data.numAttributes());
-//							LOGGER.debug("Number of Instances are : "
-//									+ data.numInstances());
-//							data.setClassIndex(data.numAttributes() - 1);
-//							LOGGER.debug("hmmm");
-//							//							Classifier c = new NaiveBayes();
-//							//							c.buildClassifier(data);
-//							//							LOGGER.debug("C"+c);
-//							//							Evaluation eval = new Evaluation(data);
-//							//							eval.evaluateModel(c, data);
-//							//							LOGGER.debug("Eval"+eval);
-//
-//							message = message + "\nFile Type is CSV\n"
-//									+ "\nAttribute file added\n"
-//									;
-//							LOGGER.debug(message);
-//							exception = false;
-//						}
-//					} catch (Exception e) {
-//
-//						LOGGER.error("File Uploaded is not right"
-//								, e);
-//						exception = true;
-//					}
-//
-//				}
+				if (i == 2) {
+
+					LOGGER.debug("File Name:" + serverFile.toString());
+					LOGGER.debug("File Extention" + fileExt);
+
+					String datasetFile = md5FileName[0];
+					Instances data;
+					// boolean success = false;
+
+					try {
+						if (checkArff(uploadPath + datasetFile) == true) {
+							LOGGER.debug("file:" + serverFile.toString());
+							weka.buildWeka(
+									ctx.getResource(
+											"file:" + uploadPath
+											+ md5FileName[0])
+											.getInputStream(), null, "");
+							attrSer.generateAttributesFromDataset(
+									weka.getTrain(), ds, serverFile.toString());
+
+
+							// message = message + "attribute file added";
+
+							message = message + "\nFile Type is ARFF\n"
+									+ "\nAttribute file added\n";
+							exception = false;
+						} 
+						else {
+
+							LOGGER.debug("returned true");
+							data = weka.load(uploadPath + datasetFile);
+							datasetFile = md5FileName[0] + ".csv";
+							weka.toArff(data, uploadPath + datasetFile);
+							attrSer.generateAttributesFromDataset(data,
+									ds, serverFile.toString());
+							LOGGER.debug("Number of Attributes are : "
+									+ data.numAttributes());
+							LOGGER.debug("Number of Instances are : "
+									+ data.numInstances());
+							data.setClassIndex(data.numAttributes() - 1);
+							LOGGER.debug("hmmm");
+							//							Classifier c = new NaiveBayes();
+							//							c.buildClassifier(data);
+							//							LOGGER.debug("C"+c);
+							//							Evaluation eval = new Evaluation(data);
+							//							eval.evaluateModel(c, data);
+							//							LOGGER.debug("Eval"+eval);
+
+							message = message + "\nFile Type is CSV\n"
+									+ "\nAttribute file added\n"
+									;
+							LOGGER.debug(message);
+							exception = false;
+						}
+					} catch (Exception e) {
+
+						LOGGER.error("File Uploaded is not right"
+								, e);
+						exception = true;
+					}
+
+				}
 
 			} catch (Exception e) {
 				exception = true;
