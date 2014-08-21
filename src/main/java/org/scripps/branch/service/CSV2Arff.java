@@ -73,102 +73,83 @@ public class CSV2Arff {
 	}
 
 
-	public static void mappingFileReader(String inputPath) throws IOException
-	{
-		File file = new File(inputPath);
-		InputStream inputStream = new FileInputStream(file);
+		private static String delimiterCheck(String inputPath) {
 
-		CsvPreference pref = new CsvPreference.Builder('"', ',', "\n").build();
+		String line=null;
+		int noOfLinesToScan=100;
+		int count =0;
+		String[]tabs = null ;
+		String[] comma = null;
+		int a[] = new int[noOfLinesToScan] ;
+		int b[] = new int[noOfLinesToScan] ;
+		try {
 
-		ICsvMapReader reader = new CsvMapReader(new InputStreamReader(inputStream), pref);
+			BufferedReader fileReader = new BufferedReader(new FileReader(inputPath));
 
+			while ((line = fileReader.readLine()) != null && count<noOfLinesToScan)
+			{
+				tabs= line.split("\t");
+				comma=line.split(",");
 
+				a[count]=tabs.length;
+				b[count]=comma.length;	
+				count++;
+			}
 
-		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+			//			
+			//			for (int i = 0; i < b.length; i++) {
+			//				System.out.println(b[i]);
+			//				System.out.println(a[i]);
+			//			}
+			//			System.out.println("tabs"+tabs.length);
+			//			System.out.println("commas"+comma.length);
+			//			int i=0,j=0;
+			//			if (a.length == 0 && b.length== 0) {
+			//				return "";
+			//			} 
+			//			else if(a.length>0){
+			//				int first = a[0];
+			//				for (int element : a) {
+			//					if (element != first) {
+			//						break;
+			//					}
+			//					i++;
+			//				}
+			//			}
+			//			else if(b.length>0){
+			//				int first = b[0];
+			//				for (int element : b) {
+			//					if (element != first) {
+			//						break;
+			//					}
+			//					j++;
+			//				}
+			//			}
+			//			System.out.println("i"+i);
+			//
+			//			System.out.println("j"+j);
+			//			if(i==noOfLinesToScan && i>j)
+			//				return "tab";
+			//			else if (j==noOfLinesToScan && j>i)
+			//				return "comma";
+			//			else
+			//				System.out.println("Nothin");
 
-
-		Map<String, String> result;
-		int count=0;
-		while ((result = reader.read(new String[]{"1","2","3","4","5","6"})) != null&& count<5) {
-			list.add(result);
-			count++;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
-		for (Map<String, String> elem : list) {
-			String[] str= elem.get("3").split("///");
-			System.out.print(elem.get("1")+" | "+str[0]);
-			// System.out.print(elem.get("name"));
-			System.out.println();
+
+		if(tabs.length>comma.length){
+			return "tab";
 		}
-	}
+
+		else
+			return "comma";
 
 
-	private static String delimiterCheck(String inputPath) {
 
-//		try {
-//
-//			BufferedReader fileReader = new BufferedReader(new FileReader(inputPath));
-//			String line=null;
-//			int noOfLinesToScan=10;
-//			int count =0;
-//			String[]tabs = null ;
-//			String[] comma = null;
-//			int a[] = new int[noOfLinesToScan] ;
-//			int b[] = new int[noOfLinesToScan] ;
-//			while ((line = fileReader.readLine()) != null && count<noOfLinesToScan)
-//			{
-//				tabs= line.split("\t");
-//				comma=line.split(",");
-//
-//				a[count]=tabs.length;
-//				b[count]=comma.length;	
-//				count++;
-//			}
-//
-//			
-//			for (int i = 0; i < b.length; i++) {
-//				System.out.println(b[i]);
-//				System.out.println(a[i]);
-//			}
-//			System.out.println("tabs"+tabs.length);
-//			System.out.println("commas"+comma.length);
-//			int i=0,j=0;
-//			if (a.length == 0 && b.length== 0) {
-//				return "";
-//			} 
-//			else if(a.length>0){
-//				int first = a[0];
-//				for (int element : a) {
-//					if (element != first) {
-//						break;
-//					}
-//					i++;
-//				}
-//			}
-//			else if(b.length>0){
-//				int first = b[0];
-//				for (int element : b) {
-//					if (element != first) {
-//						break;
-//					}
-//					j++;
-//				}
-//			}
-//			System.out.println("i"+i);
-//
-//			System.out.println("j"+j);
-//			if(i==noOfLinesToScan)
-//				return "tab";
-//			else if (j==noOfLinesToScan)
-//				return "comma";
-//			else
-//				System.out.println("Nothin");
-//
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		return "abc";
 	}
 
 
