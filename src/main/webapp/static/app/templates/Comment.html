@@ -1,0 +1,29 @@
+<% if(editView==0 && saving==0){ %>
+<button class="btn btn-primary pull-left" id="init_save_tree">
+	<i class="glyphicon glyphicon-save"></i>
+</button>
+<% if(content!=""){ %>
+<div class="save-content-wrapper"><p><%= content %></p></div>
+<% } %>
+<% } else if(editView==1 && saving == 0){ %>
+<div class="save-content-wrapper">
+<div class="checkbox">
+    <label>
+    	<input id="save-private" type="checkbox" <% if(flagPrivate == 1){ print("checked");} %>> <i title='Private Tree' style='cursor: default;color:red;' class='glyphicon glyphicon-eye-close'></i> Save as Private*.
+
+	</label>
+</div>
+<textarea placeholder="You can store a comment along with the tree ..." class="commentContent"><%= content %></textarea>
+<button class="btn btn-primary btn-block" id="save_tree">
+	Done editing comment?<br />
+	<b><i class="glyphicon glyphicon-save"></i> SAVE</b>
+</button>
+<p class="small">* Trees saved as private will only be visible to you. They will not appear on the community score board and will not be visible to other users.</p>
+</div>
+<% } else if(saving ==1) { %>
+<div class="save-content-wrapper">
+<button class="btn btn-primary pull-left" id="init_save_tree">
+	Saving...
+</button>
+</div>
+<% } %>
