@@ -15,11 +15,11 @@
 * Refresh all dependencies in gradle. 
 * Set Up database details in src/main/resources/application.properties.
 * To create database schema for the first time, set hibernate.hbm2ddl.auto=create in application.properties. To revert back to update on subsequent sessions set hibernate.hbm2ddl.auto=update.
-* There are two configuration files, config_prod and config_dev for production and development environments respectively. To configure the profile to run the application in, add a setenv.sh file to the bin folder of your tomcat installation. Add the following line to the file.
+* There are two configuration files, example_config_prod and example_config_dev for production and development environments respectively. Rename them as config_prod.properties and config_dev.properties. To configure the profile to run the application in, add a setenv.sh file to the bin folder of your tomcat installation. Add the following line to the file.
 ```
 	JAVA_OPTS="$JAVA_OPTS -Dspring.profiles.active=*profile_name*"
 ```
-Replace *profile_name* with prod or dev.
+* Replace *profile_name* with prod or dev.
 * To set up the uploads directory set uploads.dir=/absolute/path/to/folder/ in the appropriate properties file.
 * Refresh dependencies using Gradle plugin.
 * Run on Tomcat 7.0. 
