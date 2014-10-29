@@ -1,0 +1,42 @@
+<% if(short_name == "Short Name"){ %>
+<th><%= short_name %></th>
+<% if(showLimits){ %>
+<th>Limits</th>
+<% } %>
+<th>Delete Gene</th>
+<% } else { %>
+<td><%= short_name %></td>
+<% if(showLimits){ %>
+	<td>
+		<div class="checkbox">
+		    <label>
+		      <input type="checkbox" class="set-upper-limit"> Set Upper Limit
+		    </label>
+		</div>
+		<div class="slider-upper-limit-wrapper slider-limit-wrapper">
+			<div class="slider-upper-limit"></div>
+			<table class="table">
+				<tr>
+					<th>Upper</th>
+					<td><input type="text" class="upperLimit" value="<%= uLimit%>"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="checkbox">
+		    <label>
+		      <input type="checkbox" class="set-lower-limit"> Set Lower Limit
+		    </label>
+		</div>
+		<div class="slider-lower-limit-wrapper slider-limit-wrapper">
+			<div class="slider-lower-limit"></div>
+			<table class="table">
+				<tr>
+					<th>Lower</th>
+					<td><input type="text" class="lowerLimit" value="<%= lLimit%>"></td>
+				</tr>
+			</table>
+		</div>
+	</td>
+<% } %>
+<td class="delete"><button class="btn btn-link">Delete</button></td>
+<% } %>

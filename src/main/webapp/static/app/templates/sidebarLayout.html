@@ -1,0 +1,55 @@
+<div class='panel-heading panel-heading-main'>
+	<button data-toggle="tooltip" data-placement="bottom" title="Create New Tree" class="btn btn-primary pull-left" id="new-tree">
+		<i class="glyphicon glyphicon-off"></i>
+	</button>
+	<div id="DatasetRegion"></div>
+	<div id="CommentRegion"></div>
+	<button class="btn btn-xs btn-primary sidebar-open-feature-builder pull-right"><i class="glyphicon glyphicon-wrench"></i> Build Custom Feature</button>
+	<button class="btn btn-xs btn-primary sidebar-open-pathway-search pull-right"><i class="glyphicon glyphicon-search"></i> Pathway</button>
+</div>
+<div id="PathwaySearchRegion"></div>
+<div id="pickInstRegion"></div>
+<div id="AggNodeRegion"></div>
+<div id="AttrRankRegion"></div>
+<div id="score-board-outerWrapper" class="panel-outer-wrapper">
+	<h2 class="renderPink">
+		Score Board<span><button type="button" class="close"
+				data-dismiss="alert" aria-hidden="true">&times;</button></span>
+	</h2>
+	<div id="BadgesPlaceholder"></div>
+	<hr>
+	<div id="scoreboard_wrapper">
+		<div id='scoreboard_innerwrapper'></div>
+	</div>
+</div>
+<div id="CollaboratorsRegion"></div>
+<div class='panel-body panel-static'>
+	<div id="ScoreKeyRegion" class="eval-tab-content"></div>
+	<div id="CfMatrixRegion" class="eval-tab-content"></div>
+	<p><b>Training Set:</b> <%= Cure.dataset.get('name') %></p>
+	<p><b>Test Set:</b> <span id="test-set-label"><%= Cure.dataset.get('name') %></span></p>
+	<!-- 
+	<span id="sidebar-toggle" class="pull-right btn btn-default sidebar-show">
+		<i class="glyphicon glyphicon-chevron-down"></i>
+	</span>
+	 -->
+	<div id="tree-explanation-outerWrapper" class="panel-outer-wrapper">
+		<h2 class="renderPink">Tree in Text</h2>
+		<div id="tree-explanation-wrapper"></div>
+	</div>
+<button id="tree-explanation-button" class="btn btn-sm btn-default btn-block showTreeExp"><i class="glyphicon glyphicon-pencil"></i> Show Tree Explanation</button>
+	<div class="controls-extra-wrapper">
+	<div id='displayWrapper'>
+	<div id="ScoreRegion"></div>
+	<div id="badge-outer-wrapper">
+	<h2 class="renderPink">New Badges Earned!<span><button type="button" class="close"
+				data-dismiss="alert" aria-hidden="true">&times;</button></span></h2>				
+		<div id="BadgeRegion"></div>
+		<p>You can see your badge collection in your profile.</p>
+		<a class="btn btn-sm btn-default" target="_blank" href="/cure/profile/"><i class="glyphicon glyphicon-user"></i> Open my Profile</a>
+	</div>
+	<div id="current-tree-rank"></div>
+	</div>
+</div>
+</div>
+</div>
