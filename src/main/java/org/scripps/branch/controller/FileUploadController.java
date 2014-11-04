@@ -204,6 +204,9 @@ public class FileUploadController {
 				 if (i == 2) {
 				 System.out.println("file:" + serverFile.toString());
 				 weka.buildWeka(ctx.getResource("file:"+ uploadPath + md5FileName[0]).getInputStream(), null, "");
+				 
+				 //attrSer.generateValues(weka.getTrain(),ds,serverFile.toString());
+				 
 				 attrSer.generateAttributesFromDataset(weka.getTrain(), ds, serverFile.toString());
 				 message = message + "attribute file added";
 				 }

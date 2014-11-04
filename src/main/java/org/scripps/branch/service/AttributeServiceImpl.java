@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -65,6 +66,7 @@ public class AttributeServiceImpl implements AttributeService {
 			attr = new Attribute();
 			f = new Feature();
 			attr.setName(data.attribute(i).name());
+			attr.setValue(generateValues(data.attribute(i), data));
 			attr.setCol_index(data.attribute(i).index());
 			attr.setDataset(dataset);
 			f = featureRepo.findByUniqueId(mp.get(data.attribute(i).name()));
@@ -84,6 +86,20 @@ public class AttributeServiceImpl implements AttributeService {
 		attrRepo.flush();
 	}
 
+	@Override
+	public String generateValues(weka.core.Attribute a, Instances data) {
+		String val = "[";
+		for(int i=0;i<data.numInstances();i++){
+				val= val +"{\""+ i + "\":\"" + data.instance(i).value(a) + "\"}";
+				if(i<data.numInstances()-1){
+				 val+=",";
+				}
+		}
+		val+="]";
+		return val;
+	}
+	
+	
 	@Override
 	public HashMap<String, String> getAttributeFeatureMapping(String inputPath) {
 		HashMap<String, String> mp = new HashMap<String, String>();
