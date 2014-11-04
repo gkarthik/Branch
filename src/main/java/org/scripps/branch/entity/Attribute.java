@@ -51,6 +51,18 @@ public class Attribute {
 
 	@Column
 	private String name;
+	@Column
+	@Type(type="text")
+	private String value;
+
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
 
 	@Column
 	private double relieff;//InfoGainEvalAttr stored here
@@ -168,6 +180,7 @@ public class Attribute {
 		.append("col_Index", this.getCol_index())
 				.append("created", this.getCreated())
 				.append("name", this.getName())
+				.append("value", this.getValue())
 				.append("relieff", this.getRelieff())
 				.append("updated", this.getUpdated())
 				.append("feature_id", this.getFeature().getId()).toString();
