@@ -87,16 +87,16 @@ public class AttributeServiceImpl implements AttributeService {
 	}
 
 	@Override
-	public String generateValues(weka.core.Attribute a, Instances data) {
-		String val = "[";
+	public String generateValues(weka.core.Attribute attr, Instances data) {
+		String values = "[";
 		for(int i=0;i<data.numInstances();i++){
-				val= val +"{\""+ i + "\":\"" + data.instance(i).value(a) + "\"}";
+				values= values +"{\""+ i + "\":\"" + data.instance(i).value(attr) + "\"}";
 				if(i<data.numInstances()-1){
-				 val+=",";
+				 values+=",";
 				}
 		}
-		val+="]";
-		return val;
+		values+="]";
+		return values;
 	}
 	
 	
